@@ -16,7 +16,10 @@ RoxygenNote: 7.1.1.9000
 Imports: 
     DelayedMatrixStats,
     DelayedArray,
-    HDF5Array
+    HDF5Array,
+    limma,
+    S4Vectors,
+    methods
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
