@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Computing Cepo cell identity genes — Cepo • Cepo</title>
+<title>Computing (trend-)Limma cell identity genes — doLimma • Cepo</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="Computing Cepo cell identity genes — Cepo" />
+<meta property="og:title" content="Computing (trend-)Limma cell identity genes — doLimma" />
 <meta property="og:description" content="exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
+out-of-memory computations.
+exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
 out-of-memory computations." />
 
 
@@ -119,17 +121,21 @@ out-of-memory computations." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Computing Cepo cell identity genes</h1>
+    <h1>Computing (trend-)Limma cell identity genes</h1>
     
-    <div class="hidden name"><code>Cepo.Rd</code></div>
+    <div class="hidden name"><code>DE-cell-identity-methods.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
 out-of-memory computations.</p>
+<p>exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
+out-of-memory computations.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>Cepo</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span>, exprs_pct <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>doLimma</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span><span class='op'>)</span>
+
+<span class='fu'>doVoom</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,15 +148,12 @@ out-of-memory computations.</p>
       <th>cellTypes</th>
       <td><p>vector of cell type labels</p></td>
     </tr>
-    <tr>
-      <th>exprs_pct</th>
-      <td><p>Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list of key genes.</p>
+    <p>Returns a list, each element corresponds to a cell-type.</p>
+<p>Returns a list, each element corresponds to a cell-type.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
@@ -161,71 +164,9 @@ out-of-memory computations.</p>
 <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>exprsMat</span><span class='op'>)</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"cell"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='va'>p</span><span class='op'>)</span>
 <span class='va'>cellTypes</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span>, size <span class='op'>=</span> <span class='va'>p</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>Cepo</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $a
-#&gt;      gene38      gene41      gene29      gene21      gene32      gene12 
-#&gt;  0.55147059  0.40441176  0.33088235  0.32598039  0.32107843  0.29656863 
-#&gt;       gene7      gene11      gene42      gene46      gene27      gene19 
-#&gt;  0.25735294  0.24264706  0.23774510  0.22549020  0.22303922  0.21813725 
-#&gt;      gene31      gene28      gene18      gene37      gene13       gene5 
-#&gt;  0.20833333  0.20833333  0.17892157  0.17892157  0.16421569  0.16421569 
-#&gt;      gene47      gene17       gene6      gene22      gene23      gene49 
-#&gt;  0.15931373  0.11519608  0.09068627  0.08578431  0.07598039  0.07598039 
-#&gt;       gene8      gene43       gene9      gene16      gene39      gene40 
-#&gt;  0.03676471  0.02696078  0.02696078  0.01225490  0.01225490 -0.01715686 
-#&gt;      gene33      gene10       gene3      gene15      gene36      gene20 
-#&gt; -0.02941176 -0.08088235 -0.09558824 -0.14460784 -0.16421569 -0.18872549 
-#&gt;      gene26      gene35      gene34      gene50      gene48      gene14 
-#&gt; -0.19362745 -0.19362745 -0.26715686 -0.28676471 -0.30637255 -0.33578431 
-#&gt;      gene25      gene44      gene30       gene1      gene24      gene45 
-#&gt; -0.33578431 -0.35049020 -0.36029412 -0.37009804 -0.37500000 -0.37990196 
-#&gt;       gene2       gene4 
-#&gt; -0.44852941 -0.53186275 
-#&gt; 
-#&gt; $b
-#&gt;        gene4       gene34       gene15       gene30       gene35        gene2 
-#&gt;  0.571078431  0.526960784  0.443627451  0.389705882  0.335784314  0.330882353 
-#&gt;       gene19       gene20       gene44       gene48       gene16       gene31 
-#&gt;  0.225490196  0.223039216  0.223039216  0.215686275  0.188725490  0.142156863 
-#&gt;       gene33       gene24       gene50       gene29       gene25       gene37 
-#&gt;  0.139705882  0.125000000  0.117647059  0.117647059  0.105392157  0.098039216 
-#&gt;       gene36        gene6        gene1       gene26        gene9       gene22 
-#&gt;  0.078431373  0.068627451  0.056372549  0.056372549  0.034313725  0.004901961 
-#&gt;       gene14       gene45       gene40       gene46        gene5       gene17 
-#&gt;  0.002450980  0.002450980 -0.009803922 -0.009803922 -0.019607843 -0.053921569 
-#&gt;       gene27        gene3       gene42       gene10       gene28       gene39 
-#&gt; -0.063725490 -0.073529412 -0.093137255 -0.102941176 -0.107843137 -0.142156863 
-#&gt;       gene23       gene21       gene49       gene13       gene43       gene12 
-#&gt; -0.144607843 -0.181372549 -0.196078431 -0.196078431 -0.215686275 -0.240196078 
-#&gt;       gene32       gene11       gene18       gene47        gene7       gene41 
-#&gt; -0.289215686 -0.308823529 -0.313725490 -0.384803922 -0.397058824 -0.411764706 
-#&gt;        gene8       gene38 
-#&gt; -0.426470588 -0.441176471 
-#&gt; 
-#&gt; $c
-#&gt;        gene8       gene45       gene14        gene1       gene24       gene25 
-#&gt;  0.389705882  0.377450980  0.333333333  0.313725490  0.250000000  0.230392157 
-#&gt;       gene47       gene43       gene10        gene3       gene50        gene7 
-#&gt;  0.225490196  0.188725490  0.183823529  0.169117647  0.169117647  0.139705882 
-#&gt;       gene26       gene18       gene39       gene44       gene49        gene2 
-#&gt;  0.137254902  0.134803922  0.129901961  0.127450980  0.120098039  0.117647059 
-#&gt;       gene48       gene36       gene23       gene11       gene13       gene40 
-#&gt;  0.090686275  0.085784314  0.068627451  0.066176471  0.031862745  0.026960784 
-#&gt;       gene41       gene30       gene32       gene20        gene4       gene12 
-#&gt;  0.007352941 -0.029411765 -0.031862745 -0.034313725 -0.039215686 -0.056372549 
-#&gt;        gene9       gene17       gene22       gene28       gene33       gene38 
-#&gt; -0.061274510 -0.061274510 -0.090686275 -0.100490196 -0.110294118 -0.110294118 
-#&gt;       gene35       gene21        gene5       gene42        gene6       gene27 
-#&gt; -0.142156863 -0.144607843 -0.144607843 -0.144607843 -0.159313725 -0.159313725 
-#&gt;       gene16       gene46       gene34       gene37       gene15       gene31 
-#&gt; -0.200980392 -0.215686275 -0.259803922 -0.276960784 -0.299019608 -0.350490196 
-#&gt;       gene19       gene29 
-#&gt; -0.443627451 -0.448529412 
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "Cepo" "list"
-#&gt; attr(,"differential_method")
-#&gt; [1] "Cepo"</div></pre>
+<span class='va'>limma_output</span> <span class='op'>=</span> <span class='fu'>doLimma</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in fitFDistRobustly(var, df1 = df, covariate = covariate, winsor.tail.p = winsor.tail.p): statmod package required but is not installed</span></div><div class='input'><span class='va'>voom_output</span> <span class='op'>=</span> <span class='fu'>doVoom</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in fitFDistRobustly(var, df1 = df, covariate = covariate, winsor.tail.p = winsor.tail.p): statmod package required but is not installed</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
