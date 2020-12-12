@@ -146,6 +146,9 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Returns a list of key genes.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
@@ -156,8 +159,123 @@
 <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>exprsMat</span><span class='op'>)</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"cell"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='va'>p</span><span class='op'>)</span>
 <span class='va'>cellTypes</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span>, size <span class='op'>=</span> <span class='va'>p</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='va'>cepo_output</span> <span class='op'>=</span> <span class='fu'>Cepo</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
-</div></pre>
+<span class='fu'>Cepo</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $a
+#&gt;        gene57         gene7        gene32        gene61        gene58 
+#&gt;  6.163366e-01  4.764851e-01  4.740099e-01  4.740099e-01  4.368812e-01 
+#&gt;        gene88        gene64        gene68        gene85        gene56 
+#&gt;  4.344059e-01  4.207921e-01  3.873762e-01  3.725248e-01  3.675743e-01 
+#&gt;        gene24        gene14        gene34        gene78        gene82 
+#&gt;  3.490099e-01  3.452970e-01  3.242574e-01  3.094059e-01  3.069307e-01 
+#&gt;        gene31         gene2        gene47        gene76        gene63 
+#&gt;  2.982673e-01  2.846535e-01  2.784653e-01  2.685644e-01  2.314356e-01 
+#&gt;        gene83        gene17        gene98        gene89        gene99 
+#&gt;  2.252475e-01  2.091584e-01  2.079208e-01  2.042079e-01  1.992574e-01 
+#&gt;        gene73        gene79        gene49        gene72         gene5 
+#&gt;  1.980198e-01  1.943069e-01  1.868812e-01  1.806931e-01  1.621287e-01 
+#&gt;        gene53        gene23        gene86        gene96         gene8 
+#&gt;  1.596535e-01  1.472772e-01  1.423267e-01  1.410891e-01  1.250000e-01 
+#&gt;        gene84        gene50        gene55        gene21        gene41 
+#&gt;  1.064356e-01  9.282178e-02  9.034653e-02  8.292079e-02  7.673267e-02 
+#&gt;        gene44        gene16        gene28        gene35        gene66 
+#&gt;  7.301980e-02  6.683168e-02  6.435644e-02  5.816832e-02  5.198020e-02 
+#&gt;         gene6        gene65        gene39        gene94        gene91 
+#&gt;  4.455446e-02  3.836634e-02  3.589109e-02  1.237624e-02  1.113861e-02 
+#&gt;        gene11        gene43        gene48        gene70        gene18 
+#&gt;  8.663366e-03  3.712871e-03  5.551115e-17 -1.485149e-02 -1.608911e-02 
+#&gt;        gene27        gene75        gene22        gene60        gene67 
+#&gt; -1.980198e-02 -2.970297e-02 -3.217822e-02 -3.341584e-02 -4.950495e-02 
+#&gt;        gene81        gene54        gene45        gene36        gene13 
+#&gt; -5.074257e-02 -5.074257e-02 -6.683168e-02 -6.806931e-02 -7.301980e-02 
+#&gt;        gene25        gene71        gene52         gene1        gene29 
+#&gt; -7.673267e-02 -7.920792e-02 -8.787129e-02 -1.039604e-01 -1.262376e-01 
+#&gt;        gene69        gene74        gene46        gene19        gene97 
+#&gt; -1.299505e-01 -1.621287e-01 -1.633663e-01 -1.794554e-01 -1.856436e-01 
+#&gt;         gene9        gene26        gene51        gene93        gene80 
+#&gt; -2.153465e-01 -2.227723e-01 -2.240099e-01 -2.400990e-01 -2.685644e-01 
+#&gt;        gene77        gene59        gene30        gene40        gene15 
+#&gt; -2.871287e-01 -2.896040e-01 -2.995050e-01 -3.044554e-01 -3.205446e-01 
+#&gt;        gene95         gene4        gene37        gene42        gene12 
+#&gt; -3.292079e-01 -3.341584e-01 -3.490099e-01 -3.564356e-01 -3.688119e-01 
+#&gt;        gene33        gene90        gene38         gene3        gene62 
+#&gt; -3.824257e-01 -4.022277e-01 -4.220297e-01 -4.232673e-01 -4.777228e-01 
+#&gt;        gene10        gene92       gene100        gene20        gene87 
+#&gt; -5.024752e-01 -5.297030e-01 -5.346535e-01 -5.606436e-01 -6.138614e-01 
+#&gt; 
+#&gt; $b
+#&gt;       gene37       gene69       gene87       gene30       gene95        gene9 
+#&gt;  0.683168317  0.594059406  0.592821782  0.495049505  0.465346535  0.460396040 
+#&gt;       gene72       gene10       gene51       gene16       gene17       gene66 
+#&gt;  0.455445545  0.429455446  0.429455446  0.426980198  0.368811881  0.352722772 
+#&gt;        gene4       gene25       gene53        gene3       gene12       gene98 
+#&gt;  0.345297030  0.342821782  0.337871287  0.337871287  0.325495050  0.297029703 
+#&gt;       gene54       gene20       gene38       gene59       gene83       gene36 
+#&gt;  0.294554455  0.282178218  0.264851485  0.256188119  0.236386139  0.232673267 
+#&gt;       gene46       gene67       gene48       gene34       gene77       gene70 
+#&gt;  0.207920792  0.206683168  0.200495050  0.194306931  0.154702970  0.137376238 
+#&gt;       gene79       gene42       gene97       gene27       gene52       gene68 
+#&gt;  0.131188119  0.129950495  0.126237624  0.113861386  0.112623762  0.105198020 
+#&gt;       gene13       gene44       gene45       gene84        gene5       gene92 
+#&gt;  0.101485149  0.095297030  0.092821782  0.091584158  0.091584158  0.086633663 
+#&gt;       gene26      gene100       gene41       gene73       gene55       gene94 
+#&gt;  0.066831683  0.063118812  0.061881188  0.049504950  0.034653465  0.034653465 
+#&gt;        gene1       gene35       gene63       gene78       gene39       gene85 
+#&gt;  0.029702970  0.028465347  0.023514851  0.023514851  0.021039604  0.001237624 
+#&gt;       gene60       gene62       gene90        gene7       gene11       gene19 
+#&gt; -0.007425743 -0.028465347 -0.034653465 -0.050742574 -0.050742574 -0.060643564 
+#&gt;       gene43       gene28       gene76       gene40        gene6       gene80 
+#&gt; -0.066831683 -0.073019802 -0.076732673 -0.077970297 -0.089108911 -0.090346535 
+#&gt;       gene24       gene15       gene64       gene71       gene74       gene91 
+#&gt; -0.092821782 -0.116336634 -0.132425743 -0.134900990 -0.150990099 -0.170792079 
+#&gt;       gene56       gene31       gene86       gene18       gene22       gene93 
+#&gt; -0.174504950 -0.180693069 -0.188118812 -0.227722772 -0.254950495 -0.262376238 
+#&gt;       gene75       gene21       gene96       gene82       gene50        gene8 
+#&gt; -0.297029703 -0.299504950 -0.300742574 -0.309405941 -0.319306931 -0.320544554 
+#&gt;       gene33       gene81       gene23       gene61       gene89       gene47 
+#&gt; -0.323019802 -0.355198020 -0.365099010 -0.376237624 -0.378712871 -0.382425743 
+#&gt;       gene14       gene88       gene29       gene99       gene49       gene58 
+#&gt; -0.386138614 -0.393564356 -0.419554455 -0.446782178 -0.511138614 -0.573019802 
+#&gt;        gene2       gene65       gene32       gene57 
+#&gt; -0.599009901 -0.652227723 -0.658415842 -0.664603960 
+#&gt; 
+#&gt; $c
+#&gt;       gene33       gene65       gene29       gene62       gene93      gene100 
+#&gt;  0.705445545  0.613861386  0.545792079  0.506188119  0.502475248  0.471534653 
+#&gt;       gene92       gene15       gene90       gene81       gene40       gene80 
+#&gt;  0.443069307  0.436881188  0.436881188  0.405940594  0.382425743  0.358910891 
+#&gt;       gene75       gene49        gene2       gene74       gene22       gene20 
+#&gt;  0.326732673  0.324257426  0.314356436  0.313118812  0.287128713  0.278465347 
+#&gt;       gene99       gene18       gene19       gene50       gene42       gene23 
+#&gt;  0.247524752  0.243811881  0.240099010  0.226485149  0.226485149  0.217821782 
+#&gt;       gene21       gene71        gene8       gene32       gene89       gene91 
+#&gt;  0.216584158  0.214108911  0.195544554  0.184405941  0.174504950  0.159653465 
+#&gt;       gene96       gene38       gene26       gene58       gene77       gene47 
+#&gt;  0.159653465  0.157178218  0.155940594  0.136138614  0.132425743  0.103960396 
+#&gt;        gene3        gene1       gene10       gene43       gene97       gene57 
+#&gt;  0.085396040  0.074257426  0.073019802  0.063118812  0.059405941  0.048267327 
+#&gt;       gene86        gene6       gene12       gene11       gene60       gene14 
+#&gt;  0.045792079  0.044554455  0.043316832  0.042079208  0.040841584  0.040841584 
+#&gt;       gene59       gene87       gene28       gene82        gene4       gene52 
+#&gt;  0.033415842  0.021039604  0.008663366  0.002475248 -0.011138614 -0.024752475 
+#&gt;       gene45       gene13       gene88       gene46       gene94       gene39 
+#&gt; -0.025990099 -0.028465347 -0.040841584 -0.044554455 -0.047029703 -0.056930693 
+#&gt;       gene35       gene27       gene61       gene31       gene70       gene55 
+#&gt; -0.086633663 -0.094059406 -0.097772277 -0.117574257 -0.122524752 -0.125000000 
+#&gt;       gene95       gene41       gene67       gene36       gene44       gene76 
+#&gt; -0.136138614 -0.138613861 -0.157178218 -0.164603960 -0.168316832 -0.191831683 
+#&gt;       gene56       gene30       gene84       gene48       gene51       gene54 
+#&gt; -0.193069307 -0.195544554 -0.198019802 -0.200495050 -0.205445545 -0.243811881 
+#&gt;        gene9       gene73        gene5       gene63       gene24       gene25 
+#&gt; -0.245049505 -0.247524752 -0.253712871 -0.254950495 -0.256188119 -0.266089109 
+#&gt;       gene64       gene79       gene78       gene37       gene85       gene66 
+#&gt; -0.288366337 -0.325495050 -0.332920792 -0.334158416 -0.373762376 -0.404702970 
+#&gt;        gene7       gene83       gene69       gene68       gene16       gene53 
+#&gt; -0.425742574 -0.461633663 -0.464108911 -0.492574257 -0.493811881 -0.497524752 
+#&gt;       gene98       gene34       gene17       gene72 
+#&gt; -0.504950495 -0.518564356 -0.577970297 -0.636138614 
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "cepo" "list"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
