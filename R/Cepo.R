@@ -1,44 +1,25 @@
 #' @title Functions to generate differentially expressed genes
 #' @param exprsMat expression matrix where columns denote cells and rows denote genes
 #' @param cellTypes vector of cell type labels
+#' @param exprs_pct Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes. 
+#' @importFrom DelayedMatrixStats rowSums2 rowSds
+#' @importFrom DelayedArray cbind
+#' @return Returns a list of key genes. 
+#' @export
 #' @examples 
-#' 
-#' ####### an example where `sce`` is a SingleCellExperiment object
-#' mat <- logcounts(sce)
-#' labels <- sce$lineage
-#' 
-#' ds_res <- Cepo(mat, labels, exprs_pct=0.05, filter=FALSE)
-#' 
-#' ####### A quick simulation. Note that we need to have colnames and rownames on matrix ##########
 #' set.seed(1234)
-#' n = 1000 ## genes, rows
-#' p = 10000 ## cells, cols
+#' n = 100 ## genes, rows
+#' p = 1000 ## cells, cols
 #' exprsMat = matrix(rpois(n*p, lambda = 5), nrow = n)
 #' rownames(exprsMat) = paste0("gene", 1:n)
 #' colnames(exprsMat) = paste0("cell", 1:p)
 #' cellTypes = sample(letters[1:3], size = p, replace = TRUE)
-#' mat_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 #' 
-#' library(DelayedArray)
-#' library(DelayedMatrixStats)
-#' library(HDF5Array)
-#' DelayedArray:::set_verbose_block_processing(TRUE)
-#' ## DelayedArray::setAutoBlockSize(size = 1e3)
-#' ## DelayedArray::getAutoBlockSize()
-#' exprsMat_da = DelayedArray::DelayedArray(realize(exprsMat, "HDF5Array"))
-#' class(seed(exprsMat_da))
-#' da_output = Cepo(exprsMat = exprsMat_da, cellTypes = cellTypes)
-#' identical(mat_output, da_output)
-#' 
-#' library(microbenchmark)
-#' microbenchmark::microbenchmark(
-#' mat_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes),
-#' da_output = Cepo(exprsMat = exprsMat_da, cellTypes = cellTypes), 
-#' times = 10)
-Cepo <- function(exprsMat, cellTypes, exprs_pct=0.05, filter=FALSE) {
+#' cepo_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
+Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL) {
     cts <- names(table(cellTypes))
     
-    if (filter==TRUE) {
+    if (!is.null(exprs_pct)) {
         
         meanPct.list <- list()
         for(i in 1:length(cts)){
@@ -46,10 +27,10 @@ Cepo <- function(exprsMat, cellTypes, exprs_pct=0.05, filter=FALSE) {
             meanPct.list[[i]] <- (DelayedMatrixStats::rowSums2(exprsMat[, idx, drop = FALSE] > 0)/sum(cellTypes == cts[i])) > exprs_pct 
         }
         names(meanPct.list) <- cts
-        keep = rowSums(do.call(cbind, meanPct.list)) == length(cts) 
+        keep = DelayedMatrixStats::rowSums2(do.call(cbind, meanPct.list)) == length(cts) 
         exprsMat <- exprsMat[keep,]
         
-    } 
+    }
     segIdx.list <- list()
     for(i in 1:length(cts)){
         idx <- which(cellTypes == cts[i])
@@ -113,7 +94,7 @@ consensusSegIdx <- function(mat) {
             avgRank <- cbind(avgRank, tt[,i] - tt[,j])
         }
         
-        CIGs[[i]] <- sort(rowMeans(avgRank), decreasing = TRUE)
+        CIGs[[i]] <- sort(DelayedMatrixStats::rowMeans2(avgRank), decreasing = TRUE)
     }
     return(CIGs)
 }
