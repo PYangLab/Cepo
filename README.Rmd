@@ -1,9 +1,11 @@
-Cepo
-================
+---
+title: "Cepo"
+output: github_document
+---
 
 ![R-CMD-check](https://github.com/kevinwang09/Cepo/workflows/R-CMD-check/badge.svg)
 
-# Introduction
+# Introduction 
 
 # A quick demo
 

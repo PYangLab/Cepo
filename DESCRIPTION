@@ -1,5 +1,5 @@
 Package: Cepo
-Title: Implements Cepo method
+Title: Implements cepo method
 Version: 0.0.1
 Authors@R: 
     person(given = "Hani Jieun",
@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "hani.kim@sydney.edu.au",
            comment = c(ORCID = ""))
-Description: We implement the Cepo method.
+Description: We implement the cepo method.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
