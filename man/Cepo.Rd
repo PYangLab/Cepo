@@ -13,6 +13,9 @@ Cepo(exprsMat, cellTypes, exprs_pct = NULL)
 
 \item{exprs_pct}{Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.}
 }
+\value{
+Returns a list of key genes.
+}
 \description{
 Functions to generate differentially expressed genes
 }
@@ -25,5 +28,5 @@ rownames(exprsMat) = paste0("gene", 1:n)
 colnames(exprsMat) = paste0("cell", 1:p)
 cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 
-cepo_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
+Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 }

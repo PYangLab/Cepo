@@ -15,7 +15,7 @@
 #' colnames(exprsMat) = paste0("cell", 1:p)
 #' cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 #' 
-#' cepo_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
+#' Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL) {
     cts <- names(table(cellTypes))
     
@@ -41,9 +41,21 @@ Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL) {
     segMat <- segIdxList2Mat(segIdx.list)
     segGenes <- consensusSegIdx(segMat)
     names(segGenes) <- colnames(segMat)
+    result = segGenes
+    class(result) = c("cepo", class(result))
     
-    return(segGenes)
+    return(result)
 }
+
+print.cepo = function(x, ...){
+ cat("Top 6 Cepo genes in each celltype: \n")
+ for(j in names(x)){
+     cat(j, "\n")
+     print(utils::head(x[[j]]))
+ }
+}
+
+
 
 segIndex <- function(mat){
     # nz <- (rowSums(mat != 0) / ncol(mat))
@@ -94,7 +106,9 @@ consensusSegIdx <- function(mat) {
             avgRank <- cbind(avgRank, tt[,i] - tt[,j])
         }
         
-        CIGs[[i]] <- sort(DelayedMatrixStats::rowMeans2(avgRank), decreasing = TRUE)
+        meanAvgRank = DelayedMatrixStats::rowMeans2(avgRank)
+        names(meanAvgRank) <- rownames(avgRank)
+        CIGs[[i]] <- sort(meanAvgRank, decreasing = TRUE)
     }
     return(CIGs)
 }

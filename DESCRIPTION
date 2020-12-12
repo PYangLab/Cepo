@@ -15,7 +15,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1.9000
 Imports: 
     DelayedMatrixStats,
-    DelayedArray
+    DelayedArray,
+    HDF5Array
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
