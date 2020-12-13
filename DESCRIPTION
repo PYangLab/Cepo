@@ -26,5 +26,6 @@ Suggests:
     knitr,
     rmarkdown,
     BiocStyle,
-    testthat
+    testthat,
+    covr
 VignetteBuilder: knitr

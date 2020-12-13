@@ -126,6 +126,9 @@ doTtest <- function(exprsMat, cellTypes) {
 #' @rdname DE-cell-identity-methods
 #' @export
 doWilcoxon <- function(exprsMat, cellTypes) {
+  if(!is.matrix(exprsMat)){
+    stop("Wilcoxon method only supports matrix input at the moment")
+  }
   # input must be normalised, log-transformed data
   cty <- droplevels(as.factor(cellTypes))
   names(cty) <- colnames(exprsMat)
