@@ -5,7 +5,7 @@
 #' @importFrom DelayedArray cbind
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom methods new
-#' @return Returns a list, each element corresponds to a cell-type.
+#' @return Returns a list, each element corresponds to statistics (and p-values) associated with a cell-type
 #' @description exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for 
 #' out-of-memory computations. 
 #' @rdname DE-cell-identity-methods
@@ -21,6 +21,8 @@
 #' 
 #' limma_output = doLimma(exprsMat = exprsMat, cellTypes = cellTypes)
 #' voom_output = doVoom(exprsMat = exprsMat, cellTypes = cellTypes)
+#' ttest_output = doTtest(exprsMat = exprsMat, cellTypes = cellTypes)
+#' wilcoxon_output = doWilcoxon(exprsMat = exprsMat, cellTypes = cellTypes)
 doLimma <- function(exprsMat, cellTypes){
   cellTypes <- droplevels(as.factor(cellTypes))
   tt <- list()
@@ -55,14 +57,9 @@ doLimma <- function(exprsMat, cellTypes){
 }
 
 #' @title Computing Limma-Voom cell identity genes
-#' @param exprsMat expression matrix where columns denote cells and rows denote genes
-#' @param cellTypes vector of cell type labels
 #' @importFrom DelayedMatrixStats rowSums2 rowMeans2
 #' @importFrom DelayedArray cbind
 #' @importFrom limma lmFit eBayes topTable voom
-#' @return Returns a list, each element corresponds to a cell-type.
-#' @description exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for 
-#' out-of-memory computations. 
 #' @rdname DE-cell-identity-methods
 #' @export
 doVoom <- function(exprsMat, cellTypes) {
@@ -92,4 +89,62 @@ doVoom <- function(exprsMat, cellTypes) {
   result = tt
   attr(result, "differential_method") = "voom"
   return(result)
+}
+
+#' @title Computing t-test identity genes
+#' @importFrom DelayedArray apply
+#' @rdname DE-cell-identity-methods
+#' @export
+doTtest <- function(exprsMat, cellTypes) {
+  # input must be normalised, log-transformed data
+  cty <- droplevels(as.factor(cellTypes))
+  names(cty) <- colnames(exprsMat)
+  
+  tt <- list()
+  for (i in 1:nlevels(cty)) {
+    tmp_celltype <- (ifelse(cty == levels(cty)[i], 1, 0))
+    
+    tt[[i]] <- t(DelayedArray::apply(exprsMat, 1, function(x) {
+      x1 <- x[tmp_celltype == 0]
+      x2 <- x[tmp_celltype == 1]
+      
+      res <- stats::t.test(x2, y=x1)
+      return(c(stats=res$statistic,
+               pvalue=res$p.value))
+    }))
+    tt[[i]] <- as.data.frame(tt[[i]])
+    tt[[i]]$adj.pvalue <- stats::p.adjust(tt[[i]]$pvalue, method = "BH")
+  }
+  names(tt) <- levels(cty)
+  result = tt
+  attr(result, "differential_method") = "ttest"
+  return(result)
+}
+
+#' @title Computing Wilcoxon identity genes
+#' @importFrom DelayedArray apply
+#' @rdname DE-cell-identity-methods
+#' @export
+doWilcoxon <- function(exprsMat, cellTypes) {
+  # input must be normalised, log-transformed data
+  cty <- droplevels(as.factor(cellTypes))
+  names(cty) <- colnames(exprsMat)
+  
+  tt <- list()
+  for (i in 1:nlevels(cty)) {
+    tmp_celltype <- (ifelse(cty == levels(cty)[i], 1, 0))
+    
+    tt[[i]] <- t(DelayedArray::apply(exprsMat, 1, function(x) {
+      res <- stats::wilcox.test(x ~ tmp_celltype)
+      c(stats=res$statistic,
+        pvalue=res$p.value)
+    }))
+    tt[[i]] <- as.data.frame(tt[[i]])
+    tt[[i]]$adj.pvalue <- stats::p.adjust(tt[[i]]$pvalue, method = "BH")
+  }
+  names(tt) <- levels(cty)
+  result = tt
+  attr(result, "differential_method") = "wilcoxon"
+  return(result)
+  return(tt)
 }

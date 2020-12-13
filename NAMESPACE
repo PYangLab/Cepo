@@ -2,8 +2,11 @@
 
 export(Cepo)
 export(doLimma)
+export(doTtest)
 export(doVoom)
+export(doWilcoxon)
 export(getStats)
+importFrom(DelayedArray,apply)
 importFrom(DelayedArray,cbind)
 importFrom(DelayedMatrixStats,rowMeans2)
 importFrom(DelayedMatrixStats,rowSds)

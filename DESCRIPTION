@@ -19,7 +19,8 @@ Imports:
     HDF5Array,
     limma,
     S4Vectors,
-    methods
+    methods,
+    statmod
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,

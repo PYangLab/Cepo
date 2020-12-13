@@ -29,8 +29,12 @@ cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 cepo_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 limma_output = doLimma(exprsMat = exprsMat, cellTypes = cellTypes)
 voom_output = doVoom(exprsMat = exprsMat, cellTypes = cellTypes)
+ttest_output = doTtest(exprsMat = exprsMat, cellTypes = cellTypes)
+wilcoxon_output = doWilcoxon(exprsMat = exprsMat, cellTypes = cellTypes)
 
 getStats(cepo_output)
 getStats(limma_output)
 getStats(voom_output)
+getStats(ttest_output)
+getStats(wilcoxon_output)
 }

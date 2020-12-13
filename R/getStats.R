@@ -16,10 +16,14 @@
 #' cepo_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 #' limma_output = doLimma(exprsMat = exprsMat, cellTypes = cellTypes)
 #' voom_output = doVoom(exprsMat = exprsMat, cellTypes = cellTypes)
+#' ttest_output = doTtest(exprsMat = exprsMat, cellTypes = cellTypes)
+#' wilcoxon_output = doWilcoxon(exprsMat = exprsMat, cellTypes = cellTypes)
 #' 
 #' getStats(cepo_output)
 #' getStats(limma_output)
 #' getStats(voom_output)
+#' getStats(ttest_output)
+#' getStats(wilcoxon_output)
 getStats <- function(object, returnDF = TRUE){
   method = attr(x = object, "differential_method")
   
@@ -27,14 +31,25 @@ getStats <- function(object, returnDF = TRUE){
     method, 
     Cepo = object,
     limma = getStats_limma(object = object),
-    voom = getStats_limma(object = object)
-  )
+    voom = getStats_limma(object = object),
+    ttest = getStats_tTest(object = object),
+    wilcoxon = getStats_wilcoxon(object = object))
   
   if(returnDF){ ## if TRUE, turn results to a data.frame
     return(listUnsorted2DF(listResult))
   } else{ ## else, just return the lists
     return(listResult)
   }
+}
+
+listUnsorted2DF = function(object){
+  geneNames = sort(names(object[[1]]))
+  objectSorted = lapply(object, function(thisCellTypeResult){thisCellTypeResult[geneNames]})
+  result = data.frame(do.call(cbind, objectSorted))
+  result = S4Vectors::DataFrame(result)
+  # result = cbind(geneName = rownames(result),
+  #                result)
+  return(result)
 }
 
 getStats_limma = function(object){
@@ -47,12 +62,22 @@ getStats_limma = function(object){
   return(listResult)
 }
 
-listUnsorted2DF = function(object){
-  geneNames = sort(names(object[[1]]))
-  objectSorted = lapply(object, function(thisCellTypeResult){thisCellTypeResult[geneNames]})
-  result = data.frame(do.call(cbind, objectSorted))
-  result = S4Vectors::DataFrame(result)
-  # result = cbind(geneName = rownames(result),
-  #                result)
-  return(result)
+getStats_tTest = function(object){
+  listResult <- lapply(object, function(x) {
+    stats <- x$stats.t
+    names(stats) <- rownames(x)
+    stats <- sort(stats, decreasing = TRUE, na.last = TRUE)
+    return(stats)
+  })
+  return(listResult)
+}
+
+getStats_wilcoxon = function(object){
+  listResult <- lapply(object, function(x) {
+    stats <- -x$stats.W
+    names(stats) <- rownames(x)
+    stats <- sort(stats, decreasing = TRUE, na.last = TRUE)
+    return(stats)
+  })
+  return(listResult)
 }
