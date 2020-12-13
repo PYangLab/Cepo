@@ -157,8 +157,10 @@
 
 <span class='va'>cepo_output</span> <span class='op'>=</span> <span class='fu'><a href='Cepo.html'>Cepo</a></span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
 <span class='va'>limma_output</span> <span class='op'>=</span> <span class='fu'><a href='doLimma.html'>doLimma</a></span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in fitFDistRobustly(var, df1 = df, covariate = covariate, winsor.tail.p = winsor.tail.p): statmod package required but is not installed</span></div><div class='input'><span class='va'>voom_output</span> <span class='op'>=</span> <span class='fu'><a href='doLimma.html'>doVoom</a></span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in fitFDistRobustly(var, df1 = df, covariate = covariate, winsor.tail.p = winsor.tail.p): statmod package required but is not installed</span></div><div class='input'>
+<span class='va'>voom_output</span> <span class='op'>=</span> <span class='fu'><a href='doLimma.html'>doVoom</a></span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
+<span class='va'>ttest_output</span> <span class='op'>=</span> <span class='fu'><a href='doLimma.html'>doTtest</a></span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
+<span class='va'>wilcoxon_output</span> <span class='op'>=</span> <span class='fu'><a href='doLimma.html'>doWilcoxon</a></span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
+
 <span class='fu'>getStats</span><span class='op'>(</span><span class='va'>cepo_output</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; DataFrame with 50 rows and 3 columns
 #&gt;                 a          b          c
@@ -174,8 +176,62 @@
 #&gt; gene7   0.2573529 -0.3970588  0.1397059
 #&gt; gene8   0.0367647 -0.4264706  0.3897059
 #&gt; gene9   0.0269608  0.0343137 -0.0612745</div><div class='input'><span class='fu'>getStats</span><span class='op'>(</span><span class='va'>limma_output</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in getStats(limma_output): object 'limma_output' not found</span></div><div class='input'><span class='fu'>getStats</span><span class='op'>(</span><span class='va'>voom_output</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in getStats(voom_output): object 'voom_output' not found</span></div></pre>
+</div><div class='output co'>#&gt; DataFrame with 50 rows and 3 columns
+#&gt;                 a         b          c
+#&gt;         &lt;numeric&gt; &lt;numeric&gt;  &lt;numeric&gt;
+#&gt; gene1  -0.2433458 -0.683761   1.017951
+#&gt; gene10 -0.3208615  1.404245  -1.147546
+#&gt; gene11 -0.0135653  0.516167  -0.541115
+#&gt; gene12  1.1544686 -2.027285   0.859346
+#&gt; gene13 -2.1045738  0.136555   2.248960
+#&gt; ...           ...       ...        ...
+#&gt; gene50   0.427119 -0.816210  0.3872128
+#&gt; gene6   -0.963722  1.071348 -0.0500993
+#&gt; gene7   -0.498471 -0.711949  1.3330669
+#&gt; gene8   -0.447835  0.891062 -0.4506820
+#&gt; gene9   -0.434041  0.916261 -0.4866875</div><div class='input'><span class='fu'>getStats</span><span class='op'>(</span><span class='va'>voom_output</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; DataFrame with 50 rows and 3 columns
+#&gt;                a          b          c
+#&gt;        &lt;numeric&gt;  &lt;numeric&gt;  &lt;numeric&gt;
+#&gt; gene1  -0.554538 -0.5953871  1.3486640
+#&gt; gene10 -0.191675  1.1728140 -0.8842569
+#&gt; gene11  0.173449 -0.0827157 -0.0262729
+#&gt; gene12  1.652013 -1.9448864  0.4464996
+#&gt; gene13 -1.460867  0.1345477  1.7360917
+#&gt; ...          ...        ...        ...
+#&gt; gene50 -0.623383  -0.266671  0.9534709
+#&gt; gene6  -0.553355   0.794886 -0.1872744
+#&gt; gene7  -0.220105  -1.098436  1.4931112
+#&gt; gene8  -0.249092   0.264347  0.0147172
+#&gt; gene9  -0.207857   0.830635 -0.5516361</div><div class='input'><span class='fu'>getStats</span><span class='op'>(</span><span class='va'>ttest_output</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; DataFrame with 50 rows and 3 columns
+#&gt;                 a         b          c
+#&gt;         &lt;numeric&gt; &lt;numeric&gt;  &lt;numeric&gt;
+#&gt; gene1  -0.2280724 -0.680243   1.007657
+#&gt; gene10 -0.2938911  1.247598  -1.215005
+#&gt; gene11 -0.0145111  0.534316  -0.585909
+#&gt; gene12  1.1569396 -2.048086   0.796544
+#&gt; gene13 -2.1749500  0.136866   2.241342
+#&gt; ...           ...       ...        ...
+#&gt; gene50   0.510613 -1.039745  0.5411945
+#&gt; gene6   -0.966484  1.033181 -0.0472825
+#&gt; gene7   -0.554651 -0.719257  1.4461721
+#&gt; gene8   -0.388108  0.723774 -0.4529342
+#&gt; gene9   -0.413250  0.868052 -0.4706232</div><div class='input'><span class='fu'>getStats</span><span class='op'>(</span><span class='va'>wilcoxon_output</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; DataFrame with 50 rows and 3 columns
+#&gt;                a         b         c
+#&gt;        &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;
+#&gt; gene1    -1260.5   -1179.0    -811.5
+#&gt; gene10   -1264.0    -932.5   -1054.5
+#&gt; gene11   -1220.5    -992.0   -1038.5
+#&gt; gene12   -1067.0   -1332.0    -852.0
+#&gt; gene13   -1560.5   -1051.0    -639.5
+#&gt; ...          ...       ...       ...
+#&gt; gene50   -1105.5   -1253.5    -892.0
+#&gt; gene6    -1358.0    -935.5    -957.5
+#&gt; gene7    -1264.5   -1241.5    -745.0
+#&gt; gene8    -1290.0   -1011.0    -950.0
+#&gt; gene9    -1289.0    -974.0    -988.0</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

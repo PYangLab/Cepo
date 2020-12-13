@@ -41,8 +41,6 @@
 
 <meta property="og:title" content="Computing (trend-)Limma cell identity genes — doLimma" />
 <meta property="og:description" content="exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
-out-of-memory computations.
-exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
 out-of-memory computations." />
 
 
@@ -129,13 +127,15 @@ out-of-memory computations." />
     <div class="ref-description">
     <p>exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
 out-of-memory computations.</p>
-<p>exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
-out-of-memory computations.</p>
     </div>
 
     <pre class="usage"><span class='fu'>doLimma</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span><span class='op'>)</span>
 
-<span class='fu'>doVoom</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span><span class='op'>)</span></pre>
+<span class='fu'>doVoom</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span><span class='op'>)</span>
+
+<span class='fu'>doTtest</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span><span class='op'>)</span>
+
+<span class='fu'>doWilcoxon</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,8 +152,7 @@ out-of-memory computations.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list, each element corresponds to a cell-type.</p>
-<p>Returns a list, each element corresponds to a cell-type.</p>
+    <p>Returns a list, each element corresponds to statistics (and p-values) associated with a cell-type</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
@@ -165,8 +164,10 @@ out-of-memory computations.</p>
 <span class='va'>cellTypes</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span>, size <span class='op'>=</span> <span class='va'>p</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='va'>limma_output</span> <span class='op'>=</span> <span class='fu'>doLimma</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in fitFDistRobustly(var, df1 = df, covariate = covariate, winsor.tail.p = winsor.tail.p): statmod package required but is not installed</span></div><div class='input'><span class='va'>voom_output</span> <span class='op'>=</span> <span class='fu'>doVoom</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in fitFDistRobustly(var, df1 = df, covariate = covariate, winsor.tail.p = winsor.tail.p): statmod package required but is not installed</span></div></pre>
+<span class='va'>voom_output</span> <span class='op'>=</span> <span class='fu'>doVoom</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
+<span class='va'>ttest_output</span> <span class='op'>=</span> <span class='fu'>doTtest</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
+<span class='va'>wilcoxon_output</span> <span class='op'>=</span> <span class='fu'>doWilcoxon</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
