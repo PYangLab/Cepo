@@ -3,7 +3,7 @@
 #' @param cellTypes vector of cell type labels
 #' @param exprs_pct Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes. 
 #' @importFrom DelayedMatrixStats rowSums2 rowSds
-#' @importFrom DelayedArray cbind
+#' @importFrom DelayedArray cbind blockApply
 #' @return Returns a list of key genes. 
 #' @description exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for 
 #' out-of-memory computations. 
@@ -26,10 +26,10 @@ Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL) {
         meanPct.list <- list()
         for(i in 1:length(cts)){
             idx <- which(cellTypes == cts[i])
-            meanPct.list[[i]] <- (DelayedMatrixStats::rowSums2(exprsMat[, idx, drop = FALSE] > 0)/sum(cellTypes == cts[i])) > exprs_pct 
+            meanPct.list[[i]] <- (block_rowSums(exprsMat[, idx, drop = FALSE] > 0)/sum(cellTypes == cts[i])) > exprs_pct 
         }
         names(meanPct.list) <- cts
-        keep = DelayedMatrixStats::rowSums2(do.call(cbind, meanPct.list)) == length(cts) 
+        keep = block_rowSums(do.call(cbind, meanPct.list)) == length(cts) 
         exprsMat <- exprsMat[keep,]
         
     }
@@ -57,21 +57,37 @@ print.Cepo = function(x, ...){
  }
 }
 
-
-
 segIndex <- function(mat){
-    nz <- DelayedMatrixStats::rowMeans2(mat != 0)
-    ms <- DelayedMatrixStats::rowMeans2(mat)
-    sds <- DelayedMatrixStats::rowSds(mat)
+    nz <- block_rowMeans(mat != 0)
+    ms <- block_rowMeans(mat)
+    sds <- block_rowSds(mat)
     cvs <- sds/ms
     names(nz) = names(sds) = names(cvs) = names(ms) = rownames(mat)
     
     x1 <- rank(nz)/(length(nz)+1)
     x2 <- 1 - rank(cvs)/(length(cvs)+1)
     
-    segIdx <- DelayedMatrixStats::rowMeans2(DelayedArray::cbind(x1, x2))
+    segIdx <- block_rowMeans(DelayedArray::cbind(x1, x2))
     names(segIdx) = rownames(mat)
     return(segIdx)
+}
+
+block_rowMeans = function(mat){
+    result = DelayedArray::blockApply(x = mat, FUN = DelayedMatrixStats::rowMeans2)[[1]]
+    names(result) = rownames(mat)
+    return(result)
+}
+
+block_rowSds = function(mat){
+    result = DelayedArray::blockApply(x = mat, FUN = DelayedMatrixStats::rowSds)[[1]]
+    names(result) = rownames(mat)
+    return(result)
+}
+
+block_rowSums = function(mat){
+    result = DelayedArray::blockApply(x = mat, FUN = DelayedMatrixStats::rowSums2)[[1]]
+    names(result) = rownames(mat)
+    return(result)
 }
 
 segIdxList2Mat <- function(segIdx.list) {
