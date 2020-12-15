@@ -4,7 +4,12 @@
 \alias{Cepo}
 \title{Computing Cepo cell identity genes}
 \usage{
-Cepo(exprsMat, cellTypes, exprs_pct = NULL)
+Cepo(
+  exprsMat,
+  cellTypes,
+  exprs_pct = NULL,
+  BPPARAM = BiocParallel::SerialParam()
+)
 }
 \arguments{
 \item{exprsMat}{expression matrix where columns denote cells and rows denote genes}
@@ -12,6 +17,9 @@ Cepo(exprsMat, cellTypes, exprs_pct = NULL)
 \item{cellTypes}{vector of cell type labels}
 
 \item{exprs_pct}{Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.}
+
+\item{BPPARAM}{A BiocParallelParam object specifying how parallelization should be performed.
+Default to BiocParallel::SerialParam()}
 }
 \value{
 Returns a list of key genes.

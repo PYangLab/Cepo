@@ -21,14 +21,14 @@ da_exprsMat = DelayedArray::DelayedArray(DelayedArray::realize(exprsMat, "HDF5Ar
 ########### Comparing matrix outputs ####################
 cepo_1core_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 da_cepo_1core_output = Cepo(exprsMat = da_exprsMat, cellTypes = cellTypes)
-setAutoBPPARAM(BPPARAM = BPPARAM) ## Setting two cores for computation
-da_cepo_2core_output = Cepo(exprsMat = da_exprsMat, cellTypes = cellTypes)
-setAutoBPPARAM(BPPARAM = SerialParam()) ## Revert back to only one core
+# setAutoBPPARAM(BPPARAM = BPPARAM) ## Setting two cores for computation
+da_cepo_2core_output = Cepo(exprsMat = da_exprsMat, cellTypes = cellTypes, BPPARAM = BPPARAM)
+# setAutoBPPARAM(BPPARAM = SerialParam()) ## Revert back to only one core
 testthat::expect_identical(cepo_1core_output, da_cepo_1core_output)
 testthat::expect_identical(cepo_1core_output, da_cepo_2core_output)
 ########### Checking the validity of matrix outputs ####################
-# x <- matrix(rnorm(1e6*40), nrow = 1e6, ncol = 40)
+# x <- matrix(rnorm(1e6*60), nrow = 1e6, ncol = 60)
 # da = DelayedArray::DelayedArray(DelayedArray::realize(x, "HDF5Array"))
 # system.time(DelayedMatrixStats::rowMeans2(da))
 # system.time(blockApply(da, FUN = DelayedMatrixStats::rowMeans2, BPPARAM = BPPARAM))
-# system.time(block_rowMeans(da))
+# system.time(block_rowMeans(da, BPPARAM = BPPARAM))
