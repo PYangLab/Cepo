@@ -89,8 +89,9 @@ block_rowSds = function(mat, BPPARAM = BiocParallel::SerialParam()){
     return(result)
 }
 
-block_rowSums = function(mat){
-    result = DelayedArray::blockApply(x = mat, FUN = DelayedMatrixStats::rowSums2)[[1]]
+block_rowSums = function(mat, BPPARAM = BiocParallel::SerialParam()){
+    result = DelayedArray::blockApply(x = mat, FUN = DelayedMatrixStats::rowSums2,
+                                      BPPARAM = BPPARAM)[[1]]
     names(result) = rownames(mat)
     return(result)
 }
