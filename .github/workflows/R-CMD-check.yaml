@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - master
+      - devel-parallel
   pull_request:
     branches:
       - main
       - master
+      - devel-parallel
 
 name: R-CMD-check
 
