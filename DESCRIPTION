@@ -20,13 +20,13 @@ Imports:
     limma,
     S4Vectors,
     methods,
-    statmod,
-    BiocParallel
+    statmod
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
     rmarkdown,
     BiocStyle,
     testthat,
-    covr
+    covr,
+    BiocParallel
 VignetteBuilder: knitr

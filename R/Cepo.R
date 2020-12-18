@@ -2,11 +2,8 @@
 #' @param exprsMat expression matrix where columns denote cells and rows denote genes
 #' @param cellTypes vector of cell type labels
 #' @param exprs_pct Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes. 
-#' @param BPPARAM A BiocParallelParam object specifying how parallelization should be performed.
-#' Default to BiocParallel::SerialParam()
 #' @importFrom DelayedMatrixStats rowSums2 rowMeans2 rowSds
-#' @importFrom DelayedArray cbind blockApply 
-#' @importFrom BiocParallel SerialParam
+#' @importFrom DelayedArray cbind 
 #' @return Returns a list of key genes. 
 #' @description exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for 
 #' out-of-memory computations. 
@@ -21,7 +18,7 @@
 #' cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 #' 
 #' Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
-Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL, BPPARAM = BiocParallel::SerialParam()) {
+Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL) {
     cts <- names(table(cellTypes))
     
     if (!is.null(exprs_pct)) {
@@ -29,17 +26,17 @@ Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL, BPPARAM = BiocParallel::
         meanPct.list <- list()
         for(i in 1:length(cts)){
             idx <- which(cellTypes == cts[i])
-            meanPct.list[[i]] <- (block_rowSums(exprsMat[, idx, drop = FALSE] > 0)/sum(cellTypes == cts[i])) > exprs_pct 
+            meanPct.list[[i]] <- (rowSums_withnames(exprsMat[, idx, drop = FALSE] > 0)/sum(cellTypes == cts[i])) > exprs_pct 
         }
         names(meanPct.list) <- cts
-        keep = block_rowSums(do.call(DelayedArray::cbind, meanPct.list)) == length(cts) 
+        keep = rowSums_withnames(do.call(DelayedArray::cbind, meanPct.list)) == length(cts) 
         exprsMat <- exprsMat[keep,]
         
     }
     segIdx.list <- list()
     for(i in 1:length(cts)){
         idx <- which(cellTypes == cts[i])
-        segIdx.list[[i]] <- segIndex(exprsMat[,idx], BPPARAM = BPPARAM)
+        segIdx.list[[i]] <- segIndex(exprsMat[,idx])
     }
     names(segIdx.list) <- cts
     
@@ -60,38 +57,33 @@ print.Cepo = function(x, ...){
  }
 }
 
-segIndex <- function(mat, BPPARAM){
-    nz <- block_rowMeans(mat != 0, BPPARAM = BPPARAM)
-    ms <- block_rowMeans(mat, BPPARAM = BPPARAM)
-    sds <- block_rowSds(mat, BPPARAM = BPPARAM)
+segIndex <- function(mat){
+    nz <- rowMeans_withnames(mat != 0)
+    ms <- rowMeans_withnames(mat)
+    sds <- rowSds_withnames(mat)
     cvs <- sds/ms
-    names(nz) = names(sds) = names(cvs) = names(ms) = rownames(mat)
     
     x1 <- rank(nz)/(length(nz)+1)
     x2 <- 1 - rank(cvs)/(length(cvs)+1)
     
-    segIdx <- block_rowMeans(DelayedArray::cbind(x1, x2), BPPARAM = BPPARAM)
-    names(segIdx) = rownames(mat)
+    segIdx <- rowMeans_withnames(DelayedArray::cbind(x1, x2))
     return(segIdx)
 }
 
-block_rowMeans = function(mat, BPPARAM = BiocParallel::SerialParam()){
-    result = DelayedArray::blockApply(x = mat, FUN = DelayedMatrixStats::rowMeans2,
-                                      BPPARAM = BPPARAM)[[1]]
+rowMeans_withnames = function(mat){
+    result = DelayedMatrixStats::rowMeans2(mat)
     names(result) = rownames(mat)
     return(result)
 }
 
-block_rowSds = function(mat, BPPARAM = BiocParallel::SerialParam()){
-    result = DelayedArray::blockApply(x = mat, FUN = DelayedMatrixStats::rowSds,
-                                      BPPARAM = BPPARAM)[[1]]
+rowSds_withnames = function(mat){
+    result = DelayedMatrixStats::rowSds(mat)
     names(result) = rownames(mat)
     return(result)
 }
 
-block_rowSums = function(mat, BPPARAM = BiocParallel::SerialParam()){
-    result = DelayedArray::blockApply(x = mat, FUN = DelayedMatrixStats::rowSums2,
-                                      BPPARAM = BPPARAM)[[1]]
+rowSums_withnames = function(mat){
+    result = DelayedMatrixStats::rowMeans2(mat)
     names(result) = rownames(mat)
     return(result)
 }
