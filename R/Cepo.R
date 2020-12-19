@@ -58,7 +58,7 @@ print.Cepo = function(x, ...){
 }
 
 segIndex <- function(mat){
-    nz <- rowMeans_withnames(mat != 0)
+    nz <- rowMeans_withnames((mat != 0) + 0L)
     ms <- rowMeans_withnames(mat)
     sds <- rowSds_withnames(mat)
     cvs <- sds/ms
