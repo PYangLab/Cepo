@@ -33,12 +33,17 @@ Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL) {
         exprsMat <- exprsMat[keep,]
         
     }
-    segIdx.list <- list()
+    segIdx.list <- vector("list", length = length(cts))
+    names(segIdx.list) <- cts
+    
     for(i in 1:length(cts)){
         idx <- which(cellTypes == cts[i])
-        segIdx.list[[i]] <- segIndex(exprsMat[,idx])
+        if(length(idx) < 20){
+            segIdx.list[[i]] = NA
+        } else {
+            segIdx.list[[i]] <- segIndex(exprsMat[,idx])
+        }
     }
-    names(segIdx.list) <- cts
     
     segMat <- segIdxList2Mat(segIdx.list)
     segGenes <- consensusSegIdx(segMat)
