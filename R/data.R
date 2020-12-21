@@ -2,7 +2,7 @@
 #'
 #' @description A single-cell RNA-seq dataset adapted from [sc_mixology](https://github.com/LuyiTian/sc_mixology)
 #'
-#' @usage data(Cellbench)
+#' @usage data(cellbench)
 #' 
 #' @source https://github.com/LuyiTian/sc_mixology
 #'
