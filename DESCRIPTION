@@ -20,7 +20,8 @@ Imports:
     limma,
     S4Vectors,
     methods,
-    statmod
+    statmod,
+    SingleCellExperiment
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
