@@ -1,4 +1,4 @@
-Cepo <img src="man/figures/Cepo_logo.png" align="right" width="250" height="250"/>
+Cepo <img src="man/figures/Cepo_logo.png" align="right" width="225" height="250"/>
 ================
 
 ![R-CMD-check](https://github.com/kevinwang09/Cepo/workflows/R-CMD-check/badge.svg)
