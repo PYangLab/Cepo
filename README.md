@@ -5,9 +5,7 @@ Cepo <img src="man/figures/Cepo_logo.png" align="right"/>
 [![Codecov test
 coverage](https://codecov.io/gh/kevinwang09/Cepo/branch/master/graph/badge.svg)](https://codecov.io/gh/kevinwang09/Cepo?branch=master)
 
-Defining the identity of a cell is fundamental to understand the heterogeneity of cells to various environmental signals and perturbations. Exploring cell identity has been propelled by rapid technological advances in genome-wide profiling of the molecular content in single cells. This comprehensive lens into the cell’s unique molecular profile has enabled us to define and predict cell identities in a way that was previously unachievable with bulk technologies. 
-
-We present Cepo, a new method to explore cell identity from single-cell RNA-sequencing data by using differential stability as a new metric to define cell identity genes. Cepo computes cell-type specific gene statistics pertaining to differential stable gene expression. 
+Defining the identity of a cell is fundamental to understand the heterogeneity of cells to various environmental signals and perturbations. We present Cepo, a new method to explore cell identities from single-cell RNA-sequencing data using differential stability as a new metric to define cell identity genes. Cepo computes cell-type specific gene statistics pertaining to differential stable gene expression. 
 
 ## Installation
 
