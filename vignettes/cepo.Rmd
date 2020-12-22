@@ -42,6 +42,7 @@ The development version of *Cepo* can be installed with the following command:
 ```{r installation, eval=FALSE}
 # install.packages("remotes")
 # remotes::install_github("HaniJieunKim/Cepo")
+library(Cepo)
 ```
 
 # Differential stability analysis using Cepo
@@ -50,7 +51,6 @@ The differential stability analysis in *Cepo* aims to investigate differential s
 ## Example data
 Load the example dataset, a small subset of the [Cellbench](https://github.com/LuyiTian/sc_mixology) dataset consisting of 3 cell types 895 cells and 894 genes.
 ```{r load-example-data, message = FALSE}
-library(Cepo)
 library(SingleCellExperiment)
 data("cellbench", package = "Cepo")
 cellbench
@@ -109,7 +109,7 @@ limma_stats <- getStats(limma_res)
 
 limma_stats
 ```
-Conversely, we can extract ordered statistics as list for the differential expression methods as below.
+Conversely, we can extract ordered statistics as list for the differential expression methods as below. 
 ```{r return-list}
 limma_stats <- getStats(limma_res, returnDF = FALSE)
 
@@ -128,8 +128,8 @@ Wrapper functions are available for `Limma`, `Voom`, `t-test` and `Wilcoxon` tes
 We can visualize the overlap of differential stability genes between cell types.
 ```{r upset-plot}
 library(UpSetR)
-res_by_cluster = split( ifelse(res$p_adj.glb < 0.01, 1, 0), res$cluster_id)
-upset(data.frame(do.call(cbind, res_by_cluster)), nsets = 10, nintersects = 20)
+res_name = lapply(ds_res, function(x) names(x)[1:500])
+upset(fromList(res_name), nsets = 3)
 ```
 
 Density plot of two genes from each cell type.
@@ -157,7 +157,10 @@ plot_densities(x = cellbench,
 To facilitate analysis of high-throughput atlas data consisting of millions of single cells, Cepo enables out-of-memory and parallel computation. 
 
 ```{r cepo_out-of-memory}
-Cepo_delayedArray()
+# BPPARAM = 2
+# ds_res_2_cores = Cepo(exprsMat = logcounts(cellbench), 
+#                            cellTypes = cellbench$celltype, 
+#                            BPPARAM = BPPARAM)
 ```
 
 # Session info
