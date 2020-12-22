@@ -21,7 +21,9 @@ Imports:
     S4Vectors,
     methods,
     statmod,
-    SingleCellExperiment
+    SingleCellExperiment,
+    ggplot2,
+    ggpubr
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
