@@ -31,7 +31,8 @@ Suggests:
     BiocStyle,
     testthat,
     covr,
-    BiocParallel
+    BiocParallel,
+    UpSetR
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
