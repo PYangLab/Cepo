@@ -14,14 +14,14 @@ using the `remotes` package:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("HaniJieunKim/Cepo")
+remotes::install_github("PYangLab/Cepo")
 ```
 
 To also build the vignettes use:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("HaniJieunKim/Cepo", dependencies = TRUE,
+remotes::install_github("PYangLab/Cepo", dependencies = TRUE,
                          build_vignettes = TRUE)
 ```
 

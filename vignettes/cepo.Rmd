@@ -41,7 +41,7 @@ citation("Cepo")
 The development version of *Cepo* can be installed with the following command:
 ```{r installation, eval=FALSE}
 # install.packages("remotes")
-# remotes::install_github("HaniJieunKim/Cepo")
+# remotes::install_github("PYangLba/Cepo")
 ```
 
 # Differential stability analysis using Cepo
@@ -84,6 +84,7 @@ ds_stats <- getStats(ds_res)
 # alternatively run
 # head(ds_res)
 ```
+
 Conversely, we can extract ordered statistics as a list, where each element in the list is an ordered cell-type specific Cepo score. 
 ```{r}
 ds_stats <- getStats(ds_res, returnDF=FALSE)
@@ -91,7 +92,6 @@ str(ds_stats)
 ```
 
 ### Run differential expression analyses
-
 *Cepo* package contains wrapper functions for several commonly used differential expression analyses methods that the user can use to compare the results with Cepo results. The wrapper functions can be run using the following functions: `doLimma`, `doVoom`, `doTtest` and `doWilcoxon`. We illustrate the use of `doLimma` as an example. 
 
 ```{r differential-expression-analysis}
@@ -103,12 +103,14 @@ Glimpse of the results.
 ```{r}
 dplyr::glimpse(limma_res[[1]][1:5,])
 ```
+
 As in `Cepo`, the resulting statistics can be extracted as a dataframe for the differential expression methods as below.
 ```{r return-data-frame}
 limma_stats <- getStats(limma_res)
 
 limma_stats
 ```
+
 Conversely, we can extract ordered statistics as list for the differential expression methods as below. 
 ```{r return-list}
 limma_stats <- getStats(limma_res, returnDF = FALSE)
@@ -153,7 +155,6 @@ plot_densities(x = cellbench,
 ```
 
 ## Running out-of-memory computation with Cepo
-
 To facilitate analysis of high-throughput atlas data consisting of millions of single cells, Cepo enables out-of-memory and parallel computation. 
 
 ```{r cepo_out-of-memory}
