@@ -158,9 +158,9 @@ To facilitate analysis of high-throughput atlas data consisting of millions of s
 
 ```{r cepo_out-of-memory}
 # BPPARAM = 2
-# ds_res_2_cores = Cepo(exprsMat = logcounts(cellbench), 
-#                            cellTypes = cellbench$celltype, 
-#                            BPPARAM = BPPARAM)
+# ds_res_2_cores = Cepo(exprsMat = logcounts(cellbench),
+#                      cellTypes = cellbench$celltype,
+#                        BPPARAM = BPPARAM)
 ```
 
 # Session info
