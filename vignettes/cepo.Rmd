@@ -1,12 +1,16 @@
 ---
-title: "Cepo"
+title: "Cepo: a method for differential stability analysis of scRNA-seq data"
 author:
 - name: Hani Jieun Kim
   affiliation: The University of Sydney
+  email: hani.kim@sydney.edu.au
+date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 vignette: |
-  %\VignetteIndexEntry{Cepo}
+  %\VignetteIndexEntry{Cepo: a method for differential stability analysis of scRNA-seq data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+output: 
+  BiocStyle::html_document
 ---
 
 ```{r, include = FALSE}
@@ -16,6 +20,147 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-# library(Cepo)
+# Introduction
+We introduce *Cepo*, a method to determine genes governing cell identity from scRNA-seq data. We propose a biologically motivated metric—differential stability (DS)—to define cell identity. Our motivation is driven by the hypothesis that stable gene expression is a key component of cell identity. This hypothesis implies that genes marking a cell type should be (i) expressed and (ii) stable in its expression relative to other cell types. We translate these criteria into a computational framework where, using predefined cell-type labels, we compute a cell-type-specific score to prioritise genes that are differential stably expressed against other cell types between all cell-type pair comparisons. 
+
+*Cepo* is therefore distinct from most methods for differential analysis (e.g., differential expression) that prioritise differences in the mean abundance between cell types. *Cepo* is able to capture subtle variations in distribution that does not necessarily involve changes in mean. *Cepo* is particularly suitable for large atlas data as it is computationally efficient and fast. Moreover, *Cepo* can perform differential stability analysis for multi-group comparisons in single-cell data.
+
+To access the R code used in the vignettes, type:
+```{r vignettes, eval=FALSE} 
+browseVignettes("Cepo")
+```
+
+Questions relating to *Cepo* should be reported as a new issue at *[BugReports](https://github.com/HaniJieunKim/Cepo/issues)*.
+
+To cite *Cepo*, type:
+```{r citation, eval=FALSE} 
+citation("Cepo")
+```
+
+## Package installation
+The development version of *Cepo* can be installed with the following command:
+```{r installation, eval=FALSE}
+# install.packages("remotes")
+# remotes::install_github("HaniJieunKim/Cepo")
+```
+
+# Differential stability analysis using Cepo
+The differential stability analysis in *Cepo* aims to investigate differential stability patterns between cells of different cell types. To use *Cepo* one needs data with cell type labels (or cluster labels). If no cell-type labels are provided, cells first need to be clustered and classified in groups via some form of clustering algorithms. *Cepo* can then be applied to identify differentially stable genes between cell types.
+
+## Example data
+Load the example dataset, a small subset of the [Cellbench](https://github.com/LuyiTian/sc_mixology) dataset consisting of 3 cell types 895 cells and 894 genes.
+```{r load-example-data, message = FALSE}
+library(Cepo)
+library(SingleCellExperiment)
+data("cellbench", package = "Cepo")
+cellbench
+```
+
+Columns of the `colData` indicate the individual id and various metadata for each cell. `colData` contains `celltype` labels, which will be required to run *Cepo*. Differential stability analysis performed on the entire cell type repertoire. 
+```{r visualize colData}
+colData(cellbench)
+```
+
+Note that, if cell-type labels are unknown, we would need to cluster cells into groups via some clustering algorithm. In the example dataset, we have 3 cell types, H1975, H2228 and HCC827, all of which are commonly used cell lines of lung adenocarcinomas. 
+```{r check_cell_types}
+unique(cellbench$celltype)
+```
+
+## Run Cepo to generate list of cell identity genes 
+There are two main arguments to *Cepo*: 
+  1) `exprsMat` is the input data, which should be normalized data, such as counts per million (CPM) or log2-CPM (e.g., `logcounts` as created via `scater::logNormCounts`). 
+  2) `cellTypes` receives as input a vector of cell-type labels. Note that the cell-type labels should be equal in length and ordered the same as the column names in `exprsMat`.
+
+Lastly, parameter `exprs_pct` specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of `NULL`. A value between 0 and 1 should be provided. Differential expression analyses have been shown to benefit from filtering of lowly expressed genes. Similarly, for scRNA-seq datasets with many lowly expressed genes, we recommend that the user performs filtering of the data. Whilst there is no set rule to the threshold, we recommend a value between `0.05` and `0.07`, which will filter any genes that are not expressed in 5-7% of cells across each cell type. 
+
+```{r differential-stability-analysis}
+ds_res = Cepo(exprsMat = logcounts(cellbench),
+              cellType = cellbench$celltype)
+```
+
+Cepo returns a statistic per cell type, and the resulting statistics can be extracted as a dataframe. A higher value denotes a gene that is more prioritized as a differentially stable gene in that given cell type. The columns denote cell types and the rows denote genes. 
+```{r}
+ds_stats <- getStats(ds_res) 
+# alternatively run
+# head(ds_res)
+```
+Conversely, we can extract ordered statistics as a list, where each element in the list is an ordered cell-type specific Cepo score. 
+```{r}
+ds_stats <- getStats(ds_res, returnDF=FALSE)
+str(ds_stats)
+```
+
+### Run differential expression analyses
+
+*Cepo* package contains wrapper functions for several commonly used differential expression analyses methods that the user can use to compare the results with Cepo results. The wrapper functions can be run using the following functions: `doLimma`, `doVoom`, `doTtest` and `doWilcoxon`. We illustrate the use of `doLimma` as an example. 
+
+```{r differential-expression-analysis}
+limma_res = doLimma(exprsMat = logcounts(cellbench),
+                    cellType = cellbench$celltype)
+```
+
+Glimpse of the results.
+```{r}
+dplyr::glimpse(limma_res[[1]][1:5,])
+```
+As in `Cepo`, the resulting statistics can be extracted as a dataframe for the differential expression methods as below.
+```{r return-data-frame}
+limma_stats <- getStats(limma_res)
+
+limma_stats
+```
+Conversely, we can extract ordered statistics as list for the differential expression methods as below.
+```{r return-list}
+limma_stats <- getStats(limma_res, returnDF = FALSE)
+
+str(limma_stats)
+```
+
+Whilst the default parameter of `getStats` is to extract the statistics, p-values can be obtained by specifying `p-values` in `parameter_name`.
+
+```{r return-p-values}
+######################## 
+```
+
+Wrapper functions are available for `Limma`, `Voom`, `t-test` and `Wilcoxon` test. The code for DE analyses have been adapted from [conquer](https://github.com/markrobinsonuzh/conquer).
+
+## Visualizing results
+We can visualize the overlap of differential stability genes between cell types.
+```{r upset-plot}
+library(UpSetR)
+res_by_cluster = split( ifelse(res$p_adj.glb < 0.01, 1, 0), res$cluster_id)
+upset(data.frame(do.call(cbind, res_by_cluster)), nsets = 10, nintersects = 20)
+```
+
+Density plot of two genes from each cell type.
+```{r plot-densities}
+plot_densities(x = cellbench,
+               dx_list = ds_res, 
+               n_genes = 2,
+               assay = "logcounts", 
+               celltype_col = "celltype",
+               celltype = names(ds_res))
+```
+
+We can also specify the genes to be plotted.
+```{r plot-densities-genes}
+plot_densities(x = cellbench,
+               dx_list=ds_res,
+               genes = c("PLTP", "CPT1C", "MEG3", "SYCE1", "MICOS10P3", "HOXB7"),
+               assay = "logcounts", 
+               celltype_col = "celltype",
+               celltype = names(ds_res))
+```
+
+## Running out-of-memory computation with Cepo
+
+To facilitate analysis of high-throughput atlas data consisting of millions of single cells, Cepo enables out-of-memory and parallel computation. 
+
+```{r cepo_out-of-memory}
+Cepo_delayedArray()
+```
+
+# Session info
+```{r sessionInfo}
+sessionInfo()
 ```
