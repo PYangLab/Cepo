@@ -21,6 +21,8 @@ plot_densities(
 
 \item{dx_list}{a list containing the ordered output of Dx runs.}
 
+\item{n_genes}{number of genes}
+
 \item{assay}{a character ("logcounts" by default),
 indicating the name of the assays(x) element which stores the expression data (i.e., assays(x)$name_assays_expression).
 We strongly encourage using normalized data, such as counts per million (CPM) or log-CPM.}
@@ -29,19 +31,23 @@ We strongly encourage using normalized data, such as counts per million (CPM) or
 
 \item{celltype}{a character, indicating the name of the cluster to plot. Default is all clusters.}
 
+\item{genes}{a character, indicating the name of the gene to plot. Default is NULL. If is.null(gene), this argument overrides the \code{dx_list}.}
+
+\item{hist_plot}{histogram plot}
+
 \item{color}{a named color vector.}
-
-\item{gene}{a character, indicating the name of the gene to plot. Default is NULL. If is.null(gene), this argument overrides the \code{dx_list}.}
-
-\item{hist}{a logical, indicating whether to plot histogram (if TRUE) or not (if FALSE).}
 }
 \value{
+A \code{\link{ggplot}} object
+with cell-type specific densities for a gene.
+
 A \code{\link{ggplot}} object.
 }
 \description{
 Plot densities
 }
 \examples{
+library(SingleCellExperiment)
 data("cellbench", package = "Cepo")
 cellbench
 ds_res <- Cepo(logcounts(cellbench), cellbench$celltype)
@@ -61,10 +67,4 @@ plot_densities(x = cellbench,
                celltype = names(ds_res))
 
 
-}
-\author{
-Hani Jieun Kim \email{hani.kim@sydney.edu.au}
-
-\code{plot_density} returns a \code{\link{ggplot}} object
-with cell-type specific densities for a gene.
 }

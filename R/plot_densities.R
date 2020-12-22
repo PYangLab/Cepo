@@ -1,10 +1,6 @@
 #' Plot densities 
-#'
-#' @author Hani Jieun Kim \email{hani.kim@sydney.edu.au}
-#' 
-#' \code{plot_density} returns a \code{\link{ggplot}} object
+#' @return A \code{\link{ggplot}} object
 #' with cell-type specific densities for a gene.
-#' 
 #' @param x a \code{\linkS4class{SummarizedExperiment}} or a \code{\linkS4class{SingleCellExperiment}} object.
 #' @param dx_list a list containing the ordered output of Dx runs.
 #' @param assay a character ("logcounts" by default), 
@@ -12,16 +8,21 @@
 #' We strongly encourage using normalized data, such as counts per million (CPM) or log-CPM.
 #' @param celltype a character, indicating the name of the cluster to plot. Default is all clusters.
 #' @param celltype_col X.
-#' @param gene a character, indicating the name of the gene to plot. Default is NULL. If is.null(gene), this argument overrides the `dx_list`.
-#' @param hist a logical, indicating whether to plot histogram (if TRUE) or not (if FALSE).
+#' @param genes a character, indicating the name of the gene to plot. Default is NULL. If is.null(gene), this argument overrides the `dx_list`.
 #' @param color a named color vector.
+#' @param n_genes number of genes
+#' @param hist_plot histogram plot 
 #' @import ggplot2
 #' @importFrom ggpubr ggarrange
 #' @importFrom methods is
 #' @importFrom SingleCellExperiment colData
+#' @importFrom SummarizedExperiment assays
+#' @importFrom grDevices rainbow
+#' @importFrom rlang .data
 #' 
 #' @return A \code{\link{ggplot}} object.
 #' @examples
+#' library(SingleCellExperiment)
 #' data("cellbench", package = "Cepo")
 #' cellbench
 #' ds_res <- Cepo(logcounts(cellbench), cellbench$celltype)
@@ -63,7 +64,7 @@ plot_densities = function(x,
     is.logical(hist_plot), length(hist_plot) == 1L)
   
   # exprsMatrix:
-  sel = which(names(assays(x)) == assay)
+  sel = which(names(SummarizedExperiment::assays(x)) == assay)
   if( length(sel) == 0 ){
     message("'assay' not found in names(assays(x))")
     return(NULL)
@@ -72,7 +73,7 @@ plot_densities = function(x,
     message("multiple 'assay' found in names(assays(x))")
     return(NULL)
   }
-  exprsMatrix = assays(x)[[sel]]
+  exprsMatrix = SummarizedExperiment::assays(x)[[sel]]
   
   # extract cell type labels
   sel = which(names(colData(x)) == celltype_col)
@@ -181,21 +182,27 @@ plot_densities = function(x,
         colnames(dftoplot) <- c("gene", "celltype")
         
         if (hist_plot == TRUE) {
-          gg.den <- ggplot2::ggplot(dftoplot, aes(x=gene)) + 
-            ggplot2::geom_histogram(aes(y=..density..), colour="black", fill="white", bins=15) +
+          gg.den <- ggplot2::ggplot(dftoplot, aes(x = .data$gene)) + 
+            ggplot2::geom_histogram(aes(y=.data$..density..), colour="black", fill="white", bins=15) +
             ggplot2::facet_wrap(~celltype, scales="free_y", dir="v") + 
             ggplot2::ggtitle(genename) + 
             ggplot2::geom_density(alpha=.2, fill=my_col) + 
-            ggplot2::theme_classic() + ggplot2::theme(axis.title.x=element_blank(), axis.title.y=element_blank(), 
-                                    strip.background = element_blank(), strip.text.x = element_blank())
+            ggplot2::theme_classic() + 
+            ggplot2::theme(axis.title.x = element_blank(),
+                           axis.title.y = element_blank(), 
+                           strip.background = element_blank(), 
+                           strip.text.x = element_blank())
           return(gg.den)
         } else {
-          gg.den <- ggplot2::ggplot(dftoplot, aes(x=gene)) + 
-            ggplot2::facet_wrap(~celltype, scales="free_y", dir="v") + 
+          gg.den <- ggplot2::ggplot(dftoplot, aes(x = .data$gene)) + 
+            ggplot2::facet_wrap(~.data$celltype, scales="free_y", dir="v") + 
             ggplot2::ggtitle(genename) + 
-            gggplot2::eom_density(alpha=.2, fill=my_col) + 
-            ggplot2::theme_classic() + ggplot2::theme(axis.title.x=element_blank(), axis.title.y=element_blank(), 
-                                    strip.background = element_blank(), strip.text.x = element_blank())
+            ggplot2::geom_density(alpha=.2, fill=my_col) + 
+            ggplot2::theme_classic() + 
+            ggplot2::theme(axis.title.x=element_blank(), 
+                           axis.title.y=element_blank(), 
+                           strip.background = element_blank(), 
+                           strip.text.x = element_blank())
           return(gg.den)
         }
       })

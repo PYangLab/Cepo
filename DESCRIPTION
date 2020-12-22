@@ -2,11 +2,18 @@ Package: Cepo
 Title: Implements cepo method
 Version: 0.0.1
 Authors@R: 
+    c(
     person(given = "Hani Jieun",
            family = "Kim",
            role = c("aut", "cre"),
            email = "hani.kim@sydney.edu.au",
+           comment = c(ORCID = "")),
+    person(given = "Kevin",
+           family = "Wang",
+           role = c("aut"),
+           email = "kevin.wang@sydney.edu.au",
            comment = c(ORCID = ""))
+    )
 Description: We implement the cepo method.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -22,8 +29,10 @@ Imports:
     methods,
     statmod,
     SingleCellExperiment,
+    SummarizedExperiment,
     ggplot2,
-    ggpubr
+    ggpubr,
+    rlang
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
