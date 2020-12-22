@@ -42,7 +42,6 @@ The development version of *Cepo* can be installed with the following command:
 ```{r installation, eval=FALSE}
 # install.packages("remotes")
 # remotes::install_github("HaniJieunKim/Cepo")
-library(Cepo)
 ```
 
 # Differential stability analysis using Cepo
@@ -51,6 +50,7 @@ The differential stability analysis in *Cepo* aims to investigate differential s
 ## Example data
 Load the example dataset, a small subset of the [Cellbench](https://github.com/LuyiTian/sc_mixology) dataset consisting of 3 cell types 895 cells and 894 genes.
 ```{r load-example-data, message = FALSE}
+library(Cepo)
 library(SingleCellExperiment)
 data("cellbench", package = "Cepo")
 cellbench
