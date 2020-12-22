@@ -151,6 +151,10 @@
       <td><p>a list containing the ordered output of Dx runs.</p></td>
     </tr>
     <tr>
+      <th>n_genes</th>
+      <td><p>number of genes</p></td>
+    </tr>
+    <tr>
       <th>assay</th>
       <td><p>a character ("logcounts" by default),
 indicating the name of the assays(x) element which stores the expression data (i.e., assays(x)$name_assays_expression).
@@ -165,30 +169,71 @@ We strongly encourage using normalized data, such as counts per million (CPM) or
       <td><p>a character, indicating the name of the cluster to plot. Default is all clusters.</p></td>
     </tr>
     <tr>
-      <th>color</th>
-      <td><p>a named color vector.</p></td>
-    </tr>
-    <tr>
-      <th>gene</th>
+      <th>genes</th>
       <td><p>a character, indicating the name of the gene to plot. Default is NULL. If is.null(gene), this argument overrides the <code>dx_list</code>.</p></td>
     </tr>
     <tr>
-      <th>hist</th>
-      <td><p>a logical, indicating whether to plot histogram (if TRUE) or not (if FALSE).</p></td>
+      <th>hist_plot</th>
+      <td><p>histogram plot</p></td>
+    </tr>
+    <tr>
+      <th>color</th>
+      <td><p>a named color vector.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>ggplot</code> object.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Hani Jieun Kim <a href='mailto:hani.kim@sydney.edu.au'>hani.kim@sydney.edu.au</a></p>
-<p><code>plot_density</code> returns a <code>ggplot</code> object
+    <p>A <code>ggplot</code> object
 with cell-type specific densities for a gene.</p>
+<p>A <code>ggplot</code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"cellbench"</span>, package <span class='op'>=</span> <span class='st'>"Cepo"</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>SingleCellExperiment</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Loading required package: SummarizedExperiment</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: MatrixGenerics</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: matrixStats</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘MatrixGenerics’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:matrixStats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,</span>
+#&gt; <span class='message'>    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,</span>
+#&gt; <span class='message'>    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,</span>
+#&gt; <span class='message'>    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,</span>
+#&gt; <span class='message'>    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,</span>
+#&gt; <span class='message'>    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,</span>
+#&gt; <span class='message'>    colWeightedMeans, colWeightedMedians, colWeightedSds,</span>
+#&gt; <span class='message'>    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,</span>
+#&gt; <span class='message'>    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,</span>
+#&gt; <span class='message'>    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,</span>
+#&gt; <span class='message'>    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,</span>
+#&gt; <span class='message'>    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,</span>
+#&gt; <span class='message'>    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,</span>
+#&gt; <span class='message'>    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,</span>
+#&gt; <span class='message'>    rowWeightedSds, rowWeightedVars</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: GenomicRanges</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: stats4</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: BiocGenerics</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: parallel</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘BiocGenerics’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:parallel’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,</span>
+#&gt; <span class='message'>    clusterExport, clusterMap, parApply, parCapply, parLapply,</span>
+#&gt; <span class='message'>    parLapplyLB, parRapply, parSapply, parSapplyLB</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    IQR, mad, sd, var, xtabs</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    anyDuplicated, append, as.data.frame, basename, cbind, colnames,</span>
+#&gt; <span class='message'>    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,</span>
+#&gt; <span class='message'>    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,</span>
+#&gt; <span class='message'>    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,</span>
+#&gt; <span class='message'>    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,</span>
+#&gt; <span class='message'>    union, unique, unsplit, which.max, which.min</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: S4Vectors</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘S4Vectors’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    expand.grid</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: IRanges</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: GenomeInfoDb</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Biobase</span></div><div class='output co'>#&gt; <span class='message'>Welcome to Bioconductor</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    Vignettes contain introductory material; view with</span>
+#&gt; <span class='message'>    'browseVignettes()'. To cite Bioconductor, see</span>
+#&gt; <span class='message'>    'citation("Biobase")', and for packages 'citation("pkgname")'.</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘Biobase’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:MatrixGenerics’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    rowMedians</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:matrixStats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    anyMissing, rowMedians</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"cellbench"</span>, package <span class='op'>=</span> <span class='st'>"Cepo"</span><span class='op'>)</span>
 <span class='va'>cellbench</span>
 </div><div class='output co'>#&gt; class: SingleCellExperiment 
 #&gt; dim: 894 895 
@@ -199,22 +244,22 @@ with cell-type specific densities for a gene.</p>
 #&gt; colnames(895): CELL_000001 CELL_000003 ... CELL_000955 CELL_000965
 #&gt; colData names(17): unaligned aligned_unmapped ... sizeFactor celltype
 #&gt; reducedDimNames(0):
-#&gt; altExpNames(0):</div><div class='input'><span class='va'>ds_res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Cepo.html'>Cepo</a></span><span class='op'>(</span><span class='fu'>logcounts</span><span class='op'>(</span><span class='va'>cellbench</span><span class='op'>)</span>, <span class='va'>cellbench</span><span class='op'>$</span><span class='va'>celltype</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'rowMeans2': could not find function "logcounts"</span></div><div class='input'>
+#&gt; altExpNames(0):</div><div class='input'><span class='va'>ds_res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Cepo.html'>Cepo</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/assays.html'>logcounts</a></span><span class='op'>(</span><span class='va'>cellbench</span><span class='op'>)</span>, <span class='va'>cellbench</span><span class='op'>$</span><span class='va'>celltype</span><span class='op'>)</span>
+
 <span class='fu'>plot_densities</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>cellbench</span>,
                dx_list <span class='op'>=</span> <span class='va'>ds_res</span>, 
                n_genes <span class='op'>=</span> <span class='fl'>2</span>,
                assay <span class='op'>=</span> <span class='st'>"logcounts"</span>, 
                celltype_col <span class='op'>=</span> <span class='st'>"celltype"</span>,
                celltype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>ds_res</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in stopifnot((is(x, "SummarizedExperiment") | is(x, "SingleCellExperiment")),     is.numeric(n_genes), length(n_genes) == 1L, is.character(assay),     length(assay) == 1L, is.character(celltype_col), length(celltype_col) ==         1L, is.character(celltype), length(celltype) &gt; 0L, is.logical(hist_plot),     length(hist_plot) == 1L): object 'ds_res' not found</span></div><div class='input'>
+</div><div class='img'><img src='plot_densities-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='fu'>plot_densities</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>cellbench</span>,
                dx_list<span class='op'>=</span><span class='va'>ds_res</span>,
                genes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='va'>ds_res</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>10</span><span class='op'>:</span><span class='fl'>11</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span>,
                assay <span class='op'>=</span> <span class='st'>"logcounts"</span>, 
                celltype_col <span class='op'>=</span> <span class='st'>"celltype"</span>,
                celltype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>ds_res</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in stopifnot((is(x, "SummarizedExperiment") | is(x, "SingleCellExperiment")),     is.numeric(n_genes), length(n_genes) == 1L, is.character(assay),     length(assay) == 1L, is.character(celltype_col), length(celltype_col) ==         1L, is.character(celltype), length(celltype) &gt; 0L, is.logical(hist_plot),     length(hist_plot) == 1L): object 'ds_res' not found</span></div><div class='input'>
+</div><div class='img'><img src='plot_densities-2.png' alt='' width='700' height='433' /></div><div class='input'>
 
 </div></pre>
   </div>
@@ -228,7 +273,7 @@ with cell-type specific densities for a gene.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hani Jieun Kim.</p>
+  <p>Developed by Hani Jieun Kim, Kevin Wang.</p>
 </div>
 
 <div class="pkgdown">
