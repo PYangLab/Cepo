@@ -2,6 +2,8 @@
 #' @param exprsMat expression matrix where columns denote cells and rows denote genes
 #' @param cellTypes vector of cell type labels
 #' @param exprs_pct Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes. 
+#' @param computePvalue Whether to compute p-values using bootstrap test. Default to NULL to not make computations. 
+#' Set this to an integer to set the number of bootstraps needed (recommend to be at least 100). 
 #' @importFrom DelayedMatrixStats rowSums2 rowMeans2 rowSds
 #' @importFrom DelayedArray cbind 
 #' @return Returns a list of key genes. 
@@ -18,7 +20,46 @@
 #' cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 #' 
 #' Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
-Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL) {
+#' Cepo(exprsMat = exprsMat, cellTypes = cellTypes, computePvalue = 100)
+Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL, computePvalue = NULL){
+    ## A single run of oneCepo gives a list of output
+    singleResult = oneCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprs_pct = exprs_pct)
+    ## Export Cepo outputs as a DataFrame
+    singleStatsResult = S4Vectors::DataFrame(sortList(singleResult))
+    
+    if(is.null(computePvalue)){
+        ## If no need to compute p-values, then that is it. 
+        result = list(stats = singleStatsResult)
+    } else {
+        ## Coerce the input to an integer
+        times = as.integer(computePvalue) 
+        ## Running multiple runs of Cepo based on bootstrap
+        listCepoOutputs = lapply(
+            X = seq_len(times),
+            FUN = function(i){oneCepo(exprsMat = exprsMat, cellTypes = sample(cellTypes), exprs_pct = exprs_pct)})
+        ## Initialise p-value calculations
+        listPvals = vector("list", length = length(singleResult))
+        names(listPvals) = names(singleResult)
+        for(i in names(singleResult)){
+            ## For each celltype and each gene, calculate the proportion of times that 
+            ## the gene exceeds the statistics value under bootstrap runs.
+            listBinary = lapply(listCepoOutputs, function(this_run){
+                singleResult[[i]] >= this_run[[i]][names(singleResult[[i]])]
+            })
+            listPvals[[i]] = DelayedMatrixStats::colMeans2(do.call(rbind, listBinary))
+            names(listPvals[[i]]) = names(singleResult[[i]])
+        }
+        ## The output has two components, one DataFrame of stats and another for p-values
+        result = list(
+            stats = singleStatsResult, 
+            pvalues = S4Vectors::DataFrame(sortList(listPvals))
+        )
+    }
+    # attr(result, "differential_method") = "Cepo"
+    return(result)
+}
+
+oneCepo <- function(exprsMat, cellTypes, exprs_pct = NULL){
     cts <- names(table(cellTypes))
     
     if (!is.null(exprs_pct)) {
@@ -49,17 +90,7 @@ Cepo <- function(exprsMat, cellTypes, exprs_pct = NULL) {
     segGenes <- consensusSegIdx(segMat)
     names(segGenes) <- colnames(segMat)
     result = segGenes
-    class(result) = c("Cepo", class(result))
-    attr(result, "differential_method") = "Cepo"
     return(result)
-}
-
-print.Cepo = function(x, ...){
- cat("Top 6 Cepo genes in each celltype: \n")
- for(j in names(x)){
-     cat(j, "\n")
-     print(utils::head(x[[j]]))
- }
 }
 
 segIndex <- function(mat){
@@ -122,4 +153,11 @@ consensusSegIdx <- function(mat) {
         CIGs[[i]] <- sort(meanAvgRank, decreasing = TRUE)
     }
     return(CIGs)
+}
+
+sortList <- function(listResult){
+    result = lapply(listResult, function(thisElement){
+        thisElement[names(listResult[[1]])]
+    })
+    return(result)
 }

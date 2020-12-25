@@ -36,8 +36,8 @@ rownames(exprsMat) = paste0("gene", 1:n)
 colnames(exprsMat) = paste0("cell", 1:p)
 cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 
-limma_output = doLimma(exprsMat = exprsMat, cellTypes = cellTypes)
-voom_output = doVoom(exprsMat = exprsMat, cellTypes = cellTypes)
-ttest_output = doTtest(exprsMat = exprsMat, cellTypes = cellTypes)
-wilcoxon_output = doWilcoxon(exprsMat = exprsMat, cellTypes = cellTypes)
+doLimma(exprsMat = exprsMat, cellTypes = cellTypes)
+doVoom(exprsMat = exprsMat, cellTypes = cellTypes)
+doTtest(exprsMat = exprsMat, cellTypes = cellTypes)
+doWilcoxon(exprsMat = exprsMat, cellTypes = cellTypes)
 }

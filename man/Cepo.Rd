@@ -4,7 +4,7 @@
 \alias{Cepo}
 \title{Computing Cepo cell identity genes}
 \usage{
-Cepo(exprsMat, cellTypes, exprs_pct = NULL)
+Cepo(exprsMat, cellTypes, exprs_pct = NULL, computePvalue = NULL)
 }
 \arguments{
 \item{exprsMat}{expression matrix where columns denote cells and rows denote genes}
@@ -12,6 +12,9 @@ Cepo(exprsMat, cellTypes, exprs_pct = NULL)
 \item{cellTypes}{vector of cell type labels}
 
 \item{exprs_pct}{Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.}
+
+\item{computePvalue}{Whether to compute p-values using bootstrap test. Default to NULL to not make computations.
+Set this to an integer to set the number of bootstraps needed (recommend to be at least 100).}
 }
 \value{
 Returns a list of key genes.
@@ -30,4 +33,5 @@ colnames(exprsMat) = paste0("cell", 1:p)
 cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 
 Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
+Cepo(exprsMat = exprsMat, cellTypes = cellTypes, computePvalue = 100)
 }

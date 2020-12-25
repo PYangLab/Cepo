@@ -40,8 +40,6 @@
 #'                assay = "logcounts", 
 #'                celltype_col = "celltype",
 #'                celltype = names(ds_res))
-#' 
-#' 
 #' @export
 plot_densities = function(x, 
                           dx_list,
@@ -52,7 +50,7 @@ plot_densities = function(x,
                           genes = NULL,
                           hist_plot = TRUE,
                           color=NULL){
-  
+  # browser()
   if (is.null(n_genes)) { n_genes = 2 } else { n_genes }
   
   stopifnot(
@@ -120,7 +118,7 @@ plot_densities = function(x,
 
   } else {
     
-    idx_gene_list <- lapply(dx_list, function(x) names(x)[1:n_genes])
+    idx_gene_list <- lapply(dx_list$stats, function(x) names(x)[1:n_genes])
     idx_gene_list <- idx_gene_list[celltype]
 
   }

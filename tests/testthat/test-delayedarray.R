@@ -35,19 +35,3 @@ testthat::expect_identical(cepo_output, da_cepo_output)
 testthat::expect_identical(limma_output, da_limma_output)
 testthat::expect_identical(voom_output, da_voom_output)
 testthat::expect_identical(ttest_output, da_ttest_output)
-
-########### Compare getStats ####################
-cepo_stats = getStats(cepo_output)
-limma_stats = getStats(limma_output)
-voom_stats = getStats(voom_output)
-ttest_stats = getStats(ttest_output)
-
-da_cepo_stats = getStats(da_cepo_output)
-da_limma_stats = getStats(da_limma_output)
-da_voom_stats = getStats(da_voom_output)
-da_ttest_stats = getStats(da_ttest_output)
-
-testthat::expect_identical(cepo_stats, da_cepo_stats)
-testthat::expect_identical(limma_stats, da_limma_stats)
-testthat::expect_identical(voom_stats, da_voom_stats)
-testthat::expect_identical(ttest_stats, da_ttest_stats)

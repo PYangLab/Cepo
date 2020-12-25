@@ -65,6 +65,4 @@ plot_densities(x = cellbench,
                assay = "logcounts", 
                celltype_col = "celltype",
                celltype = names(ds_res))
-
-
 }

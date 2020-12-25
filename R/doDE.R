@@ -19,10 +19,10 @@
 #' colnames(exprsMat) = paste0("cell", 1:p)
 #' cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 #' 
-#' limma_output = doLimma(exprsMat = exprsMat, cellTypes = cellTypes)
-#' voom_output = doVoom(exprsMat = exprsMat, cellTypes = cellTypes)
-#' ttest_output = doTtest(exprsMat = exprsMat, cellTypes = cellTypes)
-#' wilcoxon_output = doWilcoxon(exprsMat = exprsMat, cellTypes = cellTypes)
+#' doLimma(exprsMat = exprsMat, cellTypes = cellTypes)
+#' doVoom(exprsMat = exprsMat, cellTypes = cellTypes)
+#' doTtest(exprsMat = exprsMat, cellTypes = cellTypes)
+#' doWilcoxon(exprsMat = exprsMat, cellTypes = cellTypes)
 doLimma <- function(exprsMat, cellTypes){
   cellTypes <- droplevels(as.factor(cellTypes))
   tt <- list()
@@ -51,8 +51,24 @@ doLimma <- function(exprsMat, cellTypes){
     tt[[i]]$meanPct.2 <- meanPct[rownames(tt[[i]]), 2]
   }
   names(tt) <- levels(cellTypes)
-  result = tt
-  attr(result, "differential_method") = "limma"
+  
+  statsResult = lapply(tt, function(x){
+      stats <- x$t
+      names(stats) <- rownames(x)
+      stats <- sort(stats, decreasing = TRUE, na.last = TRUE)
+      return(stats)
+    })
+  
+  pvalsResult = lapply(tt, function(x) {
+    pvals <- x$P.Value
+    names(pvals) <- rownames(x)
+    return(pvals)
+  })
+  
+  result = list(
+    stats = S4Vectors::DataFrame(sortList(statsResult)),
+    pvalues = S4Vectors::DataFrame(sortList(pvalsResult))
+  )
   return(result)
 }
 
@@ -86,8 +102,23 @@ doVoom <- function(exprsMat, cellTypes) {
     
   }
   names(tt) <- levels(cty)
-  result = tt
-  attr(result, "differential_method") = "voom"
+  statsResult = lapply(tt, function(x){
+    stats <- x$t
+    names(stats) <- rownames(x)
+    stats <- sort(stats, decreasing = TRUE, na.last = TRUE)
+    return(stats)
+  })
+  
+  pvalsResult = lapply(tt, function(x) {
+    pvals <- x$P.Value
+    names(pvals) <- rownames(x)
+    return(pvals)
+  })
+  
+  result = list(
+    stats = S4Vectors::DataFrame(sortList(statsResult)),
+    pvalues = S4Vectors::DataFrame(sortList(pvalsResult))
+  )
   return(result)
 }
 
@@ -116,8 +147,23 @@ doTtest <- function(exprsMat, cellTypes) {
     tt[[i]]$adj.pvalue <- stats::p.adjust(tt[[i]]$pvalue, method = "BH")
   }
   names(tt) <- levels(cty)
-  result = tt
-  attr(result, "differential_method") = "ttest"
+  statsResult = lapply(tt, function(x){
+    stats <- x$stats.t
+    names(stats) <- rownames(x)
+    stats <- sort(stats, decreasing = TRUE, na.last = TRUE)
+    return(stats)
+  })
+  
+  pvalsResult = lapply(tt, function(x) {
+    pvals <- x$pvalue
+    names(pvals) <- rownames(x)
+    return(pvals)
+  })
+  
+  result = list(
+    stats = S4Vectors::DataFrame(sortList(statsResult)),
+    pvalues = S4Vectors::DataFrame(sortList(pvalsResult))
+  )
   return(result)
 }
 
@@ -146,8 +192,24 @@ doWilcoxon <- function(exprsMat, cellTypes) {
     tt[[i]]$adj.pvalue <- stats::p.adjust(tt[[i]]$pvalue, method = "BH")
   }
   names(tt) <- levels(cty)
-  result = tt
-  attr(result, "differential_method") = "wilcoxon"
+  
+  statsResult = lapply(tt, function(x){
+    stats <- x$stats.W
+    names(stats) <- rownames(x)
+    stats <- sort(stats, decreasing = TRUE, na.last = TRUE)
+    return(stats)
+  })
+  
+  pvalsResult = lapply(tt, function(x) {
+    pvals <- x$pvalue
+    names(pvals) <- rownames(x)
+    return(pvals)
+  })
+  
+  result = list(
+    stats = S4Vectors::DataFrame(sortList(statsResult)),
+    pvalues = S4Vectors::DataFrame(sortList(pvalsResult))
+  )
+  
   return(result)
-  return(tt)
 }

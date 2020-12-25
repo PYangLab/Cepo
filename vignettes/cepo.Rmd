@@ -71,20 +71,13 @@ ds_res = Cepo(exprsMat = logcounts(cellbench),
               cellType = cellbench$celltype)
 ```
 
-Cepo returns a statistic per cell type, and the resulting statistics can be extracted as a dataframe. A higher value denotes a gene that is more prioritized as a differentially stable gene in that given cell type. The columns denote cell types and the rows denote genes.
+Cepo returns a `DataFrame` by default, with each column correspond to a vector of differential stability (DS) statistic for that celltype. A higher DS statistic value denotes a gene that is more prioritized as a differentially stable gene in that given cell type. The columns denote cell types and the rows denote genes.
 ```{r}
-ds_stats <- getStats(ds_res)
-# alternatively run
-# head(ds_res)
-```
-
-Conversely, we can extract ordered statistics as a list, where each element in the list is an ordered cell-type specific Cepo score.
-```{r}
-ds_stats <- getStats(ds_res, returnDF=FALSE)
-str(ds_stats)
+ds_res
 ```
 
 ### Run differential expression analyses
+
 *Cepo* package contains wrapper functions for several commonly used differential expression analyses methods that the user can use to compare the results with Cepo results. The wrapper functions can be run using the following functions: `doLimma`, `doVoom`, `doTtest` and `doWilcoxon`. We illustrate the use of `doLimma` as an example.
 
 ```{r differential-expression-analysis}
@@ -92,29 +85,18 @@ limma_res = doLimma(exprsMat = logcounts(cellbench),
                     cellType = cellbench$celltype)
 ```
 
-Glimpse of the results.
+The returned output is a list of two `DataFrame`s, the first contain the statistic and the second contain the p-values.
+
 ```{r}
-str(limma_res[[1]][1:5,])
+limma_res
 ```
 
-As in `Cepo`, the resulting statistics can be extracted as a dataframe for the differential expression methods as below.
-```{r return-data-frame}
-limma_stats <- getStats(limma_res)
-
-limma_stats
-```
-
-Conversely, we can extract ordered statistics as list for the differential expression methods as below.
-```{r return-list}
-limma_stats <- getStats(limma_res, returnDF = FALSE)
-
-str(limma_stats)
-```
-
-Whilst the default parameter of `getStats` is to extract the statistics, p-values can be obtained by specifying `p-values` in `parameter_name`.
 
 ```{r return-p-values}
-########################
+ds_res = Cepo(exprsMat = logcounts(cellbench),
+              cellType = cellbench$celltype, computePvalue = 100)
+
+ds_res
 ```
 
 Wrapper functions are available for `Limma`, `Voom`, `t-test` and `Wilcoxon` test. The code for DE analyses have been adapted from [conquer](https://github.com/markrobinsonuzh/conquer).
@@ -123,7 +105,8 @@ Wrapper functions are available for `Limma`, `Voom`, `t-test` and `Wilcoxon` tes
 We can visualize the overlap of differential stability genes between cell types.
 ```{r upset-plot}
 library(UpSetR)
-res_name = lapply(ds_res, function(x) names(x)[1:500])
+## Better off writing a function for this
+res_name = topGenes(object = ds_res, n = 500)
 upset(fromList(res_name), nsets = 3)
 ```
 
@@ -134,17 +117,17 @@ plot_densities(x = cellbench,
                n_genes = 2,
                assay = "logcounts",
                celltype_col = "celltype",
-               celltype = names(ds_res))
+               celltype = names(ds_res$stats))
 ```
 
 We can also specify the genes to be plotted.
 ```{r plot-densities-genes}
 plot_densities(x = cellbench,
-               dx_list=ds_res,
+               dx_list = ds_res,
                genes = c("PLTP", "CPT1C", "MEG3", "SYCE1", "MICOS10P3", "HOXB7"),
                assay = "logcounts",
                celltype_col = "celltype",
-               celltype = names(ds_res))
+               celltype = names(ds_res$stats))
 ```
 
 ## Running out-of-memory computation with Cepo
