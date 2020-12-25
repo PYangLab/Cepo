@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Computing Cepo cell identity genes — Cepo" />
 <meta property="og:description" content="exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
-out-of-memory computations." />
+out-of-memory computations. See vignette." />
 
 
 
@@ -126,10 +126,10 @@ out-of-memory computations." />
 
     <div class="ref-description">
     <p>exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
-out-of-memory computations.</p>
+out-of-memory computations. See vignette.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>Cepo</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span>, exprs_pct <span class='op'>=</span> <span class='cn'>NULL</span>, computePvalue <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>Cepo</span><span class='op'>(</span><span class='va'>exprsMat</span>, <span class='va'>cellTypes</span>, exprsPct <span class='op'>=</span> <span class='cn'>NULL</span>, computePvalue <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,7 +143,7 @@ out-of-memory computations.</p>
       <td><p>vector of cell type labels</p></td>
     </tr>
     <tr>
-      <th>exprs_pct</th>
+      <th>exprsPct</th>
       <td><p>Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.</p></td>
     </tr>
     <tr>
@@ -182,7 +182,12 @@ Set this to an integer to set the number of bootstraps needed (recommend to be a
 #&gt; gene45 -0.379902 0.00245098   0.3774510
 #&gt; gene2  -0.448529 0.33088235   0.1176471
 #&gt; gene4  -0.531863 0.57107843  -0.0392157
-#&gt; </div><div class='input'><span class='fu'>Cepo</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span>, computePvalue <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
+#&gt; 
+#&gt; $pvalues
+#&gt; NULL
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "Cepo" "list"</div><div class='input'><span class='fu'>Cepo</span><span class='op'>(</span>exprsMat <span class='op'>=</span> <span class='va'>exprsMat</span>, cellTypes <span class='op'>=</span> <span class='va'>cellTypes</span>, computePvalue <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $stats
 #&gt; DataFrame with 50 rows and 3 columns
 #&gt;                a          b           c
@@ -214,7 +219,9 @@ Set this to an integer to set the number of bootstraps needed (recommend to be a
 #&gt; gene45      0.11      0.47      0.93
 #&gt; gene2       0.06      0.76      0.61
 #&gt; gene4       0.01      0.98      0.41
-#&gt; </div></pre>
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "Cepo" "list"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

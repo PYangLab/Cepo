@@ -196,11 +196,11 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
 <h2 class="hasAnchor">
 <a href="#run-cepo-to-generate-list-of-cell-identity-genes" class="anchor"></a>Run Cepo to generate list of cell identity genes</h2>
 <p>There are two main arguments to <em>Cepo</em>: 1) <code>exprsMat</code> is the input data, which should be normalized data, such as counts per million (CPM) or log2-CPM (e.g., <code>logcounts</code> as created via <code>scater::logNormCounts</code>). 2) <code>cellTypes</code> receives as input a vector of cell-type labels. Note that the cell-type labels should be equal in length and ordered the same as the column names in <code>exprsMat</code>.</p>
-<p>Lastly, parameter <code>exprs_pct</code> specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of <code>NULL</code>. A value between 0 and 1 should be provided. Differential expression analyses have been shown to benefit from filtering of lowly expressed genes. Similarly, for scRNA-seq datasets with many lowly expressed genes, we recommend that the user performs filtering of the data. Whilst there is no set rule to the threshold, we recommend a value between <code>0.05</code> and <code>0.07</code>, which will filter any genes that are not expressed in 5-7% of cells across each cell type.</p>
+<p>Lastly, parameter <code>exprsPct</code> specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of <code>NULL</code>. A value between 0 and 1 should be provided. Differential expression analyses have been shown to benefit from filtering of lowly expressed genes. Similarly, for scRNA-seq datasets with many lowly expressed genes, we recommend that the user performs filtering of the data. Whilst there is no set rule to the threshold, we recommend a value between <code>0.05</code> and <code>0.07</code>, which will filter any genes that are not expressed in 5-7% of cells across each cell type.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ds_res</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
               cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></code></pre></div>
-<p>Cepo returns a <code>DataFrame</code> by default, with each column correspond to a vector of differential stability (DS) statistic for that celltype. A higher DS statistic value denotes a gene that is more prioritized as a differentially stable gene in that given cell type. The columns denote cell types and the rows denote genes.</p>
+<p>The <code>Cepo</code> function returns a list of two elements by default. The first element is a <code>DataFrame</code> of DS statistics. In this <code>DataFrame</code>, each column corresponds to the DS statistics for that celltype across all genes. A higher DS statistic value denotes a gene that is more prioritized as a differentially stable gene in that given cell type. In the output DataFrame, the columns correspond to each cell type and each row correspond to a gene.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ds_res</span></code></pre></div>
 <pre><code>## $stats
@@ -217,49 +217,15 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
 ## CPVL       -0.667877  0.138268  0.529609
 ## BBOX1-AS1  -0.673324  0.437011  0.236313
 ## COL4A2     -0.688128  0.397905  0.290223
-## KCNK1      -0.699022  0.330866  0.368156</code></pre>
-<div id="run-differential-expression-analyses" class="section level3">
-<h3 class="hasAnchor">
-<a href="#run-differential-expression-analyses" class="anchor"></a>Run differential expression analyses</h3>
-<p><em>Cepo</em> package contains wrapper functions for several commonly used differential expression analyses methods that the user can use to compare the results with Cepo results. The wrapper functions can be run using the following functions: <code>doLimma</code>, <code>doVoom</code>, <code>doTtest</code> and <code>doWilcoxon</code>. We illustrate the use of <code>doLimma</code> as an example.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">limma_res</span> <span class="op">=</span> <span class="fu"><a href="../reference/doLimma.html">doLimma</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
-                    cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></code></pre></div>
-<p>The returned output is a list of two <code>DataFrame</code>s, the first contain the statistic and the second contain the p-values.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">limma_res</span></code></pre></div>
-<pre><code>## $stats
-## DataFrame with 889 rows and 3 columns
-##                H1975     H2228    HCC827
-##            &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;
-## AP000902.1  121.6719  -17.8078  -16.3249
-## DHRS2        70.1625  -16.9831  -14.8467
-## TNNI3        62.2252  -15.8179  -15.1722
-## AL049870.3   57.1611  -16.3624  -13.9822
-## GSTO2        53.9829  -12.0844  -18.2679
-## ...              ...       ...       ...
-## PDZK1IP1    -31.9977  39.83966  -2.14271
-## COL4A2      -32.0376  24.42532   3.09878
-## KCNK1       -37.1582  11.32624  14.77371
-## VAMP5       -38.9528   2.48549  32.52836
-## ECH1        -65.8773  26.11432   8.31254
+## KCNK1      -0.699022  0.330866  0.368156
 ## 
 ## $pvalues
-## DataFrame with 889 rows and 3 columns
-##                   H1975        H2228       HCC827
-##               &lt;numeric&gt;    &lt;numeric&gt;    &lt;numeric&gt;
-## AP000902.1  0.00000e+00  5.01783e-61  1.06941e-52
-## DHRS2       0.00000e+00  2.40530e-56  8.58973e-45
-## ECH1        0.00000e+00 9.19418e-113  3.38733e-16
-## TNNI3       0.00000e+00  5.77268e-50  1.69440e-46
-## AL049870.3 9.12842e-304  6.14992e-53  2.27145e-40
-## ...                 ...          ...          ...
-## CRACR2B        0.798799  2.31235e-63  6.53135e-71
-## MTAP           0.878480 6.96028e-152 1.59473e-171
-## FBXO17         0.944697  2.14798e-62  5.59323e-68
-## CCDC74B        0.962182  1.11580e-63  3.01058e-68
-## AC093840.1     0.963854  1.41565e-25  1.37280e-27</code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+## NULL
+## 
+## attr(,"class")
+## [1] "Cepo" "list"</code></pre>
+<p>The second element of the <code>Cepo</code> function is a <code>DataFrame</code> of p-values associated with the DS statistics. In this <code>DataFrame</code>, each column corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. By default, the <code>Cepo</code> function do not compute these p-values and requires the users to set the <code>computePvalue</code> argument to a number of bootstrap runs required (we recommend this to be at least 100).</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ds_res</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
               cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>, computePvalue <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
 
@@ -294,7 +260,54 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
 ## CPVL               0      0.99         1
 ## BBOX1-AS1          0      1.00         1
 ## COL4A2             0      1.00         1
-## KCNK1              0      1.00         1</code></pre>
+## KCNK1              0      1.00         1
+## 
+## attr(,"class")
+## [1] "Cepo" "list"</code></pre>
+<div id="run-differential-expression-analyses" class="section level3">
+<h3 class="hasAnchor">
+<a href="#run-differential-expression-analyses" class="anchor"></a>Run differential expression analyses</h3>
+<p><em>Cepo</em> package contains wrapper functions for several commonly used differential expression analyses methods that the user can use to compare the results with Cepo results. The wrapper functions can be run using the following functions: <code>doLimma</code>, <code>doVoom</code>, <code>doTtest</code> and <code>doWilcoxon</code>. We illustrate the use of <code>doLimma</code> as an example.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">limma_res</span> <span class="op">=</span> <span class="fu"><a href="../reference/doLimma.html">doLimma</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
+                    cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></code></pre></div>
+<p>Similar to the output of the <code>Cepo</code> function, the returned output is also a list of two <code>DataFrame</code>s, the first contain the statistic and the second contain the p-values.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">limma_res</span></code></pre></div>
+<pre><code>## $stats
+## DataFrame with 889 rows and 3 columns
+##                H1975     H2228    HCC827
+##            &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;
+## AP000902.1  121.6719  -17.8078  -16.3249
+## DHRS2        70.1625  -16.9831  -14.8467
+## TNNI3        62.2252  -15.8179  -15.1722
+## AL049870.3   57.1611  -16.3624  -13.9822
+## GSTO2        53.9829  -12.0844  -18.2679
+## ...              ...       ...       ...
+## PDZK1IP1    -31.9977  39.83966  -2.14271
+## COL4A2      -32.0376  24.42532   3.09878
+## KCNK1       -37.1582  11.32624  14.77371
+## VAMP5       -38.9528   2.48549  32.52836
+## ECH1        -65.8773  26.11432   8.31254
+## 
+## $pvalues
+## DataFrame with 889 rows and 3 columns
+##                   H1975        H2228       HCC827
+##               &lt;numeric&gt;    &lt;numeric&gt;    &lt;numeric&gt;
+## AP000902.1  0.00000e+00  5.01783e-61  1.06941e-52
+## DHRS2       0.00000e+00  2.40530e-56  8.58973e-45
+## ECH1        0.00000e+00 9.19418e-113  3.38733e-16
+## TNNI3       0.00000e+00  5.77268e-50  1.69440e-46
+## AL049870.3 9.12842e-304  6.14992e-53  2.27145e-40
+## ...                 ...          ...          ...
+## CRACR2B        0.798799  2.31235e-63  6.53135e-71
+## MTAP           0.878480 6.96028e-152 1.59473e-171
+## FBXO17         0.944697  2.14798e-62  5.59323e-68
+## CCDC74B        0.962182  1.11580e-63  3.01058e-68
+## AC093840.1     0.963854  1.41565e-25  1.37280e-27
+## 
+## attr(,"class")
+## [1] "Cepo" "list"</code></pre>
 <p>Wrapper functions are available for <code>Limma</code>, <code>Voom</code>, <code>t-test</code> and <code>Wilcoxon</code> test. The code for DE analyses have been adapted from <a href="https://github.com/markrobinsonuzh/conquer">conquer</a>.</p>
 </div>
 </div>
