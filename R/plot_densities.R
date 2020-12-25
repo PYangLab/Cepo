@@ -19,8 +19,8 @@
 #' @importFrom SummarizedExperiment assays
 #' @importFrom grDevices rainbow
 #' @importFrom rlang .data
-#' 
 #' @return A \code{\link{ggplot}} object.
+#' @export
 #' @examples
 #' library(SingleCellExperiment)
 #' data("cellbench", package = "Cepo")
@@ -32,15 +32,14 @@
 #'                n_genes = 2,
 #'                assay = "logcounts", 
 #'                celltype_col = "celltype",
-#'                celltype = names(ds_res))
+#'                celltype = names(ds_res$stats))
 #' 
 #' plot_densities(x = cellbench,
-#'                dx_list=ds_res,
-#'                genes = unlist(lapply(ds_res, function(x) names(x)[10:11])),
+#'                dx_list = ds_res,
+#'                genes = unlist(topGenes(ds_res, n = 2)),
 #'                assay = "logcounts", 
 #'                celltype_col = "celltype",
-#'                celltype = names(ds_res))
-#' @export
+#'                celltype = names(ds_res$stats))
 plot_densities = function(x, 
                           dx_list,
                           n_genes = NULL,

@@ -4,14 +4,14 @@
 \alias{Cepo}
 \title{Computing Cepo cell identity genes}
 \usage{
-Cepo(exprsMat, cellTypes, exprs_pct = NULL, computePvalue = NULL)
+Cepo(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL)
 }
 \arguments{
 \item{exprsMat}{expression matrix where columns denote cells and rows denote genes}
 
 \item{cellTypes}{vector of cell type labels}
 
-\item{exprs_pct}{Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.}
+\item{exprsPct}{Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.}
 
 \item{computePvalue}{Whether to compute p-values using bootstrap test. Default to NULL to not make computations.
 Set this to an integer to set the number of bootstraps needed (recommend to be at least 100).}
@@ -21,7 +21,7 @@ Returns a list of key genes.
 }
 \description{
 exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
-out-of-memory computations.
+out-of-memory computations. See vignette.
 }
 \examples{
 set.seed(1234)

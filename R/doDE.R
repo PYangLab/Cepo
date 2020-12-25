@@ -69,6 +69,7 @@ doLimma <- function(exprsMat, cellTypes){
     stats = S4Vectors::DataFrame(sortList(statsResult)),
     pvalues = S4Vectors::DataFrame(sortList(pvalsResult))
   )
+  class(result) = c("Cepo", class(result))
   return(result)
 }
 
@@ -119,6 +120,7 @@ doVoom <- function(exprsMat, cellTypes) {
     stats = S4Vectors::DataFrame(sortList(statsResult)),
     pvalues = S4Vectors::DataFrame(sortList(pvalsResult))
   )
+  class(result) = c("Cepo", class(result))
   return(result)
 }
 
@@ -164,6 +166,7 @@ doTtest <- function(exprsMat, cellTypes) {
     stats = S4Vectors::DataFrame(sortList(statsResult)),
     pvalues = S4Vectors::DataFrame(sortList(pvalsResult))
   )
+  class(result) = c("Cepo", class(result))
   return(result)
 }
 
@@ -210,6 +213,6 @@ doWilcoxon <- function(exprsMat, cellTypes) {
     stats = S4Vectors::DataFrame(sortList(statsResult)),
     pvalues = S4Vectors::DataFrame(sortList(pvalsResult))
   )
-  
+  class(result) = c("Cepo", class(result))
   return(result)
 }

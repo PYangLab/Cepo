@@ -60,21 +60,33 @@ unique(cellbench$celltype)
 ```
 
 ## Run Cepo to generate list of cell identity genes
+
 There are two main arguments to *Cepo*:
   1) `exprsMat` is the input data, which should be normalized data, such as counts per million (CPM) or log2-CPM (e.g., `logcounts` as created via `scater::logNormCounts`).
   2) `cellTypes` receives as input a vector of cell-type labels. Note that the cell-type labels should be equal in length and ordered the same as the column names in `exprsMat`.
 
-Lastly, parameter `exprs_pct` specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of `NULL`. A value between 0 and 1 should be provided. Differential expression analyses have been shown to benefit from filtering of lowly expressed genes. Similarly, for scRNA-seq datasets with many lowly expressed genes, we recommend that the user performs filtering of the data. Whilst there is no set rule to the threshold, we recommend a value between `0.05` and `0.07`, which will filter any genes that are not expressed in 5-7% of cells across each cell type.
+Lastly, parameter `exprsPct` specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of `NULL`. A value between 0 and 1 should be provided. Differential expression analyses have been shown to benefit from filtering of lowly expressed genes. Similarly, for scRNA-seq datasets with many lowly expressed genes, we recommend that the user performs filtering of the data. Whilst there is no set rule to the threshold, we recommend a value between `0.05` and `0.07`, which will filter any genes that are not expressed in 5-7% of cells across each cell type.
 
 ```{r differential-stability-analysis}
 ds_res = Cepo(exprsMat = logcounts(cellbench),
               cellType = cellbench$celltype)
 ```
 
-Cepo returns a `DataFrame` by default, with each column correspond to a vector of differential stability (DS) statistic for that celltype. A higher DS statistic value denotes a gene that is more prioritized as a differentially stable gene in that given cell type. The columns denote cell types and the rows denote genes.
+The `Cepo` function returns a list of two elements by default. The first element is a `DataFrame` of DS statistics. In this `DataFrame`, each column corresponds to the DS statistics for that celltype across all genes. A higher DS statistic value denotes a gene that is more prioritized as a differentially stable gene in that given cell type. In the output DataFrame, the columns correspond to each cell type and each row correspond to a gene. 
+
 ```{r}
 ds_res
 ```
+
+The second element of the `Cepo` function is a `DataFrame` of p-values associated with the DS statistics. In this `DataFrame`, each column corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. By default, the `Cepo` function do not compute these p-values and requires the users to set the `computePvalue` argument to a number of bootstrap runs required (we recommend this to be at least 100). 
+
+```{r return-p-values}
+ds_res = Cepo(exprsMat = logcounts(cellbench),
+              cellType = cellbench$celltype, computePvalue = 100)
+
+ds_res
+```
+
 
 ### Run differential expression analyses
 
@@ -85,18 +97,10 @@ limma_res = doLimma(exprsMat = logcounts(cellbench),
                     cellType = cellbench$celltype)
 ```
 
-The returned output is a list of two `DataFrame`s, the first contain the statistic and the second contain the p-values.
+Similar to the output of the `Cepo` function, the returned output is also a list of two `DataFrame`s, the first contain the statistic and the second contain the p-values.
 
 ```{r}
 limma_res
-```
-
-
-```{r return-p-values}
-ds_res = Cepo(exprsMat = logcounts(cellbench),
-              cellType = cellbench$celltype, computePvalue = 100)
-
-ds_res
 ```
 
 Wrapper functions are available for `Limma`, `Voom`, `t-test` and `Wilcoxon` test. The code for DE analyses have been adapted from [conquer](https://github.com/markrobinsonuzh/conquer).
