@@ -120,8 +120,7 @@ plot_densities(x = cellbench,
                dx_list = ds_res,
                n_genes = 2,
                assay = "logcounts",
-               celltype_col = "celltype",
-               celltype = names(ds_res$stats))
+               celltype_col = "celltype")
 ```
 
 We can also specify the genes to be plotted.
@@ -130,8 +129,7 @@ plot_densities(x = cellbench,
                dx_list = ds_res,
                genes = c("PLTP", "CPT1C", "MEG3", "SYCE1", "MICOS10P3", "HOXB7"),
                assay = "logcounts",
-               celltype_col = "celltype",
-               celltype = names(ds_res$stats))
+               celltype_col = "celltype")
 ```
 
 ## Running out-of-memory computation with Cepo

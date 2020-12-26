@@ -14,9 +14,9 @@
 #' cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 #' cepo_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 #' cepo_output
-#' topGenes(cepo_output, n = 10)
-#' topGenes(cepo_output, n = 10, returnValues = TRUE)
-topGenes <- function(object, n = min(10, nrow(object$stats)),
+#' topGenes(cepo_output, n = 2)
+#' topGenes(cepo_output, n = 2, returnValues = TRUE)
+topGenes <- function(object, n = 5,
                      returnValues = FALSE){
   geneNames <- rownames(object$stats)
   
@@ -24,11 +24,11 @@ topGenes <- function(object, n = min(10, nrow(object$stats)),
   
   if(returnValues){
     result <- lapply(object$stats, function(this_column){
-      this_column[order(this_column, decreasing = TRUE) <= n]
+      this_column[order(this_column, decreasing = TRUE)[1:n]]
     })
   } else {
     result <- lapply(object$stats, function(this_column){
-      geneNames[order(this_column, decreasing = TRUE) <= n]
+      geneNames[order(this_column, decreasing = TRUE)[1:n]]
     })
   }
   

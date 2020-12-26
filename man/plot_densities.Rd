@@ -7,35 +7,35 @@
 plot_densities(
   x,
   dx_list,
-  n_genes = NULL,
+  n_genes = 2,
   assay = "logcounts",
   celltype_col,
-  celltype,
+  celltype = NULL,
   genes = NULL,
-  hist_plot = TRUE,
+  plotType = c("histogram", "density"),
   color = NULL
 )
 }
 \arguments{
 \item{x}{a \code{\linkS4class{SummarizedExperiment}} or a \code{\linkS4class{SingleCellExperiment}} object.}
 
-\item{dx_list}{a list containing the ordered output of Dx runs.}
+\item{dx_list}{an output from Cepo or doLimma/doVoom/doTtest/doWilcoxon functions}
 
-\item{n_genes}{number of genes}
+\item{n_genes}{number of top genes from each celltype to plot. Default to 2.}
 
 \item{assay}{a character ("logcounts" by default),
 indicating the name of the assays(x) element which stores the expression data (i.e., assays(x)$name_assays_expression).
 We strongly encourage using normalized data, such as counts per million (CPM) or log-CPM.}
 
-\item{celltype_col}{X.}
+\item{celltype_col}{a character, indicating the name of the name of the cell type column in the colData(x).}
 
-\item{celltype}{a character, indicating the name of the cluster to plot. Default is all clusters.}
+\item{celltype}{a character, indicating the name of the cell type to plot. Default is NULL which selects all celltypes in the dx_list.}
 
-\item{genes}{a character, indicating the name of the gene to plot. Default is NULL. If is.null(gene), this argument overrides the \code{dx_list}.}
+\item{genes}{a character vector, indicating the name of the genes to plot. Default to NULL, so that 2 top genes from each celltype will be plotted.}
 
-\item{hist_plot}{histogram plot}
+\item{plotType}{Either "histogram" or "density"}
 
-\item{color}{a named color vector.}
+\item{color}{a named color vector. The names should correspond to the \code{celltype} argument above}
 }
 \value{
 A \code{\link{ggplot}} object
@@ -54,15 +54,12 @@ ds_res <- Cepo(logcounts(cellbench), cellbench$celltype)
 
 plot_densities(x = cellbench,
                dx_list = ds_res, 
-               n_genes = 2,
                assay = "logcounts", 
-               celltype_col = "celltype",
-               celltype = names(ds_res$stats))
+               celltype_col = "celltype")
 
 plot_densities(x = cellbench,
                dx_list = ds_res,
-               genes = unlist(topGenes(ds_res, n = 2)),
+               genes = c("PLTP", "CPT1C", "MEG3", "SYCE1", "MICOS10P3", "HOXB7"),
                assay = "logcounts", 
-               celltype_col = "celltype",
-               celltype = names(ds_res$stats))
+               celltype_col = "celltype")
 }

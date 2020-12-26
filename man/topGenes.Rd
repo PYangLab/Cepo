@@ -4,7 +4,7 @@
 \alias{topGenes}
 \title{Extract the top genes from the Cepo output}
 \usage{
-topGenes(object, n = min(10, nrow(object$stats)), returnValues = FALSE)
+topGenes(object, n = 5, returnValues = FALSE)
 }
 \arguments{
 \item{object}{Output from the Cepo function}
@@ -29,6 +29,6 @@ colnames(exprsMat) = paste0("cell", 1:p)
 cellTypes = sample(letters[1:3], size = p, replace = TRUE)
 cepo_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 cepo_output
-topGenes(cepo_output, n = 10)
-topGenes(cepo_output, n = 10, returnValues = TRUE)
+topGenes(cepo_output, n = 2)
+topGenes(cepo_output, n = 2, returnValues = TRUE)
 }
