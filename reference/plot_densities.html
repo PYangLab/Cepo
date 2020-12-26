@@ -130,12 +130,12 @@
     <pre class="usage"><span class='fu'>plot_densities</span><span class='op'>(</span>
   <span class='va'>x</span>,
   <span class='va'>dx_list</span>,
-  n_genes <span class='op'>=</span> <span class='cn'>NULL</span>,
+  n_genes <span class='op'>=</span> <span class='fl'>2</span>,
   assay <span class='op'>=</span> <span class='st'>"logcounts"</span>,
   <span class='va'>celltype_col</span>,
-  <span class='va'>celltype</span>,
+  celltype <span class='op'>=</span> <span class='cn'>NULL</span>,
   genes <span class='op'>=</span> <span class='cn'>NULL</span>,
-  hist_plot <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  plotType <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"histogram"</span>, <span class='st'>"density"</span><span class='op'>)</span>,
   color <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
@@ -148,11 +148,11 @@
     </tr>
     <tr>
       <th>dx_list</th>
-      <td><p>a list containing the ordered output of Dx runs.</p></td>
+      <td><p>an output from Cepo or doLimma/doVoom/doTtest/doWilcoxon functions</p></td>
     </tr>
     <tr>
       <th>n_genes</th>
-      <td><p>number of genes</p></td>
+      <td><p>number of top genes from each celltype to plot. Default to 2.</p></td>
     </tr>
     <tr>
       <th>assay</th>
@@ -162,23 +162,23 @@ We strongly encourage using normalized data, such as counts per million (CPM) or
     </tr>
     <tr>
       <th>celltype_col</th>
-      <td><p>X.</p></td>
+      <td><p>a character, indicating the name of the name of the cell type column in the colData(x).</p></td>
     </tr>
     <tr>
       <th>celltype</th>
-      <td><p>a character, indicating the name of the cluster to plot. Default is all clusters.</p></td>
+      <td><p>a character, indicating the name of the cell type to plot. Default is NULL which selects all celltypes in the dx_list.</p></td>
     </tr>
     <tr>
       <th>genes</th>
-      <td><p>a character, indicating the name of the gene to plot. Default is NULL. If is.null(gene), this argument overrides the <code>dx_list</code>.</p></td>
+      <td><p>a character vector, indicating the name of the genes to plot. Default to NULL, so that 2 top genes from each celltype will be plotted.</p></td>
     </tr>
     <tr>
-      <th>hist_plot</th>
-      <td><p>histogram plot</p></td>
+      <th>plotType</th>
+      <td><p>Either "histogram" or "density"</p></td>
     </tr>
     <tr>
       <th>color</th>
-      <td><p>a named color vector.</p></td>
+      <td><p>a named color vector. The names should correspond to the <code>celltype</code> argument above</p></td>
     </tr>
     </table>
 
@@ -248,17 +248,14 @@ with cell-type specific densities for a gene.</p>
 
 <span class='fu'>plot_densities</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>cellbench</span>,
                dx_list <span class='op'>=</span> <span class='va'>ds_res</span>, 
-               n_genes <span class='op'>=</span> <span class='fl'>2</span>,
                assay <span class='op'>=</span> <span class='st'>"logcounts"</span>, 
-               celltype_col <span class='op'>=</span> <span class='st'>"celltype"</span>,
-               celltype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>ds_res</span><span class='op'>$</span><span class='va'>stats</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='img'><img src='plot_densities-1.png' alt='' width='700' height='433' /></div><div class='input'>
+               celltype_col <span class='op'>=</span> <span class='st'>"celltype"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>AC092447.7, CT45A3, HLA-DRB6, AR, CASC9, AC011632.1 will be plotted</span></div><div class='img'><img src='plot_densities-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='fu'>plot_densities</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>cellbench</span>,
                dx_list <span class='op'>=</span> <span class='va'>ds_res</span>,
-               genes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='topGenes.html'>topGenes</a></span><span class='op'>(</span><span class='va'>ds_res</span>, n <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,
+               genes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"PLTP"</span>, <span class='st'>"CPT1C"</span>, <span class='st'>"MEG3"</span>, <span class='st'>"SYCE1"</span>, <span class='st'>"MICOS10P3"</span>, <span class='st'>"HOXB7"</span><span class='op'>)</span>,
                assay <span class='op'>=</span> <span class='st'>"logcounts"</span>, 
-               celltype_col <span class='op'>=</span> <span class='st'>"celltype"</span>,
-               celltype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>ds_res</span><span class='op'>$</span><span class='va'>stats</span><span class='op'>)</span><span class='op'>)</span>
+               celltype_col <span class='op'>=</span> <span class='st'>"celltype"</span><span class='op'>)</span>
 </div><div class='img'><img src='plot_densities-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

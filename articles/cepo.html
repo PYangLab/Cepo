@@ -81,7 +81,7 @@
       The University of Sydney<br><a class="author_email" href="mailto:#"></a><a href="mailto:hani.kim@sydney.edu.au" class="email">hani.kim@sydney.edu.au</a>
       </address>
                   
-            <h4 class="date">12/25/2020</h4>
+            <h4 class="date">12/26/2020</h4>
       
       
       <div class="hidden name"><code>cepo.Rmd</code></div>
@@ -327,17 +327,16 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
                dx_list <span class="op">=</span> <span class="va">ds_res</span>,
                n_genes <span class="op">=</span> <span class="fl">2</span>,
                assay <span class="op">=</span> <span class="st">"logcounts"</span>,
-               celltype_col <span class="op">=</span> <span class="st">"celltype"</span>,
-               celltype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ds_res</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+               celltype_col <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></code></pre></div>
+<pre><code>## AC092447.7, CT45A3, HLA-DRB6, AR, CASC9, AC011632.1 will be plotted</code></pre>
 <p><img src="cepo_files/figure-html/plot-densities-1.png" width="700"></p>
 <p>We can also specify the genes to be plotted.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_densities.html">plot_densities</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cellbench</span>,
                dx_list <span class="op">=</span> <span class="va">ds_res</span>,
                genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"PLTP"</span>, <span class="st">"CPT1C"</span>, <span class="st">"MEG3"</span>, <span class="st">"SYCE1"</span>, <span class="st">"MICOS10P3"</span>, <span class="st">"HOXB7"</span><span class="op">)</span>,
                assay <span class="op">=</span> <span class="st">"logcounts"</span>,
-               celltype_col <span class="op">=</span> <span class="st">"celltype"</span>,
-               celltype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ds_res</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+               celltype_col <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></code></pre></div>
 <p><img src="cepo_files/figure-html/plot-densities-genes-1.png" width="700"></p>
 </div>
 <div id="running-out-of-memory-computation-with-cepo" class="section level2">
@@ -345,7 +344,7 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
 <a href="#running-out-of-memory-computation-with-cepo" class="anchor"></a>Running out-of-memory computation with Cepo</h2>
 <p>To facilitate analysis of high-throughput atlas data consisting of millions of cells, <code>Cepo</code> also enables out-of-memory and parallel computation.</p>
 <p>The <code>Cepo</code> function naturally handles matrices under the <code>DelayedArray</code> wrapper. Briefly, <code>DelayedArray</code> is a wrapper around many matrix classes in <code>R</code>, including <code>matrix</code>, <code>sparseMatrix</code> and <code>HDF5Array</code>. The last of which allows for out-of-memory computation, which means the computation is done outside of RAM. This will inevitably slow down the computational speed, but the major gain in doing this is that we can perform computations on data much larger than what our RAM can store at once.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/DelayedArray">DelayedArray</a></span><span class="op">)</span></code></pre></div>
 <pre><code>## Loading required package: Matrix</code></pre>
 <pre><code>## 
@@ -358,24 +357,24 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
 <pre><code>## The following objects are masked from 'package:base':
 ## 
 ##     aperm, apply, rowsum</code></pre>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/HDF5Array">HDF5Array</a></span><span class="op">)</span></code></pre></div>
 <pre><code>## Loading required package: rhdf5</code></pre>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">da_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html">DelayedArray</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/realize.html">realize</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>, <span class="st">"HDF5Array"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">da_matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "HDF5Matrix"
 ## attr(,"package")
 ## [1] "HDF5Array"</code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/showtree.html">seed</a></span><span class="op">(</span><span class="va">da_matrix</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "HDF5ArraySeed"
 ## attr(,"package")
 ## [1] "HDF5Array"</code></pre>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">da_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="va">da_matrix</span>, cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></code></pre></div>
 <p>Even though out-of-memory computation is slow, one way that we can speed up the computation is through parallel processing. This requires some configurations of the <code>DelayedArray</code> package via the <code>setAutoBPPARAM</code> function. <code>BiocParallel</code> package uses the <code>MulticoreParam</code> parameter for Linux/Mac and <code>SnowParam</code> for Windows.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Bioconductor/BiocParallel">BiocParallel</a></span><span class="op">)</span>
 
 <span class="va">BPPARAM</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">.Platform</span><span class="op">$</span><span class="va">OS.type</span> <span class="op">==</span> <span class="st">"windows"</span><span class="op">)</span> <span class="op">{</span>
@@ -394,7 +393,7 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)

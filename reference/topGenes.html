@@ -127,7 +127,7 @@
     <p>Extract the top genes from the Cepo output</p>
     </div>
 
-    <pre class="usage"><span class='fu'>topGenes</span><span class='op'>(</span><span class='va'>object</span>, n <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>$</span><span class='va'>stats</span><span class='op'>)</span><span class='op'>)</span>, returnValues <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>topGenes</span><span class='op'>(</span><span class='va'>object</span>, n <span class='op'>=</span> <span class='fl'>5</span>, returnValues <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,36 +180,27 @@
 #&gt; NULL
 #&gt; 
 #&gt; attr(,"class")
-#&gt; [1] "Cepo" "list"</div><div class='input'><span class='fu'>topGenes</span><span class='op'>(</span><span class='va'>cepo_output</span>, n <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+#&gt; [1] "Cepo" "list"</div><div class='input'><span class='fu'>topGenes</span><span class='op'>(</span><span class='va'>cepo_output</span>, n <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $a
-#&gt;  [1] "gene38" "gene41" "gene29" "gene21" "gene32" "gene12" "gene7"  "gene11"
-#&gt;  [9] "gene42" "gene46"
+#&gt; [1] "gene38" "gene41"
 #&gt; 
 #&gt; $b
-#&gt;  [1] "gene37" "gene16" "gene3"  "gene35" "gene14" "gene25" "gene44" "gene24"
-#&gt;  [9] "gene45" "gene4" 
+#&gt; [1] "gene4"  "gene34"
 #&gt; 
 #&gt; $c
-#&gt;  [1] "gene19" "gene22" "gene8"  "gene9"  "gene40" "gene20" "gene35" "gene50"
-#&gt;  [9] "gene44" "gene4" 
-#&gt; </div><div class='input'><span class='fu'>topGenes</span><span class='op'>(</span><span class='va'>cepo_output</span>, n <span class='op'>=</span> <span class='fl'>10</span>, returnValues <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+#&gt; [1] "gene8"  "gene45"
+#&gt; </div><div class='input'><span class='fu'>topGenes</span><span class='op'>(</span><span class='va'>cepo_output</span>, n <span class='op'>=</span> <span class='fl'>2</span>, returnValues <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $a
-#&gt;    gene38    gene41    gene29    gene21    gene32    gene12     gene7    gene11 
-#&gt; 0.5514706 0.4044118 0.3308824 0.3259804 0.3210784 0.2965686 0.2573529 0.2426471 
-#&gt;    gene42    gene46 
-#&gt; 0.2377451 0.2254902 
+#&gt;    gene38    gene41 
+#&gt; 0.5514706 0.4044118 
 #&gt; 
 #&gt; $b
-#&gt;      gene37      gene16       gene3      gene35      gene14      gene25 
-#&gt;  0.09803922  0.18872549 -0.07352941  0.33578431  0.00245098  0.10539216 
-#&gt;      gene44      gene24      gene45       gene4 
-#&gt;  0.22303922  0.12500000  0.00245098  0.57107843 
+#&gt;     gene4    gene34 
+#&gt; 0.5710784 0.5269608 
 #&gt; 
 #&gt; $c
-#&gt;      gene19      gene22       gene8       gene9      gene40      gene20 
-#&gt; -0.44362745 -0.09068627  0.38970588 -0.06127451  0.02696078 -0.03431373 
-#&gt;      gene35      gene50      gene44       gene4 
-#&gt; -0.14215686  0.16911765  0.12745098 -0.03921569 
+#&gt;     gene8    gene45 
+#&gt; 0.3897059 0.3774510 
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
