@@ -81,7 +81,7 @@
       The University of Sydney<br><a class="author_email" href="mailto:#"></a><a href="mailto:hani.kim@sydney.edu.au" class="email">hani.kim@sydney.edu.au</a>
       </address>
                   
-            <h4 class="date">12/26/2020</h4>
+            <h4 class="date">12/27/2020</h4>
       
       
       <div class="hidden name"><code>cepo.Rmd</code></div>
@@ -323,20 +323,20 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
 <p><img src="cepo_files/figure-html/upset-plot-1.png" width="700"></p>
 <p>Density plot of two genes from each cell type.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_densities.html">plot_densities</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cellbench</span>,
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotDensities.html">plotDensities</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cellbench</span>,
                dx_list <span class="op">=</span> <span class="va">ds_res</span>,
                n_genes <span class="op">=</span> <span class="fl">2</span>,
                assay <span class="op">=</span> <span class="st">"logcounts"</span>,
-               celltype_col <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></code></pre></div>
+               celltypeColumn <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></code></pre></div>
 <pre><code>## AC092447.7, CT45A3, HLA-DRB6, AR, CASC9, AC011632.1 will be plotted</code></pre>
 <p><img src="cepo_files/figure-html/plot-densities-1.png" width="700"></p>
 <p>We can also specify the genes to be plotted.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_densities.html">plot_densities</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cellbench</span>,
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotDensities.html">plotDensities</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cellbench</span>,
                dx_list <span class="op">=</span> <span class="va">ds_res</span>,
                genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"PLTP"</span>, <span class="st">"CPT1C"</span>, <span class="st">"MEG3"</span>, <span class="st">"SYCE1"</span>, <span class="st">"MICOS10P3"</span>, <span class="st">"HOXB7"</span><span class="op">)</span>,
                assay <span class="op">=</span> <span class="st">"logcounts"</span>,
-               celltype_col <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></code></pre></div>
+               celltypeColumn <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></code></pre></div>
 <p><img src="cepo_files/figure-html/plot-densities-genes-1.png" width="700"></p>
 </div>
 <div id="running-out-of-memory-computation-with-cepo" class="section level2">
@@ -426,7 +426,7 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
 ##  [3] rprojroot_2.0.2           tools_4.0.3              
 ##  [5] backports_1.2.1           R6_2.5.0                 
 ##  [7] colorspace_2.0-0          rhdf5filters_1.2.0       
-##  [9] tidyselect_1.1.0          gridExtra_2.3            
+##  [9] gridExtra_2.3             tidyselect_1.1.0         
 ## [11] curl_4.3                  compiler_4.0.3           
 ## [13] textshaping_0.2.1         desc_1.2.0               
 ## [15] labeling_0.4.2            bookdown_0.21            
@@ -442,27 +442,28 @@ remotes::install_github("PYangLba/Cepo")</a></code></pre>
 ## [35] dplyr_1.0.2               zip_2.1.1                
 ## [37] car_3.0-10                RCurl_1.98-1.2           
 ## [39] magrittr_2.0.1            GenomeInfoDbData_1.2.4   
-## [41] Rhdf5lib_1.12.0           Rcpp_1.0.5               
-## [43] munsell_0.5.0             abind_1.4-5              
-## [45] lifecycle_0.2.0           stringi_1.5.3            
-## [47] yaml_2.2.1                carData_3.0-4            
-## [49] zlibbioc_1.36.0           plyr_1.8.6               
-## [51] grid_4.0.3                forcats_0.5.0            
-## [53] crayon_1.3.4              lattice_0.20-41          
-## [55] cowplot_1.1.0             haven_2.3.1              
-## [57] splines_4.0.3             hms_0.5.3                
+## [41] patchwork_1.1.1           Rcpp_1.0.5               
+## [43] munsell_0.5.0             Rhdf5lib_1.12.0          
+## [45] abind_1.4-5               lifecycle_0.2.0          
+## [47] stringi_1.5.3             yaml_2.2.1               
+## [49] carData_3.0-4             zlibbioc_1.36.0          
+## [51] plyr_1.8.6                grid_4.0.3               
+## [53] forcats_0.5.0             crayon_1.3.4             
+## [55] lattice_0.20-41           splines_4.0.3            
+## [57] haven_2.3.1               hms_0.5.3                
 ## [59] knitr_1.30                pillar_1.4.7             
 ## [61] ggpubr_0.4.0              ggsignif_0.6.0           
-## [63] glue_1.4.2                evaluate_0.14            
-## [65] data.table_1.13.4         BiocManager_1.30.10      
-## [67] vctrs_0.3.6               cellranger_1.1.0         
-## [69] gtable_0.3.0              purrr_0.3.4              
-## [71] tidyr_1.1.2               assertthat_0.2.1         
-## [73] ggplot2_3.3.2             xfun_0.19                
-## [75] openxlsx_4.2.3            broom_0.7.3              
-## [77] rstatix_0.6.0             ragg_0.4.0               
-## [79] tibble_3.0.4              memoise_1.1.0            
-## [81] statmod_1.4.35            ellipsis_0.3.1</code></pre>
+## [63] reshape2_1.4.4            glue_1.4.2               
+## [65] evaluate_0.14             data.table_1.13.4        
+## [67] BiocManager_1.30.10       vctrs_0.3.6              
+## [69] cellranger_1.1.0          gtable_0.3.0             
+## [71] purrr_0.3.4               tidyr_1.1.2              
+## [73] assertthat_0.2.1          ggplot2_3.3.2            
+## [75] xfun_0.19                 openxlsx_4.2.3           
+## [77] broom_0.7.3               rstatix_0.6.0            
+## [79] ragg_0.4.0                tibble_3.0.4             
+## [81] memoise_1.1.0             statmod_1.4.35           
+## [83] ellipsis_0.3.1</code></pre>
 </div>
   </div>
 
