@@ -33,7 +33,9 @@ Imports:
     ggplot2,
     ggpubr,
     rlang,
-    grDevices
+    grDevices,
+    patchwork,
+    reshape2
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
