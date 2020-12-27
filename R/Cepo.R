@@ -1,164 +1,162 @@
 #' @title Computing Cepo cell identity genes
 #' @param exprsMat expression matrix where columns denote cells and rows denote genes
 #' @param cellTypes vector of cell type labels
-#' @param exprsPct Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes. 
-#' @param computePvalue Whether to compute p-values using bootstrap test. Default to NULL to not make computations. 
-#' Set this to an integer to set the number of bootstraps needed (recommend to be at least 100). 
+#' @param exprsPct Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.
+#' @param computePvalue Whether to compute p-values using bootstrap test. Default to NULL to not make computations.
+#' Set this to an integer to set the number of bootstraps needed (recommend to be at least 100).
 #' @importFrom DelayedMatrixStats rowSums2 rowMeans2 rowSds
-#' @importFrom DelayedArray cbind 
-#' @return Returns a list of key genes. 
-#' @description exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for 
+#' @importFrom DelayedArray cbind
+#' @importFrom HDF5Array HDF5Array
+#' @return Returns a list of key genes.
+#' @description exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
 #' out-of-memory computations. See vignette.
 #' @export
-#' @examples 
+#' @examples
 #' set.seed(1234)
-#' n = 50 ## genes, rows
-#' p = 100 ## cells, cols
-#' exprsMat = matrix(rpois(n*p, lambda = 5), nrow = n)
-#' rownames(exprsMat) = paste0("gene", 1:n)
-#' colnames(exprsMat) = paste0("cell", 1:p)
-#' cellTypes = sample(letters[1:3], size = p, replace = TRUE)
-#' 
+#' n <- 50 ## genes, rows
+#' p <- 100 ## cells, cols
+#' exprsMat <- matrix(rpois(n * p, lambda = 5), nrow = n)
+#' rownames(exprsMat) <- paste0('gene', 1:n)
+#' colnames(exprsMat) <- paste0('cell', 1:p)
+#' cellTypes <- sample(letters[1:3], size = p, replace = TRUE)
+#'
 #' Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 #' Cepo(exprsMat = exprsMat, cellTypes = cellTypes, computePvalue = 100)
-Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL){
-    
-    if(is.null(rownames(exprsMat))){ ## Add rownames if missing
-        nGenes = nrow(exprsMat)
-        rownames(exprsMat) = sprintf(paste0("gene%0",log10(nGenes) + 1,"d"), seq_len(nGenes))
+Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL) {
+    if (is.null(rownames(exprsMat))) {
+        ## Add rownames if missing
+        nGenes <- nrow(exprsMat)
+        rownames(exprsMat) <- sprintf(paste0("gene%0", log10(nGenes) + 1, "d"), seq_len(nGenes))
     }
-    cellTypes = as.character(cellTypes)
+    cellTypes <- as.character(cellTypes)
     
     ## A single run of oneCepo gives a list of output
-    singleResult = oneCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprsPct = exprsPct)
+    singleResult <- oneCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprsPct = exprsPct)
     ## Export Cepo outputs as a DataFrame
-    singleStatsResult = S4Vectors::DataFrame(sortList(singleResult))
+    singleStatsResult <- S4Vectors::DataFrame(sortList(singleResult))
     
-    if(is.null(computePvalue)){
-        ## If no need to compute p-values, then that is it. 
-        result = list(stats = singleStatsResult,
-                      pvalues = NULL)
+    if (is.null(computePvalue)) {
+        ## If no need to compute p-values, then that is it.
+        result <- list(stats = singleStatsResult, pvalues = NULL)
     } else {
         ## Coerce the input to an integer
-        times = as.integer(computePvalue) 
+        times <- as.integer(computePvalue)
         ## Pass onto a boot function for computation
-        listPvals = bootCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprsPct = exprsPct, singleResult = singleResult, times = times)
+        listPvals <- bootCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprsPct = exprsPct, 
+            singleResult = singleResult, times = times)
         ## The output has two components, one DataFrame of stats and another for p-values
-        result = list(
-            stats = singleStatsResult, 
-            pvalues = S4Vectors::DataFrame(sortList(listPvals))
-        )
-    } ## End else
-    class(result) = c("Cepo", class(result))
+        result <- list(stats = singleStatsResult, pvalues = S4Vectors::DataFrame(sortList(listPvals)))
+    }  ## End else
+    class(result) <- c("Cepo", class(result))
     return(result)
 }
 
-print.Cepo <- function(x){
+print.Cepo <- function(x) {
     cat("Computed statistics: \n \n")
     print(x$stats)
     cat("Computed p-values: \n")
-    if(is.null(x$pvalues)){
+    if (is.null(x$pvalues)) {
         cat("Note: a valid value for `computePvalue` argument is needed to get p-values when running the `Cepo` function")
     } else {
         print(x$pvalues)
     }
 }
 
-bootCepo <- function(exprsMat, cellTypes, exprsPct, singleResult, times){
+bootCepo <- function(exprsMat, cellTypes, exprsPct, singleResult, times) {
     ## Running multiple runs of Cepo based on bootstrap
-    listCepoOutputs = lapply(
-        X = seq_len(times),
-        FUN = function(i){oneCepo(exprsMat = exprsMat, cellTypes = sample(cellTypes), exprsPct = exprsPct)})
+    listCepoOutputs <- lapply(X = seq_len(times), FUN = function(i) {
+        oneCepo(exprsMat = exprsMat, cellTypes = sample(cellTypes), exprsPct = exprsPct)
+    })
     
     ## Initialise p-value calculations
-    listPvals = vector("list", length = length(singleResult))
-    names(listPvals) = names(singleResult)
-    for(i in names(singleResult)){
-        ## For each celltype and each gene, calculate the proportion of times that 
-        ## the gene exceeds the statistics value under bootstrap runs.
-        listBinary = lapply(listCepoOutputs, function(this_run){
+    listPvals <- vector("list", length = length(singleResult))
+    names(listPvals) <- names(singleResult)
+    for (i in names(singleResult)) {
+        ## For each celltype and each gene, calculate the proportion of times that the
+        ## gene exceeds the statistics value under bootstrap runs.
+        listBinary <- lapply(listCepoOutputs, function(this_run) {
             singleResult[[i]] >= this_run[[i]][names(singleResult[[i]])]
         })
-        listPvals[[i]] = DelayedMatrixStats::colMeans2(do.call(rbind, listBinary))
-        names(listPvals[[i]]) = names(singleResult[[i]])
+        listPvals[[i]] <- DelayedMatrixStats::colMeans2(do.call(rbind, listBinary))
+        names(listPvals[[i]]) <- names(singleResult[[i]])
     }
     return(listPvals)
 }
 
-oneCepo <- function(exprsMat, cellTypes, exprsPct = NULL){
+oneCepo <- function(exprsMat, cellTypes, exprsPct = NULL) {
     cts <- names(table(cellTypes))
     
     if (!is.null(exprsPct)) {
-        
         meanPct.list <- list()
-        for(i in 1:length(cts)){
+        for (i in seq_along(cts)) {
             idx <- which(cellTypes == cts[i])
-            meanPct.list[[i]] <- (rowSums_withnames(exprsMat[, idx, drop = FALSE] > 0)/sum(cellTypes == cts[i])) > exprsPct 
+            meanPct.list[[i]] <- (rowSums_withnames(exprsMat[, idx, drop = FALSE] > 
+                0)/sum(cellTypes == cts[i])) > exprsPct
         }
         names(meanPct.list) <- cts
-        keep = rowSums_withnames(do.call(DelayedArray::cbind, meanPct.list)) == length(cts) 
-        exprsMat <- exprsMat[keep,]
-        
+        keep <- rowSums_withnames(do.call(DelayedArray::cbind, meanPct.list)) == 
+            length(cts)
+        exprsMat <- exprsMat[keep, ]
     }
     segIdx.list <- vector("list", length = length(cts))
     names(segIdx.list) <- cts
     
-    for(i in 1:length(cts)){
+    for (i in 1:length(cts)) {
         idx <- which(cellTypes == cts[i])
-        if(length(idx) < 20){
-            segIdx.list[[i]] = NA
+        if (length(idx) < 20) {
+            segIdx.list[[i]] <- NA
         } else {
-            segIdx.list[[i]] <- segIndex(exprsMat[,idx])
+            segIdx.list[[i]] <- segIndex(exprsMat[, idx])
         }
     }
     
     segMat <- segIdxList2Mat(segIdx.list)
     segGenes <- consensusSegIdx(segMat)
     names(segGenes) <- colnames(segMat)
-    result = segGenes
+    result <- segGenes
     return(result)
 }
 
-segIndex <- function(mat){
+segIndex <- function(mat) {
     nz <- rowMeans_withnames((mat != 0) + 0L)
     ms <- rowMeans_withnames(mat)
     sds <- rowSds_withnames(mat)
     cvs <- sds/ms
     
-    x1 <- rank(nz)/(length(nz)+1)
-    x2 <- 1 - rank(cvs)/(length(cvs)+1)
+    x1 <- rank(nz)/(length(nz) + 1)
+    x2 <- 1 - rank(cvs)/(length(cvs) + 1)
     
     segIdx <- rowMeans_withnames(DelayedArray::cbind(x1, x2))
     return(segIdx)
 }
 
-rowMeans_withnames = function(mat){
-    result = DelayedMatrixStats::rowMeans2(mat)
-    names(result) = rownames(mat)
+rowMeans_withnames <- function(mat) {
+    result <- DelayedMatrixStats::rowMeans2(mat)
+    names(result) <- rownames(mat)
     return(result)
 }
 
-rowSds_withnames = function(mat){
-    result = DelayedMatrixStats::rowSds(mat)
-    names(result) = rownames(mat)
+rowSds_withnames <- function(mat) {
+    result <- DelayedMatrixStats::rowSds(mat)
+    names(result) <- rownames(mat)
     return(result)
 }
 
-rowSums_withnames = function(mat){
-    result = DelayedMatrixStats::rowMeans2(mat)
-    names(result) = rownames(mat)
+rowSums_withnames <- function(mat) {
+    result <- DelayedMatrixStats::rowMeans2(mat)
+    names(result) <- rownames(mat)
     return(result)
 }
 
 segIdxList2Mat <- function(segIdx.list) {
     allGenes <- unique(unlist(lapply(segIdx.list, names)))
-    segMat <- matrix(0, nrow=length(allGenes), ncol=length(segIdx.list))
+    segMat <- matrix(0, nrow = length(allGenes), ncol = length(segIdx.list))
     rownames(segMat) <- allGenes
     colnames(segMat) <- names(segIdx.list)
     
-    for(i in 1:length(segIdx.list)) {
+    for (i in seq_along(segIdx.list)) {
         si <- segIdx.list[[i]]
-        segMat[names(si),i] <- si
+        segMat[names(si), i] <- si
     }
     return(segMat)
 }
@@ -167,23 +165,26 @@ consensusSegIdx <- function(mat) {
     tt <- mat
     
     CIGs <- list()
-    for (i in 1:ncol(tt)) {
+    for (i in seq_len(ncol(tt))) {
         avgRank <- c()
-        for(j in 1:ncol(tt)) {
-            if(i == j){next}
-            avgRank <- cbind(avgRank, tt[,i] - tt[,j])
+        for (j in seq_len(ncol(tt))) {
+            if (i == j) {
+                next
+            }
+            avgRank <- cbind(avgRank, tt[, i] - tt[, j])
         }
         
-        meanAvgRank = DelayedMatrixStats::rowMeans2(avgRank)
+        meanAvgRank <- DelayedMatrixStats::rowMeans2(avgRank)
         names(meanAvgRank) <- rownames(avgRank)
         CIGs[[i]] <- sort(meanAvgRank, decreasing = TRUE)
     }
     return(CIGs)
 }
 
-## Sorts every element of the list (assumed each element is a vector) by the names of the first element.
-sortList <- function(listResult){
-    result = lapply(listResult, function(thisElement){
+## Sorts every element of the list (assumed each element is a vector) by the names
+## of the first element.
+sortList <- function(listResult) {
+    result <- lapply(listResult, function(thisElement) {
         thisElement[names(listResult[[1]])]
     })
     return(result)

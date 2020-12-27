@@ -23,7 +23,7 @@ plot_densities(
 
 \item{n_genes}{number of top genes from each celltype to plot. Default to 2.}
 
-\item{assay}{a character ("logcounts" by default),
+\item{assay}{a character ('logcounts' by default),
 indicating the name of the assays(x) element which stores the expression data (i.e., assays(x)$name_assays_expression).
 We strongly encourage using normalized data, such as counts per million (CPM) or log-CPM.}
 
@@ -33,7 +33,7 @@ We strongly encourage using normalized data, such as counts per million (CPM) or
 
 \item{genes}{a character vector, indicating the name of the genes to plot. Default to NULL, so that 2 top genes from each celltype will be plotted.}
 
-\item{plotType}{Either "histogram" or "density"}
+\item{plotType}{Either 'histogram' or 'density'}
 
 \item{color}{a named color vector. The names should correspond to the \code{celltype} argument above}
 }
@@ -48,18 +48,22 @@ Plot densities
 }
 \examples{
 library(SingleCellExperiment)
-data("cellbench", package = "Cepo")
+data('cellbench', package = 'Cepo')
 cellbench
 ds_res <- Cepo(logcounts(cellbench), cellbench$celltype)
 
-plot_densities(x = cellbench,
-               dx_list = ds_res, 
-               assay = "logcounts", 
-               celltype_col = "celltype")
+plot_densities(
+  x = cellbench,
+  dx_list = ds_res,
+  assay = 'logcounts',
+  celltype_col = 'celltype'
+)
 
-plot_densities(x = cellbench,
-               dx_list = ds_res,
-               genes = c("PLTP", "CPT1C", "MEG3", "SYCE1", "MICOS10P3", "HOXB7"),
-               assay = "logcounts", 
-               celltype_col = "celltype")
+plot_densities(
+  x = cellbench,
+  dx_list = ds_res,
+  genes = c('PLTP', 'CPT1C', 'MEG3', 'SYCE1', 'MICOS10P3', 'HOXB7'),
+  assay = 'logcounts',
+  celltype_col = 'celltype'
+)
 }

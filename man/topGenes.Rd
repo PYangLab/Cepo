@@ -21,13 +21,13 @@ Extract the top genes from the Cepo output
 }
 \examples{
 set.seed(1234)
-n = 50 ## genes, rows
-p = 100 ## cells, cols
-exprsMat = matrix(rpois(n*p, lambda = 5), nrow = n)
-rownames(exprsMat) = paste0("gene", 1:n)
-colnames(exprsMat) = paste0("cell", 1:p)
-cellTypes = sample(letters[1:3], size = p, replace = TRUE)
-cepo_output = Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
+n <- 50 ## genes, rows
+p <- 100 ## cells, cols
+exprsMat <- matrix(rpois(n * p, lambda = 5), nrow = n)
+rownames(exprsMat) <- paste0('gene', 1:n)
+colnames(exprsMat) <- paste0('cell', 1:p)
+cellTypes <- sample(letters[1:3], size = p, replace = TRUE)
+cepo_output <- Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 cepo_output
 topGenes(cepo_output, n = 2)
 topGenes(cepo_output, n = 2, returnValues = TRUE)

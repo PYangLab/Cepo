@@ -25,12 +25,12 @@ out-of-memory computations. See vignette.
 }
 \examples{
 set.seed(1234)
-n = 50 ## genes, rows
-p = 100 ## cells, cols
-exprsMat = matrix(rpois(n*p, lambda = 5), nrow = n)
-rownames(exprsMat) = paste0("gene", 1:n)
-colnames(exprsMat) = paste0("cell", 1:p)
-cellTypes = sample(letters[1:3], size = p, replace = TRUE)
+n <- 50 ## genes, rows
+p <- 100 ## cells, cols
+exprsMat <- matrix(rpois(n * p, lambda = 5), nrow = n)
+rownames(exprsMat) <- paste0('gene', 1:n)
+colnames(exprsMat) <- paste0('cell', 1:p)
+cellTypes <- sample(letters[1:3], size = p, replace = TRUE)
 
 Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 Cepo(exprsMat = exprsMat, cellTypes = cellTypes, computePvalue = 100)

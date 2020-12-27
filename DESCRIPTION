@@ -32,7 +32,8 @@ Imports:
     SummarizedExperiment,
     ggplot2,
     ggpubr,
-    rlang
+    rlang,
+    grDevices
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
@@ -44,4 +45,4 @@ Suggests:
     UpSetR
 VignetteBuilder: knitr
 Depends: 
-    R (>= 2.10)
+    R (>= 3.6)
