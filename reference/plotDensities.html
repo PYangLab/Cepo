@@ -129,8 +129,8 @@
 
     <pre class="usage"><span class='fu'>plotDensities</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  <span class='va'>dx_list</span>,
-  n_genes <span class='op'>=</span> <span class='fl'>2</span>,
+  <span class='va'>cepoOutput</span>,
+  nGenes <span class='op'>=</span> <span class='fl'>2</span>,
   assay <span class='op'>=</span> <span class='st'>"logcounts"</span>,
   <span class='va'>celltypeColumn</span>,
   celltype <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -147,11 +147,11 @@
       <td><p>a <code>SummarizedExperiment</code> or a <code>SingleCellExperiment</code> object.</p></td>
     </tr>
     <tr>
-      <th>dx_list</th>
+      <th>cepoOutput</th>
       <td><p>an output from Cepo or doLimma/doVoom/doTtest/doWilcoxon functions</p></td>
     </tr>
     <tr>
-      <th>n_genes</th>
+      <th>nGenes</th>
       <td><p>number of top genes from each celltype to plot. Default to 2.</p></td>
     </tr>
     <tr>
@@ -166,7 +166,7 @@ We strongly encourage using normalized data, such as counts per million (CPM) or
     </tr>
     <tr>
       <th>celltype</th>
-      <td><p>a character, indicating the name of the cell type to plot. Default is NULL which selects all celltypes in the dx_list.</p></td>
+      <td><p>a character, indicating the name of the cell type to plot. Default is NULL which selects all celltypes in the cepoOutput.</p></td>
     </tr>
     <tr>
       <th>genes</th>
@@ -244,18 +244,18 @@ with cell-type specific densities for a gene.</p>
 #&gt; colnames(895): CELL_000001 CELL_000003 ... CELL_000955 CELL_000965
 #&gt; colData names(17): unaligned aligned_unmapped ... sizeFactor celltype
 #&gt; reducedDimNames(0):
-#&gt; altExpNames(0):</div><div class='input'><span class='va'>ds_res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Cepo.html'>Cepo</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/assays.html'>logcounts</a></span><span class='op'>(</span><span class='va'>cellbench</span><span class='op'>)</span>, <span class='va'>cellbench</span><span class='op'>$</span><span class='va'>celltype</span><span class='op'>)</span>
+#&gt; altExpNames(0):</div><div class='input'><span class='va'>cepoOutput</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Cepo.html'>Cepo</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/assays.html'>logcounts</a></span><span class='op'>(</span><span class='va'>cellbench</span><span class='op'>)</span>, <span class='va'>cellbench</span><span class='op'>$</span><span class='va'>celltype</span><span class='op'>)</span>
 
 <span class='fu'>plotDensities</span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cellbench</span>,
-  dx_list <span class='op'>=</span> <span class='va'>ds_res</span>,
+  cepoOutput <span class='op'>=</span> <span class='va'>cepoOutput</span>,
   assay <span class='op'>=</span> <span class='st'>'logcounts'</span>,
   celltypeColumn <span class='op'>=</span> <span class='st'>'celltype'</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>AC092447.7, CT45A3, HLA-DRB6, AR, CASC9, AC011632.1 will be plotted</span></div><div class='img'><img src='plotDensities-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='fu'>plotDensities</span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cellbench</span>,
-  dx_list <span class='op'>=</span> <span class='va'>ds_res</span>,
+  cepoOutput <span class='op'>=</span> <span class='va'>cepoOutput</span>,
   genes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'PLTP'</span>, <span class='st'>'CPT1C'</span>, <span class='st'>'MEG3'</span>, <span class='st'>'SYCE1'</span>, <span class='st'>'MICOS10P3'</span>, <span class='st'>'HOXB7'</span><span class='op'>)</span>,
   assay <span class='op'>=</span> <span class='st'>'logcounts'</span>,
   celltypeColumn <span class='op'>=</span> <span class='st'>'celltype'</span>
