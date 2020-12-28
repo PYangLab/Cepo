@@ -34,7 +34,8 @@ Imports:
     rlang,
     grDevices,
     patchwork,
-    reshape2
+    reshape2,
+    BiocParallel
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
@@ -42,7 +43,6 @@ Suggests:
     BiocStyle,
     testthat,
     covr,
-    BiocParallel,
     UpSetR
 VignetteBuilder: knitr
 Depends: 

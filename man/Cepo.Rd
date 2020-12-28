@@ -4,7 +4,14 @@
 \alias{Cepo}
 \title{Computing Cepo cell identity genes}
 \usage{
-Cepo(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL)
+Cepo(
+  exprsMat,
+  cellTypes,
+  exprsPct = NULL,
+  computePvalue = NULL,
+  workers = 1L,
+  ...
+)
 }
 \arguments{
 \item{exprsMat}{expression matrix where columns denote cells and rows denote genes}
@@ -15,6 +22,11 @@ Cepo(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL)
 
 \item{computePvalue}{Whether to compute p-values using bootstrap test. Default to NULL to not make computations.
 Set this to an integer to set the number of bootstraps needed (recommend to be at least 100).}
+
+\item{workers}{Number of cores to use. Default to 1, which invokes \code{BiocParallel::SerialParam}.
+For workers greater than 1, see the \code{workers} argument in \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
+
+\item{...}{Additional arguments passed to \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
 }
 \value{
 Returns a list of key genes.

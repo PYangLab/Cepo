@@ -4,9 +4,13 @@
 #' @param exprsPct Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.
 #' @param computePvalue Whether to compute p-values using bootstrap test. Default to NULL to not make computations.
 #' Set this to an integer to set the number of bootstraps needed (recommend to be at least 100).
+#' @param workers Number of cores to use. Default to 1, which invokes `BiocParallel::SerialParam`.
+#' For workers greater than 1, see the `workers` argument in `BiocParallel::MulticoreParam` and `BiocParallel::SnowParam`. 
+#' @param ... Additional arguments passed to `BiocParallel::MulticoreParam` and `BiocParallel::SnowParam`. 
 #' @importFrom DelayedMatrixStats rowSums2 rowMeans2 rowSds
 #' @importFrom DelayedArray cbind
 #' @importFrom HDF5Array HDF5Array
+#' @importFrom BiocParallel SerialParam MulticoreParam SnowParam bplapply
 #' @return Returns a list of key genes.
 #' @description exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
 #' out-of-memory computations. See vignette.
@@ -22,7 +26,8 @@
 #'
 #' Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
 #' Cepo(exprsMat = exprsMat, cellTypes = cellTypes, computePvalue = 100)
-Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL) {
+Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL,
+                 workers = 1L, ...) {
     if (is.null(rownames(exprsMat))) {
         ## Add rownames if missing
         nGenes <- nrow(exprsMat)
@@ -31,7 +36,8 @@ Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL) {
     cellTypes <- as.character(cellTypes)
     
     ## A single run of oneCepo gives a list of output
-    singleResult <- oneCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprsPct = exprsPct)
+    singleResult <- oneCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprsPct = exprsPct,
+                            workers = workers, ...)
     ## Export Cepo outputs as a DataFrame
     singleStatsResult <- S4Vectors::DataFrame(sortList(singleResult))
     
@@ -43,7 +49,7 @@ Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL) {
         times <- as.integer(computePvalue)
         ## Pass onto a boot function for computation
         listPvals <- bootCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprsPct = exprsPct, 
-            singleResult = singleResult, times = times)
+            singleResult = singleResult, times = times, workers = workers, ...)
         ## The output has two components, one DataFrame of stats and another for p-values
         result <- list(stats = singleStatsResult, pvalues = S4Vectors::DataFrame(sortList(listPvals)))
     }  ## End else
@@ -62,11 +68,11 @@ print.Cepo <- function(x) {
     }
 }
 
-bootCepo <- function(exprsMat, cellTypes, exprsPct, singleResult, times) {
+bootCepo <- function(exprsMat, cellTypes, exprsPct, singleResult, times, workers = 1L, ...) {
     ## Running multiple runs of Cepo based on bootstrap
-    listCepoOutputs <- lapply(X = seq_len(times), FUN = function(i) {
-        oneCepo(exprsMat = exprsMat, cellTypes = sample(cellTypes), exprsPct = exprsPct)
-    })
+    listCepoOutputs <- BiocParallel::bplapply(X = seq_len(times), FUN = function(i) {
+        oneCepo(exprsMat = exprsMat, cellTypes = sample(cellTypes), exprsPct = exprsPct, workers = 1L)
+    }, BPPARAM = setCepoBPPARAM(workers = workers, ...))
     
     ## Initialise p-value calculations
     listPvals <- vector("list", length = length(singleResult))
@@ -83,7 +89,7 @@ bootCepo <- function(exprsMat, cellTypes, exprsPct, singleResult, times) {
     return(listPvals)
 }
 
-oneCepo <- function(exprsMat, cellTypes, exprsPct = NULL) {
+oneCepo <- function(exprsMat, cellTypes, exprsPct = NULL, workers = 1L, ...) {
     cts <- names(table(cellTypes))
     
     if (!is.null(exprsPct)) {
@@ -96,19 +102,22 @@ oneCepo <- function(exprsMat, cellTypes, exprsPct = NULL) {
         names(meanPct.list) <- cts
         keep <- rowSums_withnames(do.call(DelayedArray::cbind, meanPct.list)) == 
             length(cts)
-        exprsMat <- exprsMat[keep, ]
+        exprsMat <- exprsMat[keep, , drop = FALSE]
     }
-    segIdx.list <- vector("list", length = length(cts))
-    names(segIdx.list) <- cts
     
-    for (i in 1:length(cts)) {
-        idx <- which(cellTypes == cts[i])
-        if (length(idx) < 20) {
-            segIdx.list[[i]] <- NA
-        } else {
-            segIdx.list[[i]] <- segIndex(exprsMat[, idx])
-        }
-    }
+    listIndexCelltypes <- lapply(cts, function(thisCelltypeName){which(cellTypes == thisCelltypeName)})
+    
+    segIdx.list <- BiocParallel::bplapply(
+        X = listIndexCelltypes,
+        FUN = function(thisCelltypeIndices){
+            if(length(thisCelltypeIndices) < 20){ 
+                ## If there is insufficient number of cells, we return NA's
+                message("Less than 20 cells found in some cell types, returning NA")
+                return(NA)
+            } else {
+                return(segIndex(exprsMat[, thisCelltypeIndices, drop = FALSE]))
+            }}, BPPARAM = setCepoBPPARAM(workers = workers, ...))
+    names(segIdx.list) <- cts
     
     segMat <- segIdxList2Mat(segIdx.list)
     segGenes <- consensusSegIdx(segMat)
@@ -188,4 +197,23 @@ sortList <- function(listResult) {
         thisElement[names(listResult[[1]])]
     })
     return(result)
+}
+
+#' @title Setting parallel params based on operating platform
+#' @param workers Number of cores to use. Default to 1, which invokes `BiocParallel::SerialParam`.
+#' For workers greater than 1, see the `workers` argument in `BiocParallel::MulticoreParam` and `BiocParallel::SnowParam`. 
+#' @param ... Additional arguments passed to `BiocParallel::MulticoreParam` and `BiocParallel::SnowParam`. 
+#' @examples 
+#' # system.time(BiocParallel::bplapply(1:3, FUN = function(i){Sys.sleep(i)}, 
+#' # BPPARAM = setCepoBPPARAM(workers = 1)))
+#' # system.time(BiocParallel::bplapply(1:3, FUN = function(i){Sys.sleep(i)}, 
+#' # BPPARAM = setCepoBPPARAM(workers = 3)))
+setCepoBPPARAM = function(workers = 1L, ...){
+    if(workers == 1){
+        return(BiocParallel::SerialParam())
+    } else if (.Platform$OS.type == "windows") {
+        return(BiocParallel::SnowParam(workers = workers, ...))
+    } else {
+        return(BiocParallel::MulticoreParam(workers = workers, ...))
+    } 
 }
