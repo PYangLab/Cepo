@@ -5,7 +5,7 @@ Cepo
 
 ![R-CMD-check](https://github.com/PYangLab/Cepo/workflows/R-CMD-check/badge.svg)
 [![Codecov test
-coverage](https://codecov.io/gh/kevinwang09/Cepo/branch/master/graph/badge.svg)](https://codecov.io/gh/kevinwang09/Cepo?branch=master)
+coverage](https://codecov.io/gh/PYangLab/Cepo/branch/main/graph/badge.svg?token=sJROwPzwey)](https://codecov.io/gh/PYangLab/Cepo)
 
 Defining the identity of a cell is fundamental to understand the
 heterogeneity of cells to various environmental signals and
@@ -42,7 +42,7 @@ The documentation for *Cepo* is available from
 <http://github.io/PYangLab/Cepo>
 
 To view the vignette and all the package documentation for the
-development version visit <http://github.io/HaniJieunKim/Cepo>.
+development version visit <http://github.io/PYangLab/Cepo>.
 
 ## Citing *Cepo*
 

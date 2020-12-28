@@ -23,7 +23,7 @@ To access the R code used in the vignettes, type:
 browseVignettes("Cepo")
 ```
 
-Questions relating to *Cepo* should be reported as a new issue at *[BugReports](https://github.com/HaniJieunKim/Cepo/issues)*.
+Questions relating to *Cepo* should be reported as a new issue at *[BugReports](https://github.com/PYangLab/Cepo/issues)*.
 
 To cite *Cepo*, type:
 ```
@@ -34,7 +34,7 @@ citation("Cepo")
 The development version of *Cepo* can be installed with the following command:
 ```
 install.packages("remotes")
-remotes::install_github("PYangLba/Cepo")
+remotes::install_github("PYangLab/Cepo")
 ```
 
 # Differential stability analysis using Cepo
@@ -117,19 +117,19 @@ upset(fromList(res_name), nsets = 3)
 Density plot of two genes from each cell type.
 ```{r plot-densities}
 plotDensities(x = cellbench,
-               dx_list = ds_res,
-               n_genes = 2,
-               assay = "logcounts",
-               celltypeColumn = "celltype")
+              cepoOutput = ds_res,
+              nGenes = 2,
+              assay = "logcounts",
+              celltypeColumn = "celltype")
 ```
 
 We can also specify the genes to be plotted.
 ```{r plot-densities-genes}
 plotDensities(x = cellbench,
-               dx_list = ds_res,
-               genes = c("PLTP", "CPT1C", "MEG3", "SYCE1", "MICOS10P3", "HOXB7"),
-               assay = "logcounts",
-               celltypeColumn = "celltype")
+              cepoOutput = ds_res,
+              genes = c("PLTP", "CPT1C", "MEG3", "SYCE1", "MICOS10P3", "HOXB7"),
+              assay = "logcounts",
+              celltypeColumn = "celltype")
 ```
 
 ## Running out-of-memory computation with Cepo

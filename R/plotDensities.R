@@ -2,18 +2,17 @@
 #' @return A \code{\link{ggplot}} object
 #' with cell-type specific densities for a gene.
 #' @param x a \code{\linkS4class{SummarizedExperiment}} or a \code{\linkS4class{SingleCellExperiment}} object.
-#' @param dx_list an output from Cepo or doLimma/doVoom/doTtest/doWilcoxon functions
+#' @param cepoOutput an output from Cepo or doLimma/doVoom/doTtest/doWilcoxon functions
 #' @param assay a character ('logcounts' by default),
 #' indicating the name of the assays(x) element which stores the expression data (i.e., assays(x)$name_assays_expression).
 #' We strongly encourage using normalized data, such as counts per million (CPM) or log-CPM.
-#' @param celltype a character, indicating the name of the cell type to plot. Default is NULL which selects all celltypes in the dx_list.
+#' @param celltype a character, indicating the name of the cell type to plot. Default is NULL which selects all celltypes in the cepoOutput.
 #' @param celltypeColumn a character, indicating the name of the name of the cell type column in the colData(x).
 #' @param genes a character vector, indicating the name of the genes to plot. Default to NULL, so that 2 top genes from each celltype will be plotted.
-#' @param n_genes number of top genes from each celltype to plot. Default to 2.
+#' @param nGenes number of top genes from each celltype to plot. Default to 2.
 #' @param color a named color vector. The names should correspond to the `celltype` argument above
 #' @param plotType Either 'histogram' or 'density'
 #' @import ggplot2
-#' @importFrom ggpubr ggarrange
 #' @importFrom methods is
 #' @importFrom SingleCellExperiment colData
 #' @importFrom SummarizedExperiment assays
@@ -27,29 +26,29 @@
 #' library(SingleCellExperiment)
 #' data('cellbench', package = 'Cepo')
 #' cellbench
-#' ds_res <- Cepo(logcounts(cellbench), cellbench$celltype)
+#' cepoOutput <- Cepo(logcounts(cellbench), cellbench$celltype)
 #'
 #' plotDensities(
 #'   x = cellbench,
-#'   dx_list = ds_res,
+#'   cepoOutput = cepoOutput,
 #'   assay = 'logcounts',
 #'   celltypeColumn = 'celltype'
 #' )
 #'
 #' plotDensities(
 #'   x = cellbench,
-#'   dx_list = ds_res,
+#'   cepoOutput = cepoOutput,
 #'   genes = c('PLTP', 'CPT1C', 'MEG3', 'SYCE1', 'MICOS10P3', 'HOXB7'),
 #'   assay = 'logcounts',
 #'   celltypeColumn = 'celltype'
 #' )
-plotDensities <- function(x, dx_list, n_genes = 2, assay = "logcounts", celltypeColumn, 
+plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", celltypeColumn, 
     celltype = NULL, genes = NULL, plotType = c("histogram", "density"), color = NULL) {
     if (!is.null(genes)) {
-        n_genes <- NULL
+        nGenes <- NULL
     }
     if (is.null(celltype)) {
-        celltype <- colnames(dx_list$stats)
+        celltype <- colnames(cepoOutput$stats)
     }
     
     plotType <- match.arg(plotType)
@@ -91,15 +90,15 @@ plotDensities <- function(x, dx_list, n_genes = 2, assay = "logcounts", celltype
         }
     }
     
-    ## If the n_genes argument is supplied (so we will pick out the top genes in the
+    ## If the nGenes argument is supplied (so we will pick out the top genes in the
     ## computed object)
-    if (!is.null(n_genes)) {
-        if (n_genes > 10) {
+    if (!is.null(nGenes)) {
+        if (nGenes > 10) {
             message("Maximum number of genes to plot is 10!")
             return(NULL)
         }
         
-        genes <- unlist(topGenes(object = dx_list, n = n_genes, returnValues = FALSE))
+        genes <- unlist(topGenes(object = cepoOutput, n = nGenes, returnValues = FALSE))
         message(paste(genes, collapse = ", "), " will be plotted")
     }
     
@@ -143,6 +142,7 @@ plotDensities <- function(x, dx_list, n_genes = 2, assay = "logcounts", celltype
           ggplot2::theme_classic() + 
           ggplot2::labs(title = unique(thisCellTypePlotDf$geneNames),
                         fill = "Cell type") +
+          ggplot2::scale_fill_manual(values = color[celltype]) +
           ggplot2::theme(axis.title.x = element_blank(), 
                          axis.title.y = element_blank(), 
                          strip.background = element_blank(),
@@ -150,16 +150,22 @@ plotDensities <- function(x, dx_list, n_genes = 2, assay = "logcounts", celltype
                          legend.position = "bottom",
                          plot.title = element_text(hjust = 0.5))
         
-        result <- ggBase +
-          ggplot2::geom_histogram(aes(y = .data$..density..), 
-                                  colour = "black", fill = "white", bins = 15) + 
-          ggplot2::geom_density(aes(fill = .data$celltypeAnnotate), alpha = 0.2) +
-          scale_fill_manual(values = color[celltype])
+        if(plotType == "histogram"){
+          result <- ggBase +
+            ggplot2::geom_histogram(aes(y = .data$..density..), 
+                                    colour = "black", fill = "white", bins = 15) + 
+            ggplot2::geom_density(aes(fill = .data$celltypeAnnotate), alpha = 0.2)
+        } else if (plotType == "density"){
+          result <- ggBase +
+            ggplot2::geom_density(aes(fill = .data$celltypeAnnotate), alpha = 0.2)
+        }
         return(result)
       })
+    
     finalPlot <- patchwork::wrap_plots(ggList, nrow = 1) + 
       patchwork::plot_layout(guides = "collect") & 
       ggplot2::theme(legend.position = 'bottom')
+    
     return(finalPlot)
 }
 

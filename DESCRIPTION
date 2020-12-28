@@ -31,7 +31,6 @@ Imports:
     SingleCellExperiment,
     SummarizedExperiment,
     ggplot2,
-    ggpubr,
     rlang,
     grDevices,
     patchwork,
