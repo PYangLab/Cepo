@@ -16,16 +16,11 @@
 #' out-of-memory computations. See vignette.
 #' @export
 #' @examples
-#' set.seed(1234)
-#' n <- 50 ## genes, rows
-#' p <- 100 ## cells, cols
-#' exprsMat <- matrix(rpois(n * p, lambda = 5), nrow = n)
-#' rownames(exprsMat) <- paste0('gene', 1:n)
-#' colnames(exprsMat) <- paste0('cell', 1:p)
-#' cellTypes <- sample(letters[1:3], size = p, replace = TRUE)
-#'
-#' Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
-#' Cepo(exprsMat = exprsMat, cellTypes = cellTypes, computePvalue = 100)
+#' library(SingleCellExperiment)
+#' data('cellbench', package = 'Cepo')
+#' cellbench
+#' cepoOutput <- Cepo(logcounts(cellbench), cellbench$celltype)
+#' cepoOutput
 Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL,
                  workers = 1L, ...) {
     stopifnot(ncol(exprsMat) == length(cellTypes))
@@ -168,10 +163,11 @@ rowSums_withnames <- function(mat) {
 
 segIdxList2Mat <- function(segIdx.list) {
     allGenes <- unique(unlist(lapply(segIdx.list, names)))
+    
     segMat <- matrix(NA, nrow = length(allGenes), ncol = length(segIdx.list))
     rownames(segMat) <- allGenes
     colnames(segMat) <- names(segIdx.list)
-    
+
     for (i in seq_along(segIdx.list)) {
         si <- segIdx.list[[i]]
         segMat[names(si), i] <- si
@@ -181,22 +177,14 @@ segIdxList2Mat <- function(segIdx.list) {
 
 consensusSegIdx <- function(mat) {
     tt <- mat
-    
-    CIGs <- list()
-    for (i in seq_len(ncol(tt))) {
-        avgRank <- c()
-        for (j in seq_len(ncol(tt))) {
-            if (i == j) {
-                next
-            }
-            avgRank <- cbind(avgRank, tt[, i] - tt[, j])
-        }
-        
-        meanAvgRank <- DelayedMatrixStats::rowMeans2(avgRank)
-        names(meanAvgRank) <- rownames(avgRank)
-        CIGs[[i]] <- sort(meanAvgRank, decreasing = TRUE)
-    }
-    return(CIGs)
+    CIGs2 = lapply(seq_len(ncol(tt)),
+                   function(i){
+                       meanAvgRank <- DelayedMatrixStats::rowMeans2(-(tt[, -i, drop = FALSE] - tt[, i, drop = TRUE]))
+                       names(meanAvgRank) <- rownames(tt)
+                       return(sort(meanAvgRank, decreasing = TRUE))
+                   })
+
+    return(CIGs2)
 }
 
 ## Sorts every element of the list (assumed each element is a vector) by the names
