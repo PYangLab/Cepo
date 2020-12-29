@@ -28,10 +28,19 @@
 #' Cepo(exprsMat = exprsMat, cellTypes = cellTypes, computePvalue = 100)
 Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL,
                  workers = 1L, ...) {
-    if (is.null(rownames(exprsMat))) {
+    stopifnot(ncol(exprsMat) == length(cellTypes))
+    if(is.null(rownames(exprsMat))) {
         ## Add rownames if missing
+        message("Gene names are missing in the input matrix, automatically adding `rownames`.")
         nGenes <- nrow(exprsMat)
-        rownames(exprsMat) <- sprintf(paste0("gene%0", log10(nGenes) + 1, "d"), seq_len(nGenes))
+        rownames(exprsMat) <- sprintf(paste0("gene%0", ceiling(log10(nGenes)) + 1L, "d"), seq_len(nGenes))
+    }
+    
+    if(is.null(colnames(exprsMat))) {
+        ## Add colnames if missing
+        message("Cell names are missing in the input matrix, automatically adding `colnames`.")
+        nCells <- ncol(exprsMat)
+        colnames(exprsMat) <- sprintf(paste0("cell%0", ceiling(log10(nCells)) + 1, "d"), seq_len(nCells))
     }
     cellTypes <- as.character(cellTypes)
     
@@ -106,7 +115,7 @@ oneCepo <- function(exprsMat, cellTypes, exprsPct = NULL, workers = 1L, ...) {
     }
     
     listIndexCelltypes <- lapply(cts, function(thisCelltypeName){which(cellTypes == thisCelltypeName)})
-    
+
     segIdx.list <- BiocParallel::bplapply(
         X = listIndexCelltypes,
         FUN = function(thisCelltypeIndices){
@@ -159,7 +168,7 @@ rowSums_withnames <- function(mat) {
 
 segIdxList2Mat <- function(segIdx.list) {
     allGenes <- unique(unlist(lapply(segIdx.list, names)))
-    segMat <- matrix(0, nrow = length(allGenes), ncol = length(segIdx.list))
+    segMat <- matrix(NA, nrow = length(allGenes), ncol = length(segIdx.list))
     rownames(segMat) <- allGenes
     colnames(segMat) <- names(segIdx.list)
     
