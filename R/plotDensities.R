@@ -98,7 +98,7 @@ plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", cellty
             return(NULL)
         }
         
-        genes <- unlist(topGenes(object = cepoOutput, n = nGenes, returnValues = FALSE))
+        genes <- unlist(lapply(topGenes(object = cepoOutput, n = nGenes, returnValues = FALSE), function(x) x[1:nGenes]))
         message(paste(genes, collapse = ", "), " will be plotted")
     }
     
