@@ -125,7 +125,6 @@ oneCepo <- function(exprsMat, cellTypes, exprsPct = NULL, workers = 1L, ...) {
     
     segMat <- segIdxList2Mat(segIdx.list)
     segGenes <- consensusSegIdx(segMat)
-    names(segGenes) <- colnames(segMat)
     result <- segGenes
     return(result)
 }
@@ -176,14 +175,13 @@ segIdxList2Mat <- function(segIdx.list) {
 }
 
 consensusSegIdx <- function(mat) {
-    tt <- mat
-    CIGs2 = lapply(seq_len(ncol(tt)),
+    CIGs2 <- lapply(seq_len(ncol(mat)),
                    function(i){
-                       meanAvgRank <- DelayedMatrixStats::rowMeans2(-(tt[, -i, drop = FALSE] - tt[, i, drop = TRUE]))
-                       names(meanAvgRank) <- rownames(tt)
+                       meanAvgRank <- DelayedMatrixStats::rowMeans2(-(mat[, -i, drop = FALSE] - mat[, i, drop = TRUE]))
+                       names(meanAvgRank) <- rownames(mat)
                        return(sort(meanAvgRank, decreasing = TRUE))
                    })
-
+    names(CIGs2) <- colnames(mat)
     return(CIGs2)
 }
 
