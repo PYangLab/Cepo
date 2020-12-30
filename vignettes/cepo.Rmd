@@ -51,7 +51,7 @@ cellbench
 
 Columns of the `colData` indicate the individual id and various metadata for each cell. `colData` contains `celltype` labels, which will be required to run *Cepo*. Differential stability analysis performed on the entire cell type repertoire.
 ```{r visualize colData}
-colData(cellbench)
+colData(cellbench)[1:5,]
 ```
 
 Note that, if cell-type labels are unknown, we would need to cluster cells into groups via some clustering algorithm. In the example dataset, we have 3 cell types, H1975, H2228 and HCC827, all of which are commonly used cell lines of lung adenocarcinomas.
@@ -81,10 +81,10 @@ ds_res
 The second element of the `Cepo` function is a `DataFrame` of p-values associated with the DS statistics. In this `DataFrame`, each column corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. By default, the `Cepo` function do not compute these p-values and requires the users to set the `computePvalue` argument to a number of bootstrap runs required (we recommend this to be at least 100). 
 
 ```{r return-p-values}
-ds_res = Cepo(exprsMat = logcounts(cellbench),
+ds_res_pvalues = Cepo(exprsMat = logcounts(cellbench),
               cellType = cellbench$celltype, computePvalue = 100)
 
-ds_res
+ds_res_pvalues
 ```
 
 
@@ -109,7 +109,6 @@ Wrapper functions are available for `Limma`, `Voom`, `t-test` and `Wilcoxon` tes
 We can visualize the overlap of differential stability genes between cell types.
 ```{r upset-plot}
 library(UpSetR)
-## Better off writing a function for this
 res_name = topGenes(object = ds_res, n = 500)
 upset(fromList(res_name), nsets = 3)
 ```

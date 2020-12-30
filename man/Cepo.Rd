@@ -4,7 +4,14 @@
 \alias{Cepo}
 \title{Computing Cepo cell identity genes}
 \usage{
-Cepo(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL)
+Cepo(
+  exprsMat,
+  cellTypes,
+  exprsPct = NULL,
+  computePvalue = NULL,
+  workers = 1L,
+  ...
+)
 }
 \arguments{
 \item{exprsMat}{expression matrix where columns denote cells and rows denote genes}
@@ -15,6 +22,11 @@ Cepo(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL)
 
 \item{computePvalue}{Whether to compute p-values using bootstrap test. Default to NULL to not make computations.
 Set this to an integer to set the number of bootstraps needed (recommend to be at least 100).}
+
+\item{workers}{Number of cores to use. Default to 1, which invokes \code{BiocParallel::SerialParam}.
+For workers greater than 1, see the \code{workers} argument in \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
+
+\item{...}{Additional arguments passed to \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
 }
 \value{
 Returns a list of key genes.
@@ -24,14 +36,9 @@ exprsMat accepts various matrix objects, including DelayedArray and HDF5Array fo
 out-of-memory computations. See vignette.
 }
 \examples{
-set.seed(1234)
-n <- 50 ## genes, rows
-p <- 100 ## cells, cols
-exprsMat <- matrix(rpois(n * p, lambda = 5), nrow = n)
-rownames(exprsMat) <- paste0('gene', 1:n)
-colnames(exprsMat) <- paste0('cell', 1:p)
-cellTypes <- sample(letters[1:3], size = p, replace = TRUE)
-
-Cepo(exprsMat = exprsMat, cellTypes = cellTypes)
-Cepo(exprsMat = exprsMat, cellTypes = cellTypes, computePvalue = 100)
+library(SingleCellExperiment)
+data('cellbench', package = 'Cepo')
+cellbench
+cepoOutput <- Cepo(logcounts(cellbench), cellbench$celltype)
+cepoOutput
 }

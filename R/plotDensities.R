@@ -32,6 +32,7 @@
 #'   x = cellbench,
 #'   cepoOutput = cepoOutput,
 #'   assay = 'logcounts',
+#'   plotType = 'histogram',
 #'   celltypeColumn = 'celltype'
 #' )
 #'
@@ -40,6 +41,7 @@
 #'   cepoOutput = cepoOutput,
 #'   genes = c('PLTP', 'CPT1C', 'MEG3', 'SYCE1', 'MICOS10P3', 'HOXB7'),
 #'   assay = 'logcounts',
+#'   plotType = 'histogram',
 #'   celltypeColumn = 'celltype'
 #' )
 plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", celltypeColumn, 
@@ -98,8 +100,9 @@ plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", cellty
             return(NULL)
         }
         
-        genes <- unlist(topGenes(object = cepoOutput, n = nGenes, returnValues = FALSE))
+        genes = unlist(topGenes(object = cepoOutput, n = nGenes, returnValues = FALSE))
         message(paste(genes, collapse = ", "), " will be plotted")
+        
     }
     
     # idx_gene = rownames(x) %in% genes
@@ -138,7 +141,7 @@ plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", cellty
       X = plotdfSplit, 
       FUN = function(thisCellTypePlotDf){
         ggBase <- ggplot2::ggplot(data = thisCellTypePlotDf, ggplot2::aes(x = .data$value)) +
-          ggplot2::facet_wrap(~ celltypeAnnotate, scales = "free", ncol = 1) + 
+          ggplot2::facet_wrap(~ celltypeAnnotate, scales = "free_y", ncol = 1) + 
           ggplot2::theme_classic() + 
           ggplot2::labs(title = unique(thisCellTypePlotDf$geneNames),
                         fill = "Cell type") +
