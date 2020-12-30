@@ -98,8 +98,11 @@ plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", cellty
             return(NULL)
         }
         
-        genes <- unlist(lapply(topGenes(object = cepoOutput, n = nGenes, returnValues = FALSE), function(x) x[1:nGenes]))
+        genes.list = lapply(topGenes(object = cepoOutput, n = nGenes, returnValues = FALSE), function(x) x[1:nGenes])
+        genes = unlist(genes.list, use.names = F)
+        names(genes) = rep(names(genes.list), sapply(genes.list, length))
         message(paste(genes, collapse = ", "), " will be plotted")
+        
     }
     
     # idx_gene = rownames(x) %in% genes
@@ -138,7 +141,7 @@ plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", cellty
       X = plotdfSplit, 
       FUN = function(thisCellTypePlotDf){
         ggBase <- ggplot2::ggplot(data = thisCellTypePlotDf, ggplot2::aes(x = .data$value)) +
-          ggplot2::facet_wrap(~ celltypeAnnotate, scales = "free", ncol = 1) + 
+          ggplot2::facet_wrap(~ celltypeAnnotate, scales = "free_y", ncol = 1) + 
           ggplot2::theme_classic() + 
           ggplot2::labs(title = unique(thisCellTypePlotDf$geneNames),
                         fill = "Cell type") +
@@ -162,9 +165,10 @@ plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", cellty
         return(result)
       })
     
-    finalPlot <- patchwork::wrap_plots(ggList, nrow = 1) + 
-      patchwork::plot_layout(guides = "collect") & 
-      ggplot2::theme(legend.position = 'bottom')
+    finalPlot <- do.call(ggpubr::ggarrange, c(ggList, ncol=length(genes), common.legend=TRUE))
+    #finalPlot <- patchwork::wrap_plots(ggList, nrow = 1)+ 
+    #  patchwork::plot_layout(guides = "collect") & 
+    #  ggplot2::theme(legend.position = 'bottom')
     
     return(finalPlot)
 }
