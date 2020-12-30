@@ -81,7 +81,7 @@
       The University of Sydney<br><a class="author_email" href="mailto:#"></a><a href="mailto:hani.kim@sydney.edu.au" class="email">hani.kim@sydney.edu.au</a>
       </address>
                   
-            <h4 class="date">12/28/2020</h4>
+            <h4 class="date">12/30/2020</h4>
       
       
       <div class="hidden name"><code>cepo.Rmd</code></div>
@@ -133,8 +133,8 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## altExpNames(0):</code></pre>
 <p>Columns of the <code>colData</code> indicate the individual id and various metadata for each cell. <code>colData</code> contains <code>celltype</code> labels, which will be required to run <em>Cepo</em>. Differential stability analysis performed on the entire cell type repertoire.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">colData</span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span></code></pre></div>
-<pre><code>## DataFrame with 895 rows and 17 columns
+<code class="sourceCode R"><span class="fu">colData</span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></code></pre></div>
+<pre><code>## DataFrame with 5 rows and 17 columns
 ##             unaligned aligned_unmapped mapped_to_exon mapped_to_intron
 ##             &lt;integer&gt;        &lt;integer&gt;      &lt;integer&gt;        &lt;integer&gt;
 ## CELL_000001    167234             8341         526950            40991
@@ -142,12 +142,6 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## CELL_000004    158346             7796         504676            39684
 ## CELL_000005    159070             6968         486645            38252
 ## CELL_000006    144914             8610         465126            33435
-## ...               ...              ...            ...              ...
-## CELL_000939     35877             2227         115822             8543
-## CELL_000943     37475             2229         105134            13754
-## CELL_000946     35066             2039         105214            14480
-## CELL_000955     33183             3061          84351            19273
-## CELL_000965     35006             1634          81662             7936
 ##             ambiguous_mapping mapped_to_ERCC mapped_to_MT number_of_genes
 ##                     &lt;integer&gt;      &lt;integer&gt;    &lt;integer&gt;       &lt;numeric&gt;
 ## CELL_000001             21392              0        22342           11237
@@ -155,12 +149,6 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## CELL_000004             18628              0        14021           11237
 ## CELL_000005             20029              0        14100           10920
 ## CELL_000006             21732              0        11855           11157
-## ...                       ...            ...          ...             ...
-## CELL_000939              5184              0         4061            8240
-## CELL_000943              4567              0         5626            7334
-## CELL_000946              3462              0         4050            7315
-## CELL_000955              3319              0         4322            6809
-## CELL_000965              3003              0         2504            7357
 ##             total_count_per_cell non_mt_percent non_ribo_percent outliers
 ##                        &lt;numeric&gt;      &lt;numeric&gt;        &lt;numeric&gt; &lt;factor&gt;
 ## CELL_000001               266880       0.823985         0.797096    FALSE
@@ -168,25 +156,13 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## CELL_000004               250040       0.839618         0.816149    FALSE
 ## CELL_000005               244441       0.838746         0.798577    FALSE
 ## CELL_000006               235288       0.817904         0.788378    FALSE
-## ...                          ...            ...              ...      ...
-## CELL_000939                84182       0.809377         0.811824    FALSE
-## CELL_000943                58540       0.846379         0.773164    FALSE
-## CELL_000946                51903       0.831185         0.834846    FALSE
-## CELL_000955                42862       0.837128         0.796160    FALSE
-## CELL_000965                61664       0.826106         0.791888    FALSE
 ##               cell_line cell_line_demuxlet demuxlet_cls sizeFactor    celltype
 ##             &lt;character&gt;        &lt;character&gt;  &lt;character&gt;  &lt;numeric&gt; &lt;character&gt;
 ## CELL_000001      HCC827             HCC827          SNG    2.15032      HCC827
 ## CELL_000003      HCC827             HCC827          SNG    2.00889      HCC827
 ## CELL_000004      HCC827             HCC827          SNG    2.06447      HCC827
 ## CELL_000005      HCC827             HCC827          SNG    1.92110      HCC827
-## CELL_000006       H1975              H1975          SNG    1.92716       H1975
-## ...                 ...                ...          ...        ...         ...
-## CELL_000939       H1975              H1975          SNG   0.752065       H1975
-## CELL_000943       H1975              H1975          SNG   0.484279       H1975
-## CELL_000946       H2228              H2228          SNG   0.460024       H2228
-## CELL_000955      HCC827             HCC827          SNG   0.380442      HCC827
-## CELL_000965      HCC827             HCC827          SNG   0.572591      HCC827</code></pre>
+## CELL_000006       H1975              H1975          SNG    1.92716       H1975</code></pre>
 <p>Note that, if cell-type labels are unknown, we would need to cluster cells into groups via some clustering algorithm. In the example dataset, we have 3 cell types, H1975, H2228 and HCC827, all of which are commonly used cell lines of lung adenocarcinomas.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></code></pre></div>
@@ -226,10 +202,10 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## [1] "Cepo" "list"</code></pre>
 <p>The second element of the <code>Cepo</code> function is a <code>DataFrame</code> of p-values associated with the DS statistics. In this <code>DataFrame</code>, each column corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. By default, the <code>Cepo</code> function do not compute these p-values and requires the users to set the <code>computePvalue</code> argument to a number of bootstrap runs required (we recommend this to be at least 100).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="va">ds_res_pvalues</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
               cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>, computePvalue <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
 
-<span class="va">ds_res</span></code></pre></div>
+<span class="va">ds_res_pvalues</span></code></pre></div>
 <pre><code>## $stats
 ## DataFrame with 889 rows and 3 columns
 ##                H1975     H2228    HCC827
@@ -317,7 +293,6 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 <p>We can visualize the overlap of differential stability genes between cell types.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/hms-dbmi/UpSetR">UpSetR</a></span><span class="op">)</span>
-<span class="co">## Better off writing a function for this</span>
 <span class="va">res_name</span> <span class="op">=</span> <span class="fu"><a href="../reference/topGenes.html">topGenes</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">ds_res</span>, n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/UpSetR/man/upset.html">upset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/UpSetR/man/fromList.html">fromList</a></span><span class="op">(</span><span class="va">res_name</span><span class="op">)</span>, nsets <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <p><img src="cepo_files/figure-html/upset-plot-1.png" width="700"></p>
@@ -422,38 +397,38 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## [17] Cepo_0.0.1                  BiocStyle_2.18.1           
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] splines_4.0.3             DelayedMatrixStats_1.12.1
-##  [3] assertthat_0.2.1          statmod_1.4.35           
-##  [5] BiocManager_1.30.10       GenomeInfoDbData_1.2.4   
-##  [7] yaml_2.2.1                pillar_1.4.7             
-##  [9] lattice_0.20-41           glue_1.4.2               
-## [11] limma_3.46.0              digest_0.6.27            
-## [13] XVector_0.30.0            colorspace_2.0-0         
-## [15] htmltools_0.5.0           plyr_1.8.6               
-## [17] pkgconfig_2.0.3           bookdown_0.21            
-## [19] zlibbioc_1.36.0           purrr_0.3.4              
-## [21] patchwork_1.1.1           scales_1.1.1             
-## [23] tibble_3.0.4              generics_0.1.0           
-## [25] farver_2.0.3              ggplot2_3.3.2            
-## [27] ellipsis_0.3.1            magrittr_2.0.1           
-## [29] crayon_1.3.4              memoise_1.1.0            
-## [31] evaluate_0.14             fs_1.5.0                 
-## [33] textshaping_0.2.1         tools_4.0.3              
-## [35] lifecycle_0.2.0           stringr_1.4.0            
-## [37] Rhdf5lib_1.12.0           munsell_0.5.0            
-## [39] compiler_4.0.3            pkgdown_1.6.1            
-## [41] systemfonts_0.3.2         rlang_0.4.9              
-## [43] grid_4.0.3                RCurl_1.98-1.2           
-## [45] rhdf5filters_1.2.0        bitops_1.0-6             
-## [47] labeling_0.4.2            rmarkdown_2.6            
-## [49] gtable_0.3.0              reshape2_1.4.4           
-## [51] R6_2.5.0                  gridExtra_2.3            
-## [53] knitr_1.30                dplyr_1.0.2              
-## [55] rprojroot_2.0.2           ragg_0.4.0               
-## [57] desc_1.2.0                stringi_1.5.3            
-## [59] Rcpp_1.0.5                vctrs_0.3.6              
-## [61] tidyselect_1.1.0          xfun_0.19                
-## [63] sparseMatrixStats_1.2.0</code></pre>
+##  [1] Rcpp_1.0.5                lattice_0.20-41          
+##  [3] assertthat_0.2.1          rprojroot_2.0.2          
+##  [5] digest_0.6.27             plyr_1.8.6               
+##  [7] R6_2.5.0                  evaluate_0.14            
+##  [9] ggplot2_3.3.2             pillar_1.4.7             
+## [11] zlibbioc_1.36.0           sparseMatrixStats_1.2.0  
+## [13] rlang_0.4.9               rmarkdown_2.6            
+## [15] pkgdown_1.6.1             labeling_0.4.2           
+## [17] splines_4.0.3             textshaping_0.2.1        
+## [19] desc_1.2.0                statmod_1.4.35           
+## [21] stringr_1.4.0             RCurl_1.98-1.2           
+## [23] munsell_0.5.0             compiler_4.0.3           
+## [25] xfun_0.19                 pkgconfig_2.0.3          
+## [27] systemfonts_0.3.2         htmltools_0.5.0          
+## [29] tidyselect_1.1.0          gridExtra_2.3            
+## [31] tibble_3.0.4              GenomeInfoDbData_1.2.4   
+## [33] bookdown_0.21             crayon_1.3.4             
+## [35] dplyr_1.0.2               rhdf5filters_1.2.0       
+## [37] bitops_1.0-6              grid_4.0.3               
+## [39] gtable_0.3.0              lifecycle_0.2.0          
+## [41] magrittr_2.0.1            scales_1.1.1             
+## [43] stringi_1.5.3             farver_2.0.3             
+## [45] reshape2_1.4.4            XVector_0.30.0           
+## [47] fs_1.5.0                  limma_3.46.0             
+## [49] DelayedMatrixStats_1.12.1 ellipsis_0.3.1           
+## [51] ragg_0.4.0                generics_0.1.0           
+## [53] vctrs_0.3.6               Rhdf5lib_1.12.0          
+## [55] tools_4.0.3               glue_1.4.2               
+## [57] purrr_0.3.4               yaml_2.2.1               
+## [59] colorspace_2.0-0          BiocManager_1.30.10      
+## [61] memoise_1.1.0             knitr_1.30               
+## [63] patchwork_1.1.1</code></pre>
 </div>
   </div>
 
