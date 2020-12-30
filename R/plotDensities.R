@@ -32,6 +32,7 @@
 #'   x = cellbench,
 #'   cepoOutput = cepoOutput,
 #'   assay = 'logcounts',
+#'   plotType = 'histogram',
 #'   celltypeColumn = 'celltype'
 #' )
 #'
@@ -40,6 +41,7 @@
 #'   cepoOutput = cepoOutput,
 #'   genes = c('PLTP', 'CPT1C', 'MEG3', 'SYCE1', 'MICOS10P3', 'HOXB7'),
 #'   assay = 'logcounts',
+#'   plotType = 'histogram',
 #'   celltypeColumn = 'celltype'
 #' )
 plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", celltypeColumn, 
@@ -98,9 +100,7 @@ plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", cellty
             return(NULL)
         }
         
-        genes.list = lapply(topGenes(object = cepoOutput, n = nGenes, returnValues = FALSE), function(x) x[1:nGenes])
-        genes = unlist(genes.list, use.names = F)
-        names(genes) = rep(names(genes.list), sapply(genes.list, length))
+        genes = unlist(topGenes(object = cepoOutput, n = nGenes, returnValues = FALSE))
         message(paste(genes, collapse = ", "), " will be plotted")
         
     }
@@ -165,10 +165,9 @@ plotDensities <- function(x, cepoOutput, nGenes = 2, assay = "logcounts", cellty
         return(result)
       })
     
-    finalPlot <- do.call(ggpubr::ggarrange, c(ggList, ncol=length(genes), common.legend=TRUE))
-    #finalPlot <- patchwork::wrap_plots(ggList, nrow = 1)+ 
-    #  patchwork::plot_layout(guides = "collect") & 
-    #  ggplot2::theme(legend.position = 'bottom')
+    finalPlot <- patchwork::wrap_plots(ggList, nrow = 1) + 
+      patchwork::plot_layout(guides = "collect") & 
+      ggplot2::theme(legend.position = 'bottom')
     
     return(finalPlot)
 }

@@ -56,6 +56,7 @@ plotDensities(
   x = cellbench,
   cepoOutput = cepoOutput,
   assay = 'logcounts',
+  plotType = 'histogram',
   celltypeColumn = 'celltype'
 )
 
@@ -64,6 +65,7 @@ plotDensities(
   cepoOutput = cepoOutput,
   genes = c('PLTP', 'CPT1C', 'MEG3', 'SYCE1', 'MICOS10P3', 'HOXB7'),
   assay = 'logcounts',
+  plotType = 'histogram',
   celltypeColumn = 'celltype'
 )
 }
