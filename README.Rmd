@@ -38,8 +38,11 @@ version visit http://github.io/PYangLab/Cepo.
 
 ## Citing _Cepo_
 
-If you use _Cepo_ in your work please cite
-our preprint ["Kim H.J., Wang K., Yang P. Cepo effectively retrieves cell identity information through differential stabilitys. bioRxiv DOI:][paper].
+If you use *Cepo* in your work please cite our preprint ["Kim H.J., Wang
+K., Yang P. Cepo uncovers cell identity through
+differential stability. bioRxiv DOI:](add%20biorxiv%20link).
+
+To find all source code related to the anlayses of our preprint please refer to <http://github.io/PYangLab/CepoManuscript>.
 
 ## Developers
 
@@ -53,5 +56,3 @@ The following individuals were involved in developing the Cepo package:
 ## Contact us
 
 If you have any enquiries, especially about using Cepo to analyse your data, please contact hani.kim@sydney.edu.au. We actively welcome any feedback and suggestions! 
-
-[paper]: add biorxiv link
