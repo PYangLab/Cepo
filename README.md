@@ -48,7 +48,7 @@ development version visit <http://github.io/PYangLab/Cepo>.
 
 If you use *Cepo* in your work please cite our preprint ["Kim H.J., Wang
 K., Yang P. Cepo uncovers cell identity through
-differential stability. bioRxiv DOI:](add%20biorxiv%20link).
+differential stability. bioRxiv DOI:](https://www.biorxiv.org/content/10.1101/2021.01.10.426138v1).
 
 To find all source code related to the anlayses of our preprint please refer to <http://github.io/PYangLab/CepoManuscript>.
 
