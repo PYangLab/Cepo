@@ -104,8 +104,7 @@ oneCepo <- function(exprsMat, cellTypes, exprsPct = NULL, workers = 1L, ...) {
                 0)/sum(cellTypes == cts[i])) > exprsPct
         }
         names(meanPct.list) <- cts
-        keep <- rowSums_withnames(do.call(DelayedArray::cbind, meanPct.list)) == 
-            length(cts)
+        keep <- rowSums_withnames(do.call(DelayedArray::cbind, meanPct.list)) > 0
         exprsMat <- exprsMat[keep, , drop = FALSE]
     }
     
