@@ -154,7 +154,7 @@ rowSds_withnames <- function(mat) {
 }
 
 rowSums_withnames <- function(mat) {
-    result <- DelayedMatrixStats::rowMeans2(mat)
+    result <- DelayedMatrixStats::rowSum2(mat)
     names(result) <- rownames(mat)
     return(result)
 }
