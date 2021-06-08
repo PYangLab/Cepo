@@ -134,6 +134,7 @@ out-of-memory computations. See vignette.</p>
   <span class='va'>cellTypes</span>,
   exprsPct <span class='op'>=</span> <span class='cn'>NULL</span>,
   computePvalue <span class='op'>=</span> <span class='cn'>NULL</span>,
+  variability <span class='op'>=</span> <span class='st'>"CV"</span>,
   workers <span class='op'>=</span> <span class='fl'>1L</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
@@ -157,6 +158,10 @@ out-of-memory computations. See vignette.</p>
       <th>computePvalue</th>
       <td><p>Whether to compute p-values using bootstrap test. Default to NULL to not make computations.
 Set this to an integer to set the number of bootstraps needed (recommend to be at least 100).</p></td>
+    </tr>
+    <tr>
+      <th>variability</th>
+      <td><p>a character indicating the stability measure (CV, IQR, MAD, SD). Default is set to CV.</p></td>
     </tr>
     <tr>
       <th>workers</th>
@@ -207,9 +212,9 @@ For workers greater than 1, see the <code>workers</code> argument in <code><a hr
 #&gt; <span class='message'>    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,</span>
 #&gt; <span class='message'>    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,</span>
 #&gt; <span class='message'>    union, unique, unsplit, which.max, which.min</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: S4Vectors</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘S4Vectors’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:base’:</span>
+#&gt; <span class='message'>Attaching package: ‘S4Vectors’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    expand.grid</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: IRanges</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: GenomeInfoDb</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Biobase</span></div><div class='output co'>#&gt; <span class='message'>Welcome to Bioconductor</span>
+#&gt; <span class='message'>    expand.grid, I, unname</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: IRanges</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: GenomeInfoDb</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Biobase</span></div><div class='output co'>#&gt; <span class='message'>Welcome to Bioconductor</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    Vignettes contain introductory material; view with</span>
 #&gt; <span class='message'>    'browseVignettes()'. To cite Bioconductor, see</span>
@@ -229,6 +234,7 @@ For workers greater than 1, see the <code>workers</code> argument in <code><a hr
 #&gt; colnames(895): CELL_000001 CELL_000003 ... CELL_000955 CELL_000965
 #&gt; colData names(17): unaligned aligned_unmapped ... sizeFactor celltype
 #&gt; reducedDimNames(0):
+#&gt; mainExpName: NULL
 #&gt; altExpNames(0):</div><div class='input'><span class='va'>cepoOutput</span> <span class='op'>&lt;-</span> <span class='fu'>Cepo</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/assays.html'>logcounts</a></span><span class='op'>(</span><span class='va'>cellbench</span><span class='op'>)</span>, <span class='va'>cellbench</span><span class='op'>$</span><span class='va'>celltype</span><span class='op'>)</span>
 <span class='va'>cepoOutput</span>
 </div><div class='output co'>#&gt; $stats

@@ -81,7 +81,7 @@
       The University of Sydney<br><a class="author_email" href="mailto:#"></a><a href="mailto:hani.kim@sydney.edu.au" class="email">hani.kim@sydney.edu.au</a>
       </address>
                   
-            <h4 class="date">03/08/2021</h4>
+            <h4 class="date">06/08/2021</h4>
       
       
       <div class="hidden name"><code>cepo.Rmd</code></div>
@@ -130,6 +130,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## colnames(895): CELL_000001 CELL_000003 ... CELL_000955 CELL_000965
 ## colData names(17): unaligned aligned_unmapped ... sizeFactor celltype
 ## reducedDimNames(0):
+## mainExpName: NULL
 ## altExpNames(0):</code></pre>
 <p>Columns of the <code>colData</code> indicate the individual id and various metadata for each cell. <code>colData</code> contains <code>celltype</code> labels, which will be required to run <em>Cepo</em>. Differential stability analysis performed on the entire cell type repertoire.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -232,11 +233,11 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## TDRD9              1         0         0
 ## TNNI3              1         0         0
 ## ...              ...       ...       ...
-## STK24              0         1         1
-## CPVL               0         1         1
-## BBOX1-AS1          0         1         1
-## COL4A2             0         1         1
-## KCNK1              0         1         1
+## STK24              0      1.00         1
+## CPVL               0      0.98         1
+## BBOX1-AS1          0      1.00         1
+## COL4A2             0      1.00         1
+## KCNK1              0      1.00         1
 ## 
 ## attr(,"class")
 ## [1] "Cepo" "list"</code></pre>
@@ -331,25 +332,30 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## Attaching package: 'DelayedArray'</code></pre>
 <pre><code>## The following objects are masked from 'package:base':
 ## 
-##     aperm, apply, rowsum</code></pre>
+##     aperm, apply, rowsum, scale, sweep</code></pre>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/HDF5Array">HDF5Array</a></span><span class="op">)</span></code></pre></div>
 <pre><code>## Loading required package: rhdf5</code></pre>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<pre><code>## 
+## Attaching package: 'HDF5Array'</code></pre>
+<pre><code>## The following object is masked from 'package:rhdf5':
+## 
+##     h5ls</code></pre>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">da_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html">DelayedArray</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/realize.html">realize</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>, <span class="st">"HDF5Array"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">da_matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "HDF5Matrix"
 ## attr(,"package")
 ## [1] "HDF5Array"</code></pre>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/showtree.html">seed</a></span><span class="op">(</span><span class="va">da_matrix</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "HDF5ArraySeed"
 ## attr(,"package")
 ## [1] "HDF5Array"</code></pre>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">da_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="va">da_matrix</span>, cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></code></pre></div>
 <p>Even though out-of-memory computation is slow, one way that we can speed up the computation is through parallel processing. This requires some configurations of the <code>DelayedArray</code> package via the <code>setAutoBPPARAM</code> function. <code>BiocParallel</code> package uses the <code>MulticoreParam</code> parameter for Linux/Mac and <code>SnowParam</code> for Windows.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Bioconductor/BiocParallel">BiocParallel</a></span><span class="op">)</span>
 
 <span class="va">BPPARAM</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">.Platform</span><span class="op">$</span><span class="va">OS.type</span> <span class="op">==</span> <span class="st">"windows"</span><span class="op">)</span> <span class="op">{</span>
@@ -368,15 +374,15 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.0.4 (2021-02-15)
+<pre><code>## R version 4.1.0 (2021-05-18)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
 ## Running under: macOS Catalina 10.15.7
 ## 
 ## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -386,49 +392,49 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] BiocParallel_1.24.1         HDF5Array_1.18.1           
-##  [3] rhdf5_2.34.0                DelayedArray_0.16.2        
-##  [5] Matrix_1.3-2                UpSetR_1.4.0               
-##  [7] SingleCellExperiment_1.12.0 SummarizedExperiment_1.20.0
-##  [9] Biobase_2.50.0              GenomicRanges_1.42.0       
-## [11] GenomeInfoDb_1.26.2         IRanges_2.24.1             
-## [13] S4Vectors_0.28.1            BiocGenerics_0.36.0        
-## [15] MatrixGenerics_1.2.1        matrixStats_0.58.0         
-## [17] Cepo_0.0.1                  BiocStyle_2.18.1           
+##  [1] BiocParallel_1.26.0         HDF5Array_1.20.0           
+##  [3] rhdf5_2.36.0                DelayedArray_0.18.0        
+##  [5] Matrix_1.3-3                UpSetR_1.4.0               
+##  [7] SingleCellExperiment_1.14.1 SummarizedExperiment_1.22.0
+##  [9] Biobase_2.52.0              GenomicRanges_1.44.0       
+## [11] GenomeInfoDb_1.28.0         IRanges_2.26.0             
+## [13] S4Vectors_0.30.0            BiocGenerics_0.38.0        
+## [15] MatrixGenerics_1.4.0        matrixStats_0.59.0         
+## [17] Cepo_0.0.1                  BiocStyle_2.20.0           
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] splines_4.0.4             DelayedMatrixStats_1.12.3
-##  [3] statmod_1.4.35            highr_0.8                
-##  [5] BiocManager_1.30.10       GenomeInfoDbData_1.2.4   
-##  [7] yaml_2.2.1                pillar_1.5.1             
-##  [9] lattice_0.20-41           glue_1.4.2               
-## [11] limma_3.46.0              digest_0.6.27            
-## [13] XVector_0.30.0            colorspace_2.0-0         
+##  [1] splines_4.1.0             DelayedMatrixStats_1.14.0
+##  [3] statmod_1.4.36            highr_0.9                
+##  [5] BiocManager_1.30.15       GenomeInfoDbData_1.2.6   
+##  [7] yaml_2.2.1                pillar_1.6.1             
+##  [9] lattice_0.20-44           glue_1.4.2               
+## [11] limma_3.48.0              digest_0.6.27            
+## [13] XVector_0.32.0            colorspace_2.0-1         
 ## [15] htmltools_0.5.1.1         plyr_1.8.6               
-## [17] pkgconfig_2.0.3           bookdown_0.21            
-## [19] zlibbioc_1.36.0           patchwork_1.1.1          
-## [21] scales_1.1.1              tibble_3.1.0             
+## [17] pkgconfig_2.0.3           bookdown_0.22            
+## [19] zlibbioc_1.38.0           patchwork_1.1.1          
+## [21] scales_1.1.1              tibble_3.1.2             
 ## [23] farver_2.1.0              ggplot2_3.3.3            
-## [25] ellipsis_0.3.1            cachem_1.0.4             
+## [25] ellipsis_0.3.2            cachem_1.0.5             
 ## [27] magrittr_2.0.1            crayon_1.4.1             
 ## [29] memoise_2.0.0             evaluate_0.14            
-## [31] fs_1.5.0                  fansi_0.4.2              
-## [33] textshaping_0.3.1         tools_4.0.4              
+## [31] fs_1.5.0                  fansi_0.5.0              
+## [33] textshaping_0.3.4         tools_4.1.0              
 ## [35] lifecycle_1.0.0           stringr_1.4.0            
-## [37] Rhdf5lib_1.12.1           munsell_0.5.0            
-## [39] compiler_4.0.4            pkgdown_1.6.1            
-## [41] systemfonts_1.0.1         rlang_0.4.10             
-## [43] grid_4.0.4                RCurl_1.98-1.2           
-## [45] rhdf5filters_1.2.0        bitops_1.0-6             
-## [47] labeling_0.4.2            rmarkdown_2.7            
+## [37] Rhdf5lib_1.14.0           munsell_0.5.0            
+## [39] compiler_4.1.0            pkgdown_1.6.1            
+## [41] systemfonts_1.0.2         rlang_0.4.11             
+## [43] grid_4.1.0                RCurl_1.98-1.3           
+## [45] rhdf5filters_1.4.0        bitops_1.0-7             
+## [47] labeling_0.4.2            rmarkdown_2.8            
 ## [49] gtable_0.3.0              reshape2_1.4.4           
 ## [51] R6_2.5.0                  gridExtra_2.3            
-## [53] knitr_1.31                fastmap_1.1.0            
-## [55] utf8_1.1.4                rprojroot_2.0.2          
-## [57] ragg_1.1.1                desc_1.3.0               
-## [59] stringi_1.5.3             Rcpp_1.0.6               
-## [61] vctrs_0.3.6               xfun_0.21                
-## [63] sparseMatrixStats_1.2.1</code></pre>
+## [53] knitr_1.33                fastmap_1.1.0            
+## [55] utf8_1.2.1                rprojroot_2.0.2          
+## [57] ragg_1.1.2                desc_1.3.0               
+## [59] stringi_1.6.2             Rcpp_1.0.6               
+## [61] vctrs_0.3.8               xfun_0.23                
+## [63] sparseMatrixStats_1.4.0</code></pre>
 </div>
   </div>
 
