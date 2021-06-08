@@ -9,6 +9,7 @@ Cepo(
   cellTypes,
   exprsPct = NULL,
   computePvalue = NULL,
+  variability = "CV",
   workers = 1L,
   ...
 )
@@ -22,6 +23,8 @@ Cepo(
 
 \item{computePvalue}{Whether to compute p-values using bootstrap test. Default to NULL to not make computations.
 Set this to an integer to set the number of bootstraps needed (recommend to be at least 100).}
+
+\item{variability}{a character indicating the stability measure (CV, IQR, MAD, SD). Default is set to CV.}
 
 \item{workers}{Number of cores to use. Default to 1, which invokes \code{BiocParallel::SerialParam}.
 For workers greater than 1, see the \code{workers} argument in \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
