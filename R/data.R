@@ -12,3 +12,16 @@
 #' @docType data
 #'
 "cellbench"
+
+#' @title sce_pancreas
+#'
+#' @description A subsampled single-cell RNA-seq dataset 
+#' 
+#' @usage data(sce_pancreas)
+#'
+#' @format An object of SingleCellExperiment class with 528 cells and 1358 genes.
+#'
+#' @name sce_pancreas
+#' @docType data
+#'
+"sce_pancreas"
