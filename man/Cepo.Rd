@@ -7,6 +7,7 @@
 Cepo(
   exprsMat,
   cellTypes,
+  minCells = 20,
   exprsPct = NULL,
   computePvalue = NULL,
   variability = "CV",

@@ -196,7 +196,7 @@ names(ds_res_batches)
 ```
 
 We can confirm 
-```{r}
+```{r fig.height=10, fig.width=10}
 idx = Reduce(intersect, lapply(ds_res_batches, function(x) names(x$stats@listData[[1]])))
 
 combinedRes = do.call(cbind, lapply(ds_res_batches, function(x) 
@@ -220,10 +220,11 @@ pheatmap::pheatmap(cor(combinedRes),
 In many cases, it is beneficial to perform filtering of lowly expressed genes prior to differential analysis. The parameter `exprsPct` specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of `NULL`. A value between 0 and 1 should be provided. Whilst there is no set rule to the threshold, we recommend a value between `0.05` and `0.07`, which will keep any genes that are expressed in 5-7% in at least one cell type, for microfluidic-based data.
 
 ```{r filtering-lowly-expressed-genes}
-ds_res_batches = Cepo(exprsMat = logcounts(sce),
-                      cellType = sce$celltype,
-                      block = sce$batch, 
-                      exprsPct = 0.05)
+ds_res_batches = Cepo::Cepo(exprsMat = logcounts(sce),
+                            cellTypes = sce$cellTypes,
+                            block = sce$batch,
+                            minCelltype = 2,
+                            exprsPct = 0.05)
 ```
 
 The parameter `logfc` specifies minimum log fold-change in gene expression. A value of `0.2` will keep any genes that show at least `abs(0.2)`  log fold change in gene expression in at least one cell type.
@@ -234,8 +235,8 @@ The parameter `logfc` specifies minimum log fold-change in gene expression. A va
 
 ## Downstream analyses using Cepo genes
 
-We can now perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the selected cell identity genes. As an example, we will perform gene set enrichment analysis using the `fgsea` and  `escape` package.
-```{r}
+We can now perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the cell identity gene scores from the `Cepo` package. As an example, we will perform gene set enrichment analysis using the `fgsea` and  `escape` package.
+```{r gsea, message = FALSE}
 library(escape)
 library(fgsea)
 hallmark <- getGeneSets(species = "Homo sapiens", 
@@ -252,13 +253,13 @@ enriched_beta <- -log10(fgseaRes[order(pval), "padj"][[1]])
 names(enriched_beta) <- fgseaRes[order(pval), "pathway"][[1]]
 ```
 
-
+Note the top 5 enriched pathways for `beta cells`.
 ```{r}
 enriched_beta[1:5]
 ```
 
-
-```{r}
+We can visualise the enrichment using the `plotEnrichment` function from the `fgsea` package.
+```{r fig.height=5, fig.width=5}
 plotEnrichment(hallmarkList[["HALLMARK_PANCREAS_BETA_CELLS"]],
                sort(ds_res_batches$average$stats@listData$beta)) + labs(title="HALLMARK_PANCREAS_BETA_CELLS")
 ```
