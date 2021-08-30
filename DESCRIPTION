@@ -43,7 +43,11 @@ Suggests:
     BiocStyle,
     testthat,
     covr,
-    UpSetR
+    UpSetR,
+    scater,
+    scMerge,
+    fgsea,
+    escape
 VignetteBuilder: knitr
 Depends: 
     R (>= 3.6)
