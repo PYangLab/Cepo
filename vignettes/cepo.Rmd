@@ -65,8 +65,6 @@ There are two main arguments to *Cepo*:
   1) `exprsMat` is the input data, which should be normalized data, such as counts per million (CPM) or log2-CPM (e.g., `logcounts` as created via `scater::logNormCounts`).
   2) `cellTypes` receives as input a vector of cell-type labels. Note that the cell-type labels should be equal in length and ordered the same as the column names in `exprsMat`.
 
-Lastly, parameter `exprsPct` specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of `NULL`. A value between 0 and 1 should be provided. Differential expression analyses have been shown to benefit from filtering of lowly expressed genes. Similarly, for scRNA-seq datasets with many lowly expressed genes, we recommend that the user performs filtering of the data. Whilst there is no set rule to the threshold, we recommend a value between `0.05` and `0.07`, which will filter any genes that are not expressed in 5-7% of cells across each cell type.
-
 ```{r differential-stability-analysis}
 ds_res = Cepo(exprsMat = logcounts(cellbench),
               cellType = cellbench$celltype)
@@ -86,7 +84,6 @@ ds_res_pvalues = Cepo(exprsMat = logcounts(cellbench),
 
 ds_res_pvalues
 ```
-
 
 ### Run differential expression analyses
 
@@ -131,7 +128,89 @@ plotDensities(x = cellbench,
               celltypeColumn = "celltype")
 ```
 
-## Running out-of-memory computation with Cepo
+# Running Cepo in a pipeline
+## Example data
+We will load an example dataset, a small subset of the pancreas data from the [scMerge paper](https://www.pnas.org/content/116/20/9775) consisting of 3 batches, 2 cell types, 528 cells, and 1358 genes.
+```{r load-example-data, message = FALSE}
+library(Cepo)
+library(SingleCellExperiment)
+data("sce_pancreas", package = "Cepo")
+sce_pancreas
+```
+
+Given the presences of batches, we will visualize the data for any batch effect. Clearly these is separation of the data points by batch. 
+```{r}
+library(scater)
+sce = sce_pancreas
+sce = scater::logNormCounts(sce)
+sce = scater::runPCA(sce)
+
+scater::plotPCA(
+  sce, 
+  colour_by = "cellTypes", 
+  shape_by = "batch")
+```
+
+## scMerge to remove batch effect
+We can run the analysis on batch corrected data. For this, we can implement batch correction methods on the data suing batch correction methods such as scMerge.
+```{r}
+library(scMerge)
+
+data("segList", package = "scMerge")
+head(segList$human$human_scSEG)
+
+corrected <- scMerge(
+  sce_combine = sce,
+  ctl = segList$human$human_scSEG,
+  kmeansK = c(2, 2),
+  assay_name = "scMerge",
+  cell_type = sce$cellTypes)
+```
+
+Let us visualise the corrected data.
+```{r}
+corrected = runPCA(corrected,
+                            exprs_values = "scMerge")
+
+scater::plotPCA(
+  corrected,
+  colour_by = "cellTypes",
+  shape_by = "batch")
+```
+
+```{r}
+ds_res = Cepo(exprsMat = assay(corrected, "scMerge"),
+              cellType = cellbench$celltype)
+```
+
+## Running Cepo by batch
+Rather than running *Cepo* on the corrected values, we can run the differential analysis independently on individual batches using the `block` argument. By default, the `block` argument is set to `NULL`, ignoring batch information. If batches are present and the data is not corrected for batch effect, ensure you run the analyses en block. 
+```{r}
+ds_res_batches = Cepo(exprsMat = logcounts(sce_pancreas),
+                      cellType = sce_pancreas$celltype,
+                      block = sce_pancreas$batch)
+```
+
+## Filtering of genes 
+In many cases, it is beneficial to perform filtering of lowly expressed genes prior to differential analysis. The parameter `exprsPct` specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of `NULL`. A value between 0 and 1 should be provided. Whilst there is no set rule to the threshold, we recommend a value between `0.05` and `0.07`, which will keep any genes that are expressed in 5-7% in at least one cell type, for microfluidic-based data.
+
+```{r filtering-lowly-expressed-genes}
+ds_res_batches = Cepo(exprsMat = logcounts(sce_pancreas),
+                      cellType = sce_pancreas$celltype,
+                      block = sce_pancreas$batch, 
+                      exprsPct = 0.05)
+```
+
+The parameter `logfc` specifies minimum log fold-change in gene expression. A value of `0.2` will keep any genes that show at least `abs(0.2)`  log fold change in gene expression in at least one cell type.
+
+```{r filtering-logfc}
+ds_res_batches = Cepo(exprsMat = logcounts(sce_pancreas),
+                      cellType = sce_pancreas$celltype,
+                      block = sce_pancreas$batch, 
+                      logfc = 0.2)
+```
+
+# Running out-of-memory computation with Cepo
 To facilitate analysis of high-throughput atlas data consisting of millions of cells, `Cepo` also enables out-of-memory and parallel computation.
 
 The `Cepo` function naturally handles matrices under the `DelayedArray` wrapper. Briefly, `DelayedArray` is a wrapper around many matrix classes in `R`, including `matrix`, `sparseMatrix` and `HDF5Array`. The last of which allows for out-of-memory computation, which means the computation is done outside of RAM. This will inevitably slow down the computational speed, but the major gain in doing this is that we can perform computations on data much larger than what our RAM can store at once.
