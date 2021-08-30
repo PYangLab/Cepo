@@ -1,12 +1,12 @@
 ---
-title: "Cepo: a method for differential stability analysis of scRNA-seq data"
+title: "Cepo method for differential stability analysis of scRNA-seq data"
 author:
 - name: Hani Jieun Kim
   affiliation: The University of Sydney
   email: hani.kim@sydney.edu.au
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
-vignette: |
-  %\VignetteIndexEntry{Cepo: a method for differential stability analysis of scRNA-seq data}
+vignette: >
+  %\VignetteIndexEntry{Cepo method for differential stability analysis of scRNA-seq data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output: 
