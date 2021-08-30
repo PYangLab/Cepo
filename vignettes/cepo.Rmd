@@ -137,7 +137,7 @@ sce_pancreas
 ```
 
 Given the presences of batches, we will visualize the data for any batch effect. Clearly these is separation of the data points by batch. 
-```{r}
+```{r fig.height=5, fig.width=5}
 library(scater)
 sce = sce_pancreas
 sce = scater::logNormCounts(sce)
@@ -166,7 +166,7 @@ corrected <- scMerge(
 ```
 
 Let us visualise the corrected data.
-```{r}
+```{r fig.height=5, fig.width=5}
 corrected = runPCA(corrected,
                             exprs_values = "scMerge")
 
@@ -177,36 +177,92 @@ scater::plotPCA(
 ```
 
 ```{r}
-ds_res = Cepo(exprsMat = assay(corrected, "scMerge"),
-              cellType = cellbench$celltype)
+ds_res = Cepo::Cepo(exprsMat = assay(corrected, "scMerge"),
+              cellType = corrected$cellTypes)
 ```
 
 ## Running Cepo by batch
 Rather than running *Cepo* on the corrected values, we can run the differential analysis independently on individual batches using the `block` argument. By default, the `block` argument is set to `NULL`, ignoring batch information. If batches are present and the data is not corrected for batch effect, ensure you run the analyses en block. 
 ```{r}
-ds_res_batches = Cepo(exprsMat = logcounts(sce_pancreas),
-                      cellType = sce_pancreas$celltype,
-                      block = sce_pancreas$batch)
+ds_res_batches = Cepo::Cepo(exprsMat = logcounts(sce),
+                            cellTypes = sce$cellTypes,
+                            block = sce$batch,
+                            minCelltype = 2)
+```
+
+Note that the resulting output in a list of `Cepo` class objects where each slot denotes the individual results for the three batches, as well as the averaged results saved as `average`.
+```{r}
+names(ds_res_batches)
+```
+
+We can confirm 
+```{r}
+idx = Reduce(intersect, lapply(ds_res_batches, function(x) names(x$stats@listData[[1]])))
+
+combinedRes = do.call(cbind, lapply(ds_res_batches, function(x) 
+  do.call(cbind, x$stats@listData)[idx,]
+))
+batches = rep(names(ds_res_batches), sapply(ds_res_batches, function(x) length(x$stats)))
+cty = unlist(lapply(ds_res_batches, function(x) names(x$stats)), use.name = FALSE)
+colnames(combinedRes) = paste0(batches, "_", cty)
+  
+annot = data.frame(
+  batch = batches,
+  celltype = cty
+)
+rownames(annot) = colnames(combinedRes)
+
+pheatmap::pheatmap(cor(combinedRes),
+                   annotation = annot)
 ```
 
 ## Filtering of genes 
 In many cases, it is beneficial to perform filtering of lowly expressed genes prior to differential analysis. The parameter `exprsPct` specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of `NULL`. A value between 0 and 1 should be provided. Whilst there is no set rule to the threshold, we recommend a value between `0.05` and `0.07`, which will keep any genes that are expressed in 5-7% in at least one cell type, for microfluidic-based data.
 
 ```{r filtering-lowly-expressed-genes}
-ds_res_batches = Cepo(exprsMat = logcounts(sce_pancreas),
-                      cellType = sce_pancreas$celltype,
-                      block = sce_pancreas$batch, 
+ds_res_batches = Cepo(exprsMat = logcounts(sce),
+                      cellType = sce$celltype,
+                      block = sce$batch, 
                       exprsPct = 0.05)
 ```
 
 The parameter `logfc` specifies minimum log fold-change in gene expression. A value of `0.2` will keep any genes that show at least `abs(0.2)`  log fold change in gene expression in at least one cell type.
 
 ```{r filtering-logfc}
-ds_res_batches = Cepo(exprsMat = logcounts(sce_pancreas),
-                      cellType = sce_pancreas$celltype,
-                      block = sce_pancreas$batch, 
-                      logfc = 0.2)
+
 ```
+
+## Downstream analyses using Cepo genes
+
+We can now perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the selected cell identity genes. As an example, we will perform gene set enrichment analysis using the `fgsea` and  `escape` package.
+```{r}
+library(escape)
+library(fgsea)
+hallmark <- getGeneSets(species = "Homo sapiens", 
+                           library = "H")
+hallmarkList <- lapply(hallmark@.Data, function(x) x@geneIds)
+names(hallmarkList) <- lapply(hallmark@.Data, function(x) x@setName)
+
+fgseaRes <- fgsea(pathways = hallmarkList, 
+                  stats    = sort(ds_res_batches$average$stats@listData$beta),
+                  minSize = 15,
+                  maxSize = 500)
+
+enriched_beta <- -log10(fgseaRes[order(pval), "padj"][[1]])
+names(enriched_beta) <- fgseaRes[order(pval), "pathway"][[1]]
+```
+
+
+```{r}
+enriched_beta[1:5]
+```
+
+
+```{r}
+plotEnrichment(hallmarkList[["HALLMARK_PANCREAS_BETA_CELLS"]],
+               sort(ds_res_batches$average$stats@listData$beta)) + labs(title="HALLMARK_PANCREAS_BETA_CELLS")
+```
+
 
 # Running out-of-memory computation with Cepo
 To facilitate analysis of high-throughput atlas data consisting of millions of cells, `Cepo` also enables out-of-memory and parallel computation.

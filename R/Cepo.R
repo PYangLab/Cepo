@@ -24,7 +24,7 @@
 #' cellbench
 #' cepoOutput <- Cepo(logcounts(cellbench), cellbench$celltype)
 #' cepoOutput
-Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL, variability = "CV",
+Cepo <- function(exprsMat, cellTypes, minCells = 20, exprsPct = NULL, computePvalue = NULL, variability = "CV",
                  workers = 1L, block = NULL, minCelltype = 3, ...) {
     stopifnot(ncol(exprsMat) == length(cellTypes))
     
@@ -52,8 +52,10 @@ Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL, var
     
     if (!is.null(block)) {
         
+        block <- as.character(block)
+        
         ## Select only batches with more than `minCelltype` number of cell types
-        batches = names(which(rowSums(table(block, cellTypes) > 10) >= minCelltype))
+        batches = names(which(rowSums(table(block, cellTypes) > minCells) >= minCelltype))
         
         ## Run Cepo by batch
         batch_result <- lapply(batches, function(batch) {
@@ -62,7 +64,7 @@ Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL, var
             cellTypes_batch <- cellTypes[block == batch]
             
             ## A single run of oneCepo gives a list of output
-            singleResult <- oneCepo(exprsMat = exprsMat_batch, cellTypes = cellTypes_batch, exprsPct = exprsPct, variability = variability,
+            singleResult <- oneCepo(exprsMat = exprsMat_batch, cellTypes = cellTypes_batch, minCells = minCells, exprsPct = exprsPct, variability = variability,
                                     workers = workers, ...)
             ## Export Cepo outputs as a DataFrame
             singleStatsResult <- S4Vectors::DataFrame(sortList(singleResult))
@@ -74,7 +76,7 @@ Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL, var
                 ## Coerce the input to an integer
                 times <- as.integer(computePvalue)
                 ## Pass onto a boot function for computation
-                listPvals <- bootCepo(exprsMat = exprsMat_batch, cellTypes = cellTypes_batch, exprsPct = exprsPct, variability = variability,
+                listPvals <- bootCepo(exprsMat = exprsMat_batch, cellTypes = cellTypes_batch, minCells = minCells, exprsPct = exprsPct, variability = variability,
                                       singleResult = singleResult, times = times, workers = workers, ...)
                 ## The output has two components, one DataFrame of stats and another for p-values
                 result <- list(stats = singleStatsResult, pvalues = S4Vectors::DataFrame(sortList(listPvals)))
@@ -121,7 +123,7 @@ Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL, var
     } else {
         
         ## A single run of oneCepo gives a list of output
-        singleResult <- oneCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprsPct = exprsPct, variability = variability,
+        singleResult <- oneCepo(exprsMat = exprsMat, cellTypes = cellTypes, minCells = minCells, exprsPct = exprsPct, variability = variability,
                                 workers = workers, ...)
         ## Export Cepo outputs as a DataFrame
         singleStatsResult <- S4Vectors::DataFrame(sortList(singleResult))
@@ -133,7 +135,7 @@ Cepo <- function(exprsMat, cellTypes, exprsPct = NULL, computePvalue = NULL, var
             ## Coerce the input to an integer
             times <- as.integer(computePvalue)
             ## Pass onto a boot function for computation
-            listPvals <- bootCepo(exprsMat = exprsMat, cellTypes = cellTypes, exprsPct = exprsPct, variability = variability,
+            listPvals <- bootCepo(exprsMat = exprsMat, cellTypes = cellTypes, minCells = minCells, exprsPct = exprsPct, variability = variability,
                                   singleResult = singleResult, times = times, workers = workers, ...)
             ## The output has two components, one DataFrame of stats and another for p-values
             result <- list(stats = singleStatsResult, pvalues = S4Vectors::DataFrame(sortList(listPvals)))
@@ -156,10 +158,10 @@ print.Cepo <- function(x) {
     }
 }
 
-bootCepo <- function(exprsMat, cellTypes, exprsPct, variability, singleResult, times, workers = 1L, ...) {
+bootCepo <- function(exprsMat, cellTypes, minCells, exprsPct, variability, singleResult, times, workers = 1L, ...) {
     ## Running multiple runs of Cepo based on bootstrap
     listCepoOutputs <- BiocParallel::bplapply(X = seq_len(times), FUN = function(i) {
-        oneCepo(exprsMat = exprsMat, variability = variability, cellTypes = sample(cellTypes, replace = TRUE), exprsPct = exprsPct, workers = 1L)
+        oneCepo(exprsMat = exprsMat, minCells = minCells, variability = variability, cellTypes = sample(cellTypes, replace = TRUE), exprsPct = exprsPct, workers = 1L)
     }, BPPARAM = setCepoBPPARAM(workers = workers, ...))
     
     ## Initialise p-value calculations
@@ -177,7 +179,7 @@ bootCepo <- function(exprsMat, cellTypes, exprsPct, variability, singleResult, t
     return(listPvals)
 }
 
-oneCepo <- function(exprsMat, cellTypes, variability = variability, exprsPct = NULL, workers = 1L, ...) {
+oneCepo <- function(exprsMat, cellTypes, minCells = minCells, variability = variability, exprsPct = NULL, workers = 1L, ...) {
     cts <- names(table(cellTypes))
     
     if (!is.null(exprsPct)) {
@@ -197,9 +199,9 @@ oneCepo <- function(exprsMat, cellTypes, variability = variability, exprsPct = N
     segIdx.list <- BiocParallel::bplapply(
         X = listIndexCelltypes,
         FUN = function(thisCelltypeIndices){
-            if(length(thisCelltypeIndices) < 10){ 
+            if(length(thisCelltypeIndices) < minCells){ 
                 ## If there is insufficient number of cells, we return NA's
-                message("Less than 10 cells found in some cell types, returning NA")
+                message(paste0("Less than ",  minCells, " cells found in some cell types, returning NA"))
                 return(NA)
             } else {
                 return(segIndex(exprsMat[, thisCelltypeIndices, drop = FALSE], variability))
