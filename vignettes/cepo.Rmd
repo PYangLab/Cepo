@@ -131,9 +131,7 @@ plotDensities(x = cellbench,
 # Running Cepo in a pipeline
 ## Example data
 We will load an example dataset, a small subset of the pancreas data from the [scMerge paper](https://www.pnas.org/content/116/20/9775) consisting of 3 batches, 2 cell types, 528 cells, and 1358 genes.
-```{r load-example-data, message = FALSE}
-library(Cepo)
-library(SingleCellExperiment)
+```{r}
 data("sce_pancreas", package = "Cepo")
 sce_pancreas
 ```

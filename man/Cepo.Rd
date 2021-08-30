@@ -11,6 +11,8 @@ Cepo(
   computePvalue = NULL,
   variability = "CV",
   workers = 1L,
+  block = NULL,
+  minCelltype = 3,
   ...
 )
 }
@@ -28,6 +30,10 @@ Set this to an integer to set the number of bootstraps needed (recommend to be a
 
 \item{workers}{Number of cores to use. Default to 1, which invokes \code{BiocParallel::SerialParam}.
 For workers greater than 1, see the \code{workers} argument in \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
+
+\item{block}{vector of batch labels}
+
+\item{minCelltype}{integer indicating the minimum number of cell types required in each batch}
 
 \item{...}{Additional arguments passed to \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
 }
