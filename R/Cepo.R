@@ -277,8 +277,8 @@ oneCepo <- function(exprsMat,
         logfc.list <- list()
         for (i in seq_along(cts)) {
             idx <- which(cellTypes == cts[i])
-            logfc.list[[i]] <- abs((log(x = rowMeans_withnames(x = expm1(x = exprsMat[, idx, drop = FALSE])) + 1, base = 2) - 
-                                        log(x = rowMeans_withnames(x = expm1(x = exprsMat[, !idx, drop = FALSE])) + 1, base = 2))) > logfc
+            logfc.list[[i]] <- abs(log(x = rowMeans_withnames(mat = expm1(x = exprsMat[, idx, drop = FALSE])) + 1, base = 2) - 
+                                        log(x = rowMeans_withnames(mat = expm1(x = exprsMat[, -idx, drop = FALSE])) + 1, base = 2)) > logfc
         }
         names(logfc.list) <- cts
         keep <- rowSums_withnames(do.call(DelayedArray::cbind, logfc.list)) > 0
