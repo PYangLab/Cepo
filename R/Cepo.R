@@ -414,22 +414,22 @@ sortList <- function(listResult) {
     return(result)
 }
 
-geneStats <- function(T, method = "OSP") 
+geneStats <- function(Tstat, method = "OSP") 
 {
     pvalue <- 0
     if (method == "Stouffer") {
-        pvalue <- stats::pnorm(sum(T), 0, sqrt(length(T)), lower.tail = FALSE)
+        pvalue <- stats::pnorm(sum(Tstat), 0, sqrt(length(Tstat)), lower.tail = FALSE)
     }
     else if (method == "OSP") {
-        p <- stats::pnorm(T, lower.tail = TRUE)
+        p <- stats::pnorm(Tstat, lower.tail = TRUE)
         pvalue <- stats::pchisq(-2 * sum(log(p)), 2 * length(p), lower.tail = TRUE)
     }
     else if (method == "Fisher") {
-        p <- stats::pnorm(T, lower.tail = FALSE)
+        p <- stats::pnorm(Tstat, lower.tail = FALSE)
         pvalue <- stats::pchisq(-2 * sum(log(p)), 2 * length(p), lower.tail = FALSE)
     }
     else if (method == "maxP") {
-        pvalue <- stats::pnorm(max(T), lower.tail = FALSE)
+        pvalue <- stats::pnorm(max(Tstat), lower.tail = FALSE)
     }
     return(pvalue)
 }

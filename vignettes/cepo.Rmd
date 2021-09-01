@@ -1,9 +1,9 @@
 ---
-title: "Cepo method for differential stability analysis of scRNA-seq data"
+title: "Cepo for differential stability analysis of scRNA-seq data"
 author:
 - name: Hani Jieun Kim
   affiliation: The University of Sydney
-  email: hani.kim@sydney.edu.au
+  email: hani.kim127@gmail.com
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 vignette: >
   %\VignetteIndexEntry{Cepo method for differential stability analysis of scRNA-seq data}
@@ -61,6 +61,7 @@ unique(cellbench$celltype)
 
 ## Run Cepo to generate list of cell identity genes
 
+### Main arguments of Cepo
 There are two main arguments to *Cepo*:
   1) `exprsMat` is the input data, which should be normalized data, such as counts per million (CPM) or log2-CPM (e.g., `logcounts` as created via `scater::logNormCounts`).
   2) `cellTypes` receives as input a vector of cell-type labels. Note that the cell-type labels should be equal in length and ordered the same as the column names in `exprsMat`.
@@ -76,6 +77,25 @@ The `Cepo` function returns a list of two elements by default. The first element
 ds_res
 ```
 
+### Filtering 
+In many cases, it is beneficial to perform filtering of lowly expressed genes prior to differential analysis. The parameter `exprsPct` specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of `NULL`. A value between 0 and 1 should be provided. Whilst there is no set rule to the threshold, we recommend a value between `0.05` and `0.07`, which will keep any genes that are expressed in 5-7% in at least one cell type, for microfluidic-based data.
+
+```{r filtering-lowly-expressed-genes}
+ds_res_zprop = Cepo::Cepo(exprsMat = logcounts(cellbench),
+                          cellTypes = cellbench$celltype,
+                          exprsPct = 0.05)
+```
+
+The parameter `logfc` specifies minimum log fold-change in gene expression. A value of `0.2` will keep any genes that show at least `abs(0.2)`  log fold change in gene expression in at least one cell type.
+
+```{r filtering-logfc}
+ds_res_logfc = Cepo::Cepo(exprsMat = logcounts(cellbench),
+                          cellTypes = cellbench$celltype,
+                          logfc = 0.2,
+                          minCells = 2)
+```
+
+###
 The second element of the `Cepo` function is a `DataFrame` of p-values associated with the DS statistics. In this `DataFrame`, each column corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. By default, the `Cepo` function do not compute these p-values and requires the users to set the `computePvalue` argument to a number of bootstrap runs required (we recommend this to be at least 100). 
 
 ```{r return-p-values}
@@ -84,23 +104,6 @@ ds_res_pvalues = Cepo(exprsMat = logcounts(cellbench),
 
 ds_res_pvalues
 ```
-
-### Run differential expression analyses
-
-*Cepo* package contains wrapper functions for several commonly used differential expression analyses methods that the user can use to compare the results with Cepo results. The wrapper functions can be run using the following functions: `doLimma`, `doVoom`, `doTtest` and `doWilcoxon`. We illustrate the use of `doLimma` as an example.
-
-```{r differential-expression-analysis}
-limma_res = doLimma(exprsMat = logcounts(cellbench),
-                    cellType = cellbench$celltype)
-```
-
-Similar to the output of the `Cepo` function, the returned output is also a list of two `DataFrame`s, the first contain the statistic and the second contain the p-values.
-
-```{r}
-limma_res
-```
-
-Wrapper functions are available for `Limma`, `Voom`, `t-test` and `Wilcoxon` test. The code for DE analyses have been adapted from [conquer](https://github.com/markrobinsonuzh/conquer).
 
 ## Visualizing results
 We can visualize the overlap of differential stability genes between cell types.
@@ -153,7 +156,6 @@ scater::plotPCA(
 We can run the analysis on batch corrected data. For this, we can implement batch correction methods on the data suing batch correction methods such as scMerge.
 ```{r}
 library(scMerge)
-
 data("segList", package = "scMerge")
 head(segList$human$human_scSEG)
 
@@ -216,26 +218,16 @@ pheatmap::pheatmap(cor(combinedRes),
                    annotation = annot)
 ```
 
-## Filtering of genes 
-In many cases, it is beneficial to perform filtering of lowly expressed genes prior to differential analysis. The parameter `exprsPct` specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of `NULL`. A value between 0 and 1 should be provided. Whilst there is no set rule to the threshold, we recommend a value between `0.05` and `0.07`, which will keep any genes that are expressed in 5-7% in at least one cell type, for microfluidic-based data.
-
-```{r filtering-lowly-expressed-genes}
-ds_res_batches = Cepo::Cepo(exprsMat = logcounts(sce),
-                            cellTypes = sce$cellTypes,
-                            block = sce$batch,
-                            minCelltype = 2,
-                            exprsPct = 0.05)
-```
-
-The parameter `logfc` specifies minimum log fold-change in gene expression. A value of `0.2` will keep any genes that show at least `abs(0.2)`  log fold change in gene expression in at least one cell type.
-
-```{r filtering-logfc}
-
-```
-
 ## Downstream analyses using Cepo genes
 
-We can now perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the cell identity gene scores from the `Cepo` package. As an example, we will perform gene set enrichment analysis using the `fgsea` and  `escape` package.
+### Marker gene identification and visualisation 
+```{r}
+
+```
+
+
+### Gene set enrichment analysis
+We can also perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the cell identity gene scores from the `Cepo` package. As an example, we will perform gene set enrichment analysis using the `fgsea` and  `escape` package.
 ```{r gsea, message = FALSE}
 library(escape)
 library(fgsea)
