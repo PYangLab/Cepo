@@ -8,33 +8,44 @@ Cepo(
   exprsMat,
   cellTypes,
   minCells = 20,
+  minCelltype = 3,
   exprsPct = NULL,
+  logfc = NULL,
   computePvalue = NULL,
   variability = "CV",
+  method = "weightedMean",
+  weight = c(0.5, 0.5),
   workers = 1L,
   block = NULL,
-  minCelltype = 3,
   ...
 )
 }
 \arguments{
-\item{exprsMat}{expression matrix where columns denote cells and rows denote genes}
+\item{exprsMat}{Expression matrix where columns denote cells and rows denote genes}
 
-\item{cellTypes}{vector of cell type labels}
+\item{cellTypes}{Vector of cell type labels}
+
+\item{minCells}{Integer indicating the minimum number of cells required within a cell type}
+
+\item{minCelltype}{Integer indicating the minimum number of cell types required in each batch}
 
 \item{exprsPct}{Percentage of lowly expressed genes to remove. Default to NULL to not remove any genes.}
+
+\item{logfc}{Numeric value indicating the threshold of log fold-change to use to filter genes.}
 
 \item{computePvalue}{Whether to compute p-values using bootstrap test. Default to NULL to not make computations.
 Set this to an integer to set the number of bootstraps needed (recommend to be at least 100).}
 
-\item{variability}{a character indicating the stability measure (CV, IQR, MAD, SD). Default is set to CV.}
+\item{variability}{A character indicating the stability measure (CV, IQR, MAD, SD). Default is set to CV.}
+
+\item{method}{Character indicating the method for integration the two stability measures. By default this is set to "weightedMean" with eqaul weights.}
+
+\item{weight}{Vector of two values indicating the weights for each stability measure. By default this value is c(0.5, 0.5).}
 
 \item{workers}{Number of cores to use. Default to 1, which invokes \code{BiocParallel::SerialParam}.
 For workers greater than 1, see the \code{workers} argument in \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
 
-\item{block}{vector of batch labels}
-
-\item{minCelltype}{integer indicating the minimum number of cell types required in each batch}
+\item{block}{Vector of batch labels}
 
 \item{...}{Additional arguments passed to \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
 }
@@ -42,7 +53,7 @@ For workers greater than 1, see the \code{workers} argument in \code{BiocParalle
 Returns a list of key genes.
 }
 \description{
-exprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
+ExprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
 out-of-memory computations. See vignette.
 }
 \examples{
@@ -51,4 +62,5 @@ data('cellbench', package = 'Cepo')
 cellbench
 cepoOutput <- Cepo(logcounts(cellbench), cellbench$celltype)
 cepoOutput
+
 }

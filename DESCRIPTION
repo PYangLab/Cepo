@@ -35,7 +35,8 @@ Imports:
     grDevices,
     patchwork,
     reshape2,
-    BiocParallel
+    BiocParallel,
+    stats
 biocViews: Classification, GeneExpression, SingleCell, Software
 Suggests: 
     knitr,
@@ -47,7 +48,8 @@ Suggests:
     scater,
     scMerge,
     fgsea,
-    escape
+    escape,
+    pheatmap
 VignetteBuilder: knitr
 Depends: 
     R (>= 3.6)
