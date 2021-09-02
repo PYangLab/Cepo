@@ -41,12 +41,13 @@ remotes::install_github("PYangLab/Cepo")
 The differential stability analysis in *Cepo* aims to investigate differential stability patterns between cells of different cell types. To use *Cepo* one needs data with cell type labels (or cluster labels). If no cell-type labels are provided, cells first need to be clustered and classified in groups via some form of clustering algorithms. *Cepo* can then be applied to identify differentially stable genes between cell types.
 
 ## Example data
-Load the example dataset, a small subset of the [Cellbench](https://github.com/LuyiTian/sc_mixology) dataset consisting of 3 cell types 895 cells and 894 genes.
+Load the example dataset, a small and randomly sampled subset of the [Cellbench](https://github.com/LuyiTian/sc_mixology) dataset consisting of 3 cell types 895 cells and 894 genes.
 ```{r load-example-data, message = FALSE}
 library(Cepo)
 library(SingleCellExperiment)
 data("cellbench", package = "Cepo")
 cellbench
+cellbench = cellbench[!duplicated(rownames(cellbench)),]
 ```
 
 Columns of the `colData` indicate the individual id and various metadata for each cell. `colData` contains `celltype` labels, which will be required to run *Cepo*. Differential stability analysis performed on the entire cell type repertoire.
@@ -83,24 +84,31 @@ In many cases, it is beneficial to perform filtering of lowly expressed genes pr
 ```{r filtering-lowly-expressed-genes}
 ds_res_zprop = Cepo::Cepo(exprsMat = logcounts(cellbench),
                           cellTypes = cellbench$celltype,
-                          exprsPct = 0.05)
+                          exprsPct = 0.5)
 ```
 
-The parameter `logfc` specifies minimum log fold-change in gene expression. A value of `0.2` will keep any genes that show at least `abs(0.2)`  log fold change in gene expression in at least one cell type.
+The parameter `logfc` specifies minimum log fold-change in gene expression. A value of `0.2` will keep any genes that show at least `abs(0.2)`  log fold change in gene expression in at least one cell type. By default, this value is `NULL`.
 
 ```{r filtering-logfc}
-ds_res_logfc = Cepo::Cepo(exprsMat = logcounts(cellbench),
-                          cellTypes = cellbench$celltype,
-                          logfc = 0.2,
-                          minCells = 2)
+ds_res_logfc = Cepo(exprsMat = logcounts(cellbench),
+                    cellTypes = cellbench$celltype,
+                    logfc = 1)
 ```
 
-###
-The second element of the `Cepo` function is a `DataFrame` of p-values associated with the DS statistics. In this `DataFrame`, each column corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. By default, the `Cepo` function do not compute these p-values and requires the users to set the `computePvalue` argument to a number of bootstrap runs required (we recommend this to be at least 100). 
+`Cepo` outputs some useful stats, including the number of genes `nrow` and gene names `rownames`. By checking `nrow`, we can see that as expected with filtering the number of genes included in the `Cepo` run becomes fewer.
+```{r}
+ds_res$stats@nrows
+ds_res_zprop$stats@nrows
+ds_res_logfc$stats@nrows
+```
+
+### Computing p-values
+The second element of the `Cepo` function is a `DataFrame` of p-values associated with the DS statistics. In this `DataFrame`, each column corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. By default, the `Cepo` function do not compute these p-values and requires the users to set the `computePvalue` argument to a number of bootstrap runs required (we recommend this to be at least 1000). 
 
 ```{r return-p-values}
 ds_res_pvalues = Cepo(exprsMat = logcounts(cellbench),
-              cellType = cellbench$celltype, computePvalue = 100)
+                      cellType = cellbench$celltype, 
+                      computePvalue = 100) # we use a value of 100 for demonstration purposes
 
 ds_res_pvalues
 ```
@@ -133,7 +141,7 @@ plotDensities(x = cellbench,
 
 # Running Cepo in a pipeline
 ## Example data
-We will load an example dataset, a small subset of the pancreas data from the [scMerge paper](https://www.pnas.org/content/116/20/9775) consisting of 3 batches, 2 cell types, 528 cells, and 1358 genes.
+We will load an example dataset, a small, randomly subsampled subset of the human pancreas datasets from the [scMerge paper](https://www.pnas.org/content/116/20/9775) consisting of 3 batches, 2 cell types, 528 cells, and 1358 genes.
 ```{r}
 data("sce_pancreas", package = "Cepo")
 sce_pancreas
@@ -184,7 +192,7 @@ ds_res = Cepo::Cepo(exprsMat = assay(corrected, "scMerge"),
 ```
 
 ## Running Cepo by batch
-Rather than running *Cepo* on the corrected values, we can run the differential analysis independently on individual batches using the `block` argument. By default, the `block` argument is set to `NULL`, ignoring batch information. If batches are present and the data is not corrected for batch effect, ensure you run the analyses en block. 
+Rather than running *Cepo* on the corrected values, we can run the differential analysis independently on individual batches using the `block` argument. By default, the `block` argument is set to `NULL`, ignoring batch information. If batches are present and the data is not corrected for batch effect, ensure you run the analyses by block. 
 ```{r}
 ds_res_batches = Cepo::Cepo(exprsMat = logcounts(sce),
                             cellTypes = sce$cellTypes,
@@ -197,7 +205,7 @@ Note that the resulting output in a list of `Cepo` class objects where each slot
 names(ds_res_batches)
 ```
 
-We can confirm 
+We can confirm that the `Cepo` statistics from across batches demonstrate a strong correlation. The clustered correlation heatmap below shows that there is high correlation between the scores of the same cell type across batches.
 ```{r fig.height=10, fig.width=10}
 idx = Reduce(intersect, lapply(ds_res_batches, function(x) names(x$stats@listData[[1]])))
 
@@ -221,13 +229,26 @@ pheatmap::pheatmap(cor(combinedRes),
 ## Downstream analyses using Cepo genes
 
 ### Marker gene identification and visualisation 
-```{r}
+One of the useful applications of `Cepo` is to find marker genes or cell identity genes on clustered data. We can visualise the top three marker genes for beta and ductal cells on the PCA.
+```{r marker-genes, fig.height=10, fig.width=15}
+cepo_genes = Cepo::topGenes(ds_res_batches$average, n = 3)
 
+markersPlot = lapply(cepo_genes, function(x) {
+  pp = lapply(x, function(gene) {
+  p = scater::plotPCA(
+  corrected,
+  colour_by = gene,
+  shape_by = "cellTypes")
+  return(p)
+  })
+  pp = patchwork::wrap_plots(pp, ncol = 3) + patchwork::plot_layout(guides = "auto")
+  return(pp)
+})
+patchwork::wrap_plots(markersPlot, nrow = 2)
 ```
 
-
 ### Gene set enrichment analysis
-We can also perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the cell identity gene scores from the `Cepo` package. As an example, we will perform gene set enrichment analysis using the `fgsea` and  `escape` package.
+We can also perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the cell identity gene scores generated from the `Cepo` package. As an example, we will perform gene set enrichment analysis using the `fgsea` and  `escape` package.
 ```{r gsea, message = FALSE}
 library(escape)
 library(fgsea)
@@ -250,7 +271,7 @@ Note the top 5 enriched pathways for `beta cells`.
 enriched_beta[1:5]
 ```
 
-We can visualise the enrichment using the `plotEnrichment` function from the `fgsea` package.
+Finally, we can visualise the enrichment using the `plotEnrichment` function from the `fgsea` package.
 ```{r fig.height=5, fig.width=5}
 plotEnrichment(hallmarkList[["HALLMARK_PANCREAS_BETA_CELLS"]],
                sort(ds_res_batches$average$stats@listData$beta)) + labs(title="HALLMARK_PANCREAS_BETA_CELLS")
