@@ -14,10 +14,11 @@
 #' @param minCelltype Integer indicating the minimum number of cell types required in each batch
 #' @param minCells Integer indicating the minimum number of cells required within a cell type
 #' @param ... Additional arguments passed to `BiocParallel::MulticoreParam` and `BiocParallel::SnowParam`. 
-#' @importFrom DelayedMatrixStats rowSums2 rowMeans2 rowSds stats
+#' @importFrom DelayedMatrixStats rowSums2 rowMeans2 rowSds
 #' @importFrom DelayedArray cbind
 #' @importFrom HDF5Array HDF5Array
 #' @importFrom BiocParallel SerialParam MulticoreParam SnowParam bplapply
+#' @importFrom stats pnorm pchisq
 #' @return Returns a list of key genes.
 #' @description ExprsMat accepts various matrix objects, including DelayedArray and HDF5Array for
 #' out-of-memory computations. See vignette.
