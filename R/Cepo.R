@@ -220,6 +220,7 @@ bootCepo <- function(exprsMat,
                      logfc, 
                      variability, 
                      method,
+                     weight,
                      singleResult, 
                      times, 
                      workers = 1L, ...) {
