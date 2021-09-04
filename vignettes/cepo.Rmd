@@ -99,7 +99,7 @@ ds_res_logfc = Cepo(exprsMat = logcounts(cellbench),
 ```{r}
 nrow(ds_res$stats)
 nrow(ds_res_zprop$stats)
-nrow(ds_res_stats$stats)
+nrow(ds_res_logfc$stats)
 ```
 
 ### Computing p-values
