@@ -12,6 +12,9 @@ For workers greater than 1, see the \code{workers} argument in \code{BiocParalle
 
 \item{...}{Additional arguments passed to \code{BiocParallel::MulticoreParam} and \code{BiocParallel::SnowParam}.}
 }
+\value{
+Parameters for parallel computing depending on OS
+}
 \description{
 Setting parallel params based on operating platform
 }

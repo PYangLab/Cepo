@@ -37,7 +37,7 @@ Imports:
     reshape2,
     BiocParallel,
     stats
-biocViews: Classification, GeneExpression, SingleCell, Software
+biocViews: Classification, GeneExpression, SingleCell, Software, Sequencing, DifferentialExpression
 Suggests: 
     knitr,
     rmarkdown,

@@ -97,9 +97,9 @@ ds_res_logfc = Cepo(exprsMat = logcounts(cellbench),
 
 `Cepo` outputs some useful stats, including the number of genes `nrow` and gene names `rownames`. By checking `nrow`, we can see that as expected with filtering the number of genes included in the `Cepo` run becomes fewer.
 ```{r}
-ds_res$stats@nrows
-ds_res_zprop$stats@nrows
-ds_res_logfc$stats@nrows
+nrow(ds_res$stats)
+nrow(ds_res_zprop$stats)
+nrow(ds_res_stats$stats)
 ```
 
 ### Computing p-values

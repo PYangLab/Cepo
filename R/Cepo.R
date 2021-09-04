@@ -46,15 +46,15 @@ Cepo <- function(exprsMat, cellTypes,
     stopifnot(ncol(exprsMat) == length(cellTypes))
     
     variability <- match.arg(variability, c("CV", "SD", "MAD", "IQR"),
-                               several.ok = FALSE)
+                             several.ok = FALSE)
     
     method <- match.arg(method, c("weightedMean", "Stouffer", "OSP", "Fisher", "maxP"),
-                             several.ok = FALSE)
+                        several.ok = FALSE)
     
     if (!is.null(block)) {
         stopifnot(ncol(exprsMat) == length(block))
     }
-        
+    
     if(is.null(rownames(exprsMat))) {
         ## Add rownames if missing
         message("Gene names are missing in the input matrix, automatically adding `rownames`.")
@@ -83,43 +83,19 @@ Cepo <- function(exprsMat, cellTypes,
             exprsMat_batch <- exprsMat[, block == batch]
             cellTypes_batch <- cellTypes[block == batch]
             
-            ## A single run of oneCepo gives a list of output
-            singleResult <- oneCepo(exprsMat = exprsMat_batch, 
-                                    cellTypes = cellTypes_batch, 
-                                    minCells = minCells, 
-                                    method = method,
-                                    weight = weight,
-                                    exprsPct = exprsPct, 
-                                    logfc = logfc,
-                                    variability = variability,
-                                    workers = workers, ...)
-            ## Export Cepo outputs as a DataFrame
-            singleStatsResult <- S4Vectors::DataFrame(sortList(singleResult))
+            singleBatch <- singleBatchCepo(exprsMat = exprsMat, 
+                                           cellTypes = cellTypes, 
+                                           minCells = minCells, 
+                                           exprsPct = exprsPct, 
+                                           logfc = logfc,
+                                           method = method,
+                                           weight = weight,
+                                           variability = variability,
+                                           computePvalue = computePvalue,
+                                           workers = workers, ...)
             
-            if (is.null(computePvalue)) {
-                ## If no need to compute p-values, then that is it.
-                result <- list(stats = singleStatsResult, pvalues = NULL)
-            } else {
-                ## Coerce the input to an integer
-                times <- as.integer(computePvalue)
-                ## Pass onto a boot function for computation
-                listPvals <- bootCepo(exprsMat = exprsMat_batch, 
-                                      cellTypes = cellTypes_batch, 
-                                      minCells = minCells, 
-                                      exprsPct = exprsPct, 
-                                      method = method,
-                                      weight = weight,
-                                      logfc = logfc,
-                                      variability = variability,
-                                      singleResult = singleResult, 
-                                      times = times,
-                                      workers = workers, ...)
-                ## The output has two components, one DataFrame of stats and another for p-values
-                result <- list(stats = singleStatsResult, 
-                               pvalues = S4Vectors::DataFrame(sortList(listPvals)))
-            }  ## End else
-            class(result) <- c("Cepo", class(result))
-            return(result)
+            return(singleBatch)
+            
         })
         names(batch_result) = batches
         
@@ -137,7 +113,7 @@ Cepo <- function(exprsMat, cellTypes,
         
         
         if (is.null(computePvalue)) {
-        
+            
             averageResult <- list(stats = averageStatsResult, pvalues = NULL)
             
         } else {
@@ -160,44 +136,18 @@ Cepo <- function(exprsMat, cellTypes,
         
     } else {
         
-        ## A single run of oneCepo gives a list of output
-        singleResult <- oneCepo(exprsMat = exprsMat, 
-                                cellTypes = cellTypes, 
-                                minCells = minCells, 
-                                exprsPct = exprsPct, 
-                                logfc = logfc,
-                                method = method,
-                                weight = weight,
-                                variability = variability,
-                                workers = workers, ...)
-        ## Export Cepo outputs as a DataFrame
-        singleStatsResult <- S4Vectors::DataFrame(sortList(singleResult))
+        singleBatch <- singleBatchCepo(exprsMat = exprsMat, 
+                                       cellTypes = cellTypes, 
+                                       minCells = minCells, 
+                                       exprsPct = exprsPct, 
+                                       logfc = logfc,
+                                       method = method,
+                                       weight = weight,
+                                       variability = variability,
+                                       computePvalue = computePvalue,
+                                       workers = workers, ...)
         
-        if (is.null(computePvalue)) {
-            ## If no need to compute p-values, then that is it.
-            result <- list(stats = singleStatsResult, pvalues = NULL)
-        } else {
-            ## Coerce the input to an integer
-            times <- as.integer(computePvalue)
-            ## Pass onto a boot function for computation
-            listPvals <- bootCepo(exprsMat = exprsMat, 
-                                  cellTypes = cellTypes, 
-                                  minCells = minCells, 
-                                  exprsPct = exprsPct, 
-                                  weight = weight,
-                                  method = method,
-                                  logfc = logfc,
-                                  variability = variability,
-                                  singleResult = singleResult, 
-                                  times = times, 
-                                  workers = workers, ...)
-            ## The output has two components, one DataFrame of stats and another for p-values
-            result <- list(stats = singleStatsResult, 
-                           pvalues = S4Vectors::DataFrame(sortList(listPvals)))
-        }  ## End else
-        class(result) <- c("Cepo", class(result))
-        return(result)
-        
+        return(singleBatch)
     }
     
 }
@@ -280,7 +230,7 @@ oneCepo <- function(exprsMat,
         for (i in seq_along(cts)) {
             idx <- which(cellTypes == cts[i])
             logfc.list[[i]] <- abs(log(x = rowMeans_withnames(mat = expm1(x = exprsMat[, idx, drop = FALSE])) + 1, base = 2) - 
-                                        log(x = rowMeans_withnames(mat = expm1(x = exprsMat[, -idx, drop = FALSE])) + 1, base = 2)) > logfc
+                                       log(x = rowMeans_withnames(mat = expm1(x = exprsMat[, -idx, drop = FALSE])) + 1, base = 2)) > logfc
         }
         names(logfc.list) <- cts
         keep <- rowSums_withnames(do.call(DelayedArray::cbind, logfc.list)) > 0
@@ -288,13 +238,13 @@ oneCepo <- function(exprsMat,
     }
     
     listIndexCelltypes <- lapply(cts, function(thisCelltypeName){which(cellTypes == thisCelltypeName)})
-
+    
     segIdx.list <- BiocParallel::bplapply(
         X = listIndexCelltypes,
         FUN = function(thisCelltypeIndices){
             if(length(thisCelltypeIndices) < minCells){ 
                 ## If there is insufficient number of cells, we return NA's
-                message(paste0("Less than ",  minCells, " cells found in some cell types, returning NA"))
+                message("Less than ",  minCells, " cells found in some cell types, returning NA")
                 return(NA)
             } else {
                 return(segIndex(exprsMat[, thisCelltypeIndices, drop = FALSE], 
@@ -308,6 +258,56 @@ oneCepo <- function(exprsMat,
     segGenes <- consensusSegIdx(segMat)
     result <- segGenes
     return(result)
+}
+
+singleBatchCepo <- function(exprsMat, 
+                            cellTypes, 
+                            minCells = minCells, 
+                            variability = variability, 
+                            exprsPct = NULL, 
+                            logfc = NULL,
+                            method = method,
+                            weight = weight,
+                            computePvalue = NULL,
+                            workers = 1L, ...) {
+    
+    singleResult <- oneCepo(exprsMat = exprsMat, 
+                            cellTypes = cellTypes, 
+                            minCells = minCells, 
+                            exprsPct = exprsPct, 
+                            logfc = logfc,
+                            method = method,
+                            weight = weight,
+                            variability = variability,
+                            workers = workers, ...)
+    ## Export Cepo outputs as a DataFrame
+    singleStatsResult <- S4Vectors::DataFrame(sortList(singleResult))
+    
+    if (is.null(computePvalue)) {
+        ## If no need to compute p-values, then that is it.
+        result <- list(stats = singleStatsResult, pvalues = NULL)
+    } else {
+        ## Coerce the input to an integer
+        times <- as.integer(computePvalue)
+        ## Pass onto a boot function for computation
+        listPvals <- bootCepo(exprsMat = exprsMat, 
+                              cellTypes = cellTypes, 
+                              minCells = minCells, 
+                              exprsPct = exprsPct, 
+                              weight = weight,
+                              method = method,
+                              logfc = logfc,
+                              variability = variability,
+                              singleResult = singleResult, 
+                              times = times, 
+                              workers = workers, ...)
+        ## The output has two components, one DataFrame of stats and another for p-values
+        result <- list(stats = singleStatsResult, 
+                       pvalues = S4Vectors::DataFrame(sortList(listPvals)))
+    }  ## End else
+    class(result) <- c("Cepo", class(result))
+    return(result)
+    
 }
 
 segIndex <- function(mat, stability, method, weight) {
@@ -329,7 +329,7 @@ segIndex <- function(mat, stability, method, weight) {
     x1 <- rank(nz)/(length(nz) + 1)
     x2 <- 1 - rank(s)/(length(s) + 1)
     
-   #segIdx <- rowMeans_withnames(DelayedArray::cbind(x1, x2))
+    #segIdx <- rowMeans_withnames(DelayedArray::cbind(x1, x2))
     
     if (method == "weightedMean") {
         segIdx <- rowMeansWeighted_withnames(DelayedArray::cbind(x1, x2), weight)
@@ -388,7 +388,7 @@ segIdxList2Mat <- function(segIdx.list) {
     segMat <- matrix(NA, nrow = length(allGenes), ncol = length(segIdx.list))
     rownames(segMat) <- allGenes
     colnames(segMat) <- names(segIdx.list)
-
+    
     for (i in seq_along(segIdx.list)) {
         si <- segIdx.list[[i]]
         segMat[names(si), i] <- si
@@ -398,11 +398,11 @@ segIdxList2Mat <- function(segIdx.list) {
 
 consensusSegIdx <- function(mat) {
     CIGs2 <- lapply(seq_len(ncol(mat)),
-                   function(i){
-                       meanAvgRank <- DelayedMatrixStats::rowMeans2(-(mat[, -i, drop = FALSE] - mat[, i, drop = TRUE]))
-                       names(meanAvgRank) <- rownames(mat)
-                       return(sort(meanAvgRank, decreasing = TRUE))
-                   })
+                    function(i){
+                        meanAvgRank <- DelayedMatrixStats::rowMeans2(-(mat[, -i, drop = FALSE] - mat[, i, drop = TRUE]))
+                        names(meanAvgRank) <- rownames(mat)
+                        return(sort(meanAvgRank, decreasing = TRUE))
+                    })
     names(CIGs2) <- colnames(mat)
     return(CIGs2)
 }
@@ -441,6 +441,7 @@ geneStats <- function(Tstat, method = "OSP")
 #' @param workers Number of cores to use. Default to 1, which invokes `BiocParallel::SerialParam`.
 #' For workers greater than 1, see the `workers` argument in `BiocParallel::MulticoreParam` and `BiocParallel::SnowParam`. 
 #' @param ... Additional arguments passed to `BiocParallel::MulticoreParam` and `BiocParallel::SnowParam`. 
+#' @return Parameters for parallel computing depending on OS
 #' @examples 
 #' # system.time(BiocParallel::bplapply(1:3, FUN = function(i){Sys.sleep(i)}, 
 #' # BPPARAM = setCepoBPPARAM(workers = 1)))
