@@ -81,7 +81,7 @@
       The University of Sydney<br><a class="author_email" href="mailto:#"></a><a href="mailto:hani.kim127@gmail.com" class="email">hani.kim127@gmail.com</a>
       </address>
                   
-            <h4 class="date">09/02/2021</h4>
+            <h4 class="date">09/04/2021</h4>
       
       
       <div class="hidden name"><code>cepo.Rmd</code></div>
@@ -221,13 +221,13 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
                     logfc <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p><code>Cepo</code> outputs some useful stats, including the number of genes <code>nrow</code> and gene names <code>rownames</code>. By checking <code>nrow</code>, we can see that as expected with filtering the number of genes included in the <code>Cepo</code> run becomes fewer.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res</span><span class="op">$</span><span class="va">stats</span><span class="op">@</span><span class="va">nrows</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ds_res</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 889</code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res_zprop</span><span class="op">$</span><span class="va">stats</span><span class="op">@</span><span class="va">nrows</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ds_res_zprop</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 841</code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res_logfc</span><span class="op">$</span><span class="va">stats</span><span class="op">@</span><span class="va">nrows</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ds_res_logfc</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 853</code></pre>
 </div>
 <div id="computing-p-values" class="section level3">
@@ -266,11 +266,11 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## TDRD9              1         0         0
 ## TNNI3              1         0         0
 ## ...              ...       ...       ...
-## STK24              0      1.00         1
-## CPVL               0      0.99         1
-## BBOX1-AS1          0      1.00         1
-## COL4A2             0      1.00         1
-## KCNK1              0      1.00         1
+## STK24              0         1         1
+## CPVL               0         1         1
+## BBOX1-AS1          0         1         1
+## COL4A2             0         1         1
+## KCNK1              0         1         1
 ## 
 ## attr(,"class")
 ## [1] "Cepo" "list"</code></pre>
@@ -450,7 +450,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
                   stats    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">@</span><span class="va">listData</span><span class="op">$</span><span class="va">beta</span><span class="op">)</span>,
                   minSize <span class="op">=</span> <span class="fl">15</span>,
                   maxSize <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam, : There are ties in the preranked stats (1% of the list).
+<pre><code>## Warning in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam, : There are ties in the preranked stats (3.78% of the list).
 ## The order of those tied genes will be arbitrary, which may produce unexpected results.</code></pre>
 <pre><code>## Warning in fgseaMultilevel(...): For some pathways, in reality P-values are less
 ## than 1e-10. You can set the `eps` argument to zero for better estimation.</code></pre>
@@ -460,12 +460,12 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 <p>Note the top 5 enriched pathways for <code>beta cells</code>.</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">enriched_beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
-<pre><code>##       HALLMARK_PANCREAS_BETA_CELLS   HALLMARK_TNFA_SIGNALING_VIA_NFKB 
-##                           8.420216                           6.679000 
-## HALLMARK_INTERFERON_GAMMA_RESPONSE           HALLMARK_APICAL_JUNCTION 
-##                           5.880625                           2.771589 
+<pre><code>##   HALLMARK_TNFA_SIGNALING_VIA_NFKB       HALLMARK_PANCREAS_BETA_CELLS 
+##                           8.420216                           7.708891 
+##           HALLMARK_APICAL_JUNCTION HALLMARK_INTERFERON_GAMMA_RESPONSE 
+##                           3.034346                           3.034346 
 ##               HALLMARK_P53_PATHWAY 
-##                           2.118496</code></pre>
+##                           2.527742</code></pre>
 <p>Finally, we can visualise the enrichment using the <code>plotEnrichment</code> function from the <code>fgsea</code> package.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/plotEnrichment.html">plotEnrichment</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">[[</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">]</span><span class="op">]</span>,
@@ -621,7 +621,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## [109] BiocNeighbors_1.10.0      data.table_1.14.0        
 ## [111] bitops_1.0-7              irlba_2.3.3              
 ## [113] patchwork_1.1.1           R6_2.5.1                 
-## [115] latticeExtra_0.6-29       bookdown_0.23            
+## [115] latticeExtra_0.6-29       bookdown_0.24            
 ## [117] KernSmooth_2.23-20        gridExtra_2.3            
 ## [119] vipor_0.4.5               MASS_7.3-54              
 ## [121] gtools_3.9.2              rprojroot_2.0.2          
