@@ -461,11 +461,11 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">enriched_beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>##   HALLMARK_TNFA_SIGNALING_VIA_NFKB       HALLMARK_PANCREAS_BETA_CELLS 
-##                           8.420216                           7.708891 
-##           HALLMARK_APICAL_JUNCTION HALLMARK_INTERFERON_GAMMA_RESPONSE 
-##                           3.034346                           3.034346 
+##                           8.420216                           8.039762 
+## HALLMARK_INTERFERON_GAMMA_RESPONSE           HALLMARK_APICAL_JUNCTION 
+##                           3.011137                           3.011137 
 ##               HALLMARK_P53_PATHWAY 
-##                           2.527742</code></pre>
+##                           2.483515</code></pre>
 <p>Finally, we can visualise the enrichment using the <code>plotEnrichment</code> function from the <code>fgsea</code> package.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/plotEnrichment.html">plotEnrichment</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">[[</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">]</span><span class="op">]</span>,
