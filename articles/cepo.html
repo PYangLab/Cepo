@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Cepo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -266,11 +266,11 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## TDRD9              1         0         0
 ## TNNI3              1         0         0
 ## ...              ...       ...       ...
-## STK24              0      1.00         1
-## CPVL               0      0.99         1
-## BBOX1-AS1          0      1.00         1
-## COL4A2             0      1.00         1
-## KCNK1              0      1.00         1
+## STK24              0         1         1
+## CPVL               0         1         1
+## BBOX1-AS1          0         1         1
+## COL4A2             0         1         1
+## KCNK1              0         1         1
 ## 
 ## attr(,"class")
 ## [1] "Cepo" "list"</code></pre>
@@ -391,14 +391,15 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 <pre><code>## [1] "batch 1" "batch 4" "batch 5" "average"</code></pre>
 <p>We can confirm that the <code>Cepo</code> statistics from across batches demonstrate a strong correlation. The clustered correlation heatmap below shows that there is high correlation between the scores of the same cell type across batches.</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">idx</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Reduce</a></span><span class="op">(</span><span class="va">intersect</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">@</span><span class="va">listData</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">idx</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Reduce</a></span><span class="op">(</span><span class="va">intersect</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">combinedRes</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">cbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">cbind</span>, <span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">@</span><span class="va">listData</span><span class="op">)</span><span class="op">[</span><span class="va">idx</span>,<span class="op">]</span>
-<span class="op">)</span><span class="op">)</span>
+<span class="va">combinedRes</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">cbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> 
+  <span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span><span class="va">idx</span>,<span class="op">]</span>
+<span class="op">)</span><span class="op">)</span><span class="op">)</span>
+
 <span class="va">batches</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">cty</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span>, use.name <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">batches</span>, <span class="st">"_"</span>, <span class="va">cty</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"[.]"</span>, <span class="st">"_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span><span class="op">)</span>
   
 <span class="va">annot</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
   batch <span class="op">=</span> <span class="va">batches</span>,
@@ -447,7 +448,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">hallmark</span><span class="op">@</span><span class="va">.Data</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">@</span><span class="va">setName</span><span class="op">)</span>
 
 <span class="va">fgseaRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html">fgsea</a></span><span class="op">(</span>pathways <span class="op">=</span> <span class="va">hallmarkList</span>, 
-                  stats    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">@</span><span class="va">listData</span><span class="op">$</span><span class="va">beta</span><span class="op">)</span>,
+                  stats    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>,<span class="st">"beta"</span><span class="op">]</span><span class="op">)</span>,
                   minSize <span class="op">=</span> <span class="fl">15</span>,
                   maxSize <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam, : There are ties in the preranked stats (1% of the list).
@@ -461,15 +462,15 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">enriched_beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>##       HALLMARK_PANCREAS_BETA_CELLS   HALLMARK_TNFA_SIGNALING_VIA_NFKB 
-##                           8.420216                           7.007616 
+##                           8.420216                           6.799112 
 ## HALLMARK_INTERFERON_GAMMA_RESPONSE           HALLMARK_APICAL_JUNCTION 
-##                           6.203303                           2.380783 
+##                           6.236667                           2.516462 
 ##           HALLMARK_MITOTIC_SPINDLE 
-##                           2.158610</code></pre>
+##                           2.292588</code></pre>
 <p>Finally, we can visualise the enrichment using the <code>plotEnrichment</code> function from the <code>fgsea</code> package.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/plotEnrichment.html">plotEnrichment</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">[[</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">]</span><span class="op">]</span>,
-               <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">@</span><span class="va">listData</span><span class="op">$</span><span class="va">beta</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">labs</span><span class="op">(</span>title<span class="op">=</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">)</span></code></pre></div>
+               <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>, <span class="st">"beta"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">labs</span><span class="op">(</span>title<span class="op">=</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">)</span></code></pre></div>
 <p><img src="cepo_files/figure-html/unnamed-chunk-12-1.png" width="480"></p>
 </div>
 </div>
@@ -561,7 +562,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## [17] GenomeInfoDb_1.28.4         IRanges_2.26.0             
 ## [19] S4Vectors_0.30.0            BiocGenerics_0.38.0        
 ## [21] MatrixGenerics_1.4.3        matrixStats_0.60.1         
-## [23] Cepo_1.0.0                  BiocStyle_2.20.2           
+## [23] Cepo_0.99.0                 BiocStyle_2.20.2           
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] backports_1.2.1           fastmatch_1.1-3          
