@@ -207,14 +207,15 @@ names(ds_res_batches)
 
 We can confirm that the `Cepo` statistics from across batches demonstrate a strong correlation. The clustered correlation heatmap below shows that there is high correlation between the scores of the same cell type across batches.
 ```{r fig.height=10, fig.width=10}
-idx = Reduce(intersect, lapply(ds_res_batches, function(x) names(x$stats@listData[[1]])))
+idx = Reduce(intersect, lapply(ds_res_batches, function(x) names(x$stats[, 1])))
 
-combinedRes = do.call(cbind, lapply(ds_res_batches, function(x) 
-  do.call(cbind, x$stats@listData)[idx,]
-))
+combinedRes = as.data.frame(do.call(cbind, lapply(ds_res_batches, function(x) 
+  x$stats[idx,]
+)))
+
 batches = rep(names(ds_res_batches), sapply(ds_res_batches, function(x) length(x$stats)))
 cty = unlist(lapply(ds_res_batches, function(x) names(x$stats)), use.name = FALSE)
-colnames(combinedRes) = paste0(batches, "_", cty)
+colnames(combinedRes) = gsub("[.]", "_", colnames(combinedRes))
   
 annot = data.frame(
   batch = batches,
@@ -258,7 +259,7 @@ hallmarkList <- lapply(hallmark@.Data, function(x) x@geneIds)
 names(hallmarkList) <- lapply(hallmark@.Data, function(x) x@setName)
 
 fgseaRes <- fgsea(pathways = hallmarkList, 
-                  stats    = sort(ds_res_batches$average$stats@listData$beta),
+                  stats    = sort(ds_res_batches$average$stats[,"beta"]),
                   minSize = 15,
                   maxSize = 500)
 
@@ -274,7 +275,7 @@ enriched_beta[1:5]
 Finally, we can visualise the enrichment using the `plotEnrichment` function from the `fgsea` package.
 ```{r fig.height=5, fig.width=5}
 plotEnrichment(hallmarkList[["HALLMARK_PANCREAS_BETA_CELLS"]],
-               sort(ds_res_batches$average$stats@listData$beta)) + labs(title="HALLMARK_PANCREAS_BETA_CELLS")
+               sort(ds_res_batches$average$stats[, "beta"])) + labs(title="HALLMARK_PANCREAS_BETA_CELLS")
 ```
 
 

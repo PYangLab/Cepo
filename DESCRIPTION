@@ -1,6 +1,6 @@
 Package: Cepo
 Title: Cepo for the identification of differentially stable genes
-Version: 1.0.0
+Version: 0.99.0
 Authors@R: 
     c(
     person(given = "Hani Jieun",
@@ -24,10 +24,8 @@ Imports:
     DelayedMatrixStats,
     DelayedArray,
     HDF5Array,
-    limma,
     S4Vectors,
     methods,
-    statmod,
     SingleCellExperiment,
     SummarizedExperiment,
     ggplot2,
@@ -53,4 +51,4 @@ Suggests:
     patchwork
 VignetteBuilder: knitr
 Depends: 
-    R (>= 3.6)
+    R (>= 4.1)
