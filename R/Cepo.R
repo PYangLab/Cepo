@@ -83,8 +83,8 @@ Cepo <- function(exprsMat, cellTypes,
             exprsMat_batch <- exprsMat[, block == batch]
             cellTypes_batch <- cellTypes[block == batch]
             
-            singleBatch <- singleBatchCepo(exprsMat = exprsMat, 
-                                           cellTypes = cellTypes, 
+            singleBatch <- singleBatchCepo(exprsMat = exprsMat_batch, 
+                                           cellTypes = cellTypes_batch, 
                                            minCells = minCells, 
                                            exprsPct = exprsPct, 
                                            logfc = logfc,
