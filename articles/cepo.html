@@ -81,7 +81,7 @@
       The University of Sydney<br><a class="author_email" href="mailto:#"></a><a href="mailto:hani.kim127@gmail.com" class="email">hani.kim127@gmail.com</a>
       </address>
                   
-            <h4 class="date">09/04/2021</h4>
+            <h4 class="date">09/15/2021</h4>
       
       
       <div class="hidden name"><code>cepo.Rmd</code></div>
@@ -266,11 +266,11 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## TDRD9              1         0         0
 ## TNNI3              1         0         0
 ## ...              ...       ...       ...
-## STK24              0         1         1
-## CPVL               0         1         1
-## BBOX1-AS1          0         1         1
-## COL4A2             0         1         1
-## KCNK1              0         1         1
+## STK24              0      1.00         1
+## CPVL               0      0.99         1
+## BBOX1-AS1          0      1.00         1
+## COL4A2             0      1.00         1
+## KCNK1              0      1.00         1
 ## 
 ## attr(,"class")
 ## [1] "Cepo" "list"</code></pre>
@@ -450,7 +450,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
                   stats    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">@</span><span class="va">listData</span><span class="op">$</span><span class="va">beta</span><span class="op">)</span>,
                   minSize <span class="op">=</span> <span class="fl">15</span>,
                   maxSize <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam, : There are ties in the preranked stats (3.78% of the list).
+<pre><code>## Warning in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam, : There are ties in the preranked stats (1% of the list).
 ## The order of those tied genes will be arbitrary, which may produce unexpected results.</code></pre>
 <pre><code>## Warning in fgseaMultilevel(...): For some pathways, in reality P-values are less
 ## than 1e-10. You can set the `eps` argument to zero for better estimation.</code></pre>
@@ -460,12 +460,12 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 <p>Note the top 5 enriched pathways for <code>beta cells</code>.</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">enriched_beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
-<pre><code>##   HALLMARK_TNFA_SIGNALING_VIA_NFKB       HALLMARK_PANCREAS_BETA_CELLS 
-##                           8.420216                           8.039762 
+<pre><code>##       HALLMARK_PANCREAS_BETA_CELLS   HALLMARK_TNFA_SIGNALING_VIA_NFKB 
+##                           8.420216                           7.007616 
 ## HALLMARK_INTERFERON_GAMMA_RESPONSE           HALLMARK_APICAL_JUNCTION 
-##                           3.011137                           3.011137 
-##               HALLMARK_P53_PATHWAY 
-##                           2.483515</code></pre>
+##                           6.203303                           2.380783 
+##           HALLMARK_MITOTIC_SPINDLE 
+##                           2.158610</code></pre>
 <p>Finally, we can visualise the enrichment using the <code>plotEnrichment</code> function from the <code>fgsea</code> package.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/plotEnrichment.html">plotEnrichment</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">[[</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">]</span><span class="op">]</span>,
@@ -558,7 +558,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## [11] scuttle_1.2.1               UpSetR_1.4.0               
 ## [13] SingleCellExperiment_1.14.1 SummarizedExperiment_1.22.0
 ## [15] Biobase_2.52.0              GenomicRanges_1.44.0       
-## [17] GenomeInfoDb_1.28.2         IRanges_2.26.0             
+## [17] GenomeInfoDb_1.28.4         IRanges_2.26.0             
 ## [19] S4Vectors_0.30.0            BiocGenerics_0.38.0        
 ## [21] MatrixGenerics_1.4.3        matrixStats_0.60.1         
 ## [23] Cepo_1.0.0                  BiocStyle_2.20.2           
@@ -572,12 +572,12 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ##  [11] fansi_0.5.0               magrittr_2.0.1           
 ##  [13] checkmate_2.0.0           memoise_2.0.0            
 ##  [15] ScaledMatrix_1.0.0        cluster_2.1.2            
-##  [17] sfsmisc_1.1-11            limma_3.48.3             
+##  [17] sfsmisc_1.1-12            limma_3.48.3             
 ##  [19] Biostrings_2.60.2         annotate_1.70.0          
 ##  [21] bdsmatrix_1.3-4           pkgdown_1.6.1            
 ##  [23] jpeg_0.1-9                colorspace_2.0-2         
 ##  [25] blob_1.2.2                textshaping_0.3.5        
-##  [27] xfun_0.25                 dplyr_1.0.7              
+##  [27] xfun_0.26                 dplyr_1.0.7              
 ##  [29] crayon_1.4.1              RCurl_1.98-1.4           
 ##  [31] graph_1.70.0              survival_3.2-11          
 ##  [33] glue_1.4.2                distr_2.8.0              
@@ -592,7 +592,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ##  [51] bit_4.0.4                 foreign_0.8-81           
 ##  [53] rsvd_1.0.5                proxy_0.4-26             
 ##  [55] Formula_1.2-4             GSVA_1.40.1              
-##  [57] httr_1.4.2                htmlwidgets_1.5.3        
+##  [57] httr_1.4.2                htmlwidgets_1.5.4        
 ##  [59] gplots_3.1.1              RColorBrewer_1.1-2       
 ##  [61] ellipsis_0.3.2            XML_3.99-0.7             
 ##  [63] pkgconfig_2.0.3           farver_2.1.0             
@@ -606,7 +606,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ##  [79] stringr_1.4.0             fastmap_1.1.0            
 ##  [81] yaml_2.2.1                ragg_1.1.3               
 ##  [83] babelgene_21.4            bit64_4.0.5              
-##  [85] knitr_1.33                fs_1.5.0                 
+##  [85] knitr_1.34                fs_1.5.0                 
 ##  [87] caTools_1.18.2            purrr_0.3.4              
 ##  [89] KEGGREST_1.32.0           nlme_3.1-152             
 ##  [91] sparseMatrixStats_1.4.2   compiler_4.1.1           
@@ -618,19 +618,20 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## [103] M3Drop_1.18.0             vctrs_0.3.8              
 ## [105] pillar_1.6.2              lifecycle_1.0.0          
 ## [107] rhdf5filters_1.4.0        BiocManager_1.30.16      
-## [109] BiocNeighbors_1.10.0      data.table_1.14.0        
-## [111] bitops_1.0-7              irlba_2.3.3              
-## [113] patchwork_1.1.1           R6_2.5.1                 
-## [115] latticeExtra_0.6-29       bookdown_0.24            
-## [117] KernSmooth_2.23-20        gridExtra_2.3            
-## [119] vipor_0.4.5               MASS_7.3-54              
-## [121] gtools_3.9.2              rprojroot_2.0.2          
-## [123] withr_2.4.2               GenomeInfoDbData_1.2.6   
-## [125] mgcv_1.8-36               grid_4.1.1               
-## [127] rpart_4.1-15              beachmat_2.8.1           
-## [129] rmarkdown_2.10            DelayedMatrixStats_1.14.3
-## [131] bbmle_1.0.24              numDeriv_2016.8-1.1      
-## [133] base64enc_0.1-3           ggbeeswarm_0.6.0</code></pre>
+## [109] jquerylib_0.1.4           BiocNeighbors_1.10.0     
+## [111] data.table_1.14.0         bitops_1.0-7             
+## [113] irlba_2.3.3               patchwork_1.1.1          
+## [115] R6_2.5.1                  latticeExtra_0.6-29      
+## [117] bookdown_0.24             KernSmooth_2.23-20       
+## [119] gridExtra_2.3             vipor_0.4.5              
+## [121] MASS_7.3-54               gtools_3.9.2             
+## [123] rprojroot_2.0.2           withr_2.4.2              
+## [125] GenomeInfoDbData_1.2.6    mgcv_1.8-36              
+## [127] grid_4.1.1                rpart_4.1-15             
+## [129] beachmat_2.8.1            rmarkdown_2.11           
+## [131] DelayedMatrixStats_1.14.3 bbmle_1.0.24             
+## [133] numDeriv_2016.8-1.1       base64enc_0.1-3          
+## [135] ggbeeswarm_0.6.0</code></pre>
 </div>
   </div>
 
