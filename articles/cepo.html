@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Cepo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.1</span>
       </span>
     </div>
 
@@ -462,11 +462,11 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">enriched_beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>##       HALLMARK_PANCREAS_BETA_CELLS   HALLMARK_TNFA_SIGNALING_VIA_NFKB 
-##                           8.420216                           6.514475 
+##                           8.420216                           7.112102 
 ## HALLMARK_INTERFERON_GAMMA_RESPONSE           HALLMARK_APICAL_JUNCTION 
-##                           5.825013                           2.540746 
+##                           6.083362                           2.374679 
 ##           HALLMARK_MITOTIC_SPINDLE 
-##                           2.283101</code></pre>
+##                           2.374679</code></pre>
 <p>Finally, we can visualise the enrichment using the <code>plotEnrichment</code> function from the <code>fgsea</code> package.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/plotEnrichment.html">plotEnrichment</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">[[</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">]</span><span class="op">]</span>,
@@ -562,7 +562,7 @@ remotes::install_github("PYangLab/Cepo")</a></code></pre>
 ## [17] GenomeInfoDb_1.28.4         IRanges_2.26.0             
 ## [19] S4Vectors_0.30.2            BiocGenerics_0.38.0        
 ## [21] MatrixGenerics_1.4.3        matrixStats_0.61.0         
-## [23] Cepo_0.99.0                 BiocStyle_2.20.2           
+## [23] Cepo_0.99.1                 BiocStyle_2.20.2           
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] backports_1.2.1           fastmatch_1.1-3          
