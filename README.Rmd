@@ -18,6 +18,14 @@ using the `remotes` package:
 remotes::install_github("PYangLab/Cepo")
 ```
 
+You can install the Bioconductor version of _Cepo_ from:
+
+``` r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("Cepo")
+```
+
 To also build the vignettes use:
 
 ``` r

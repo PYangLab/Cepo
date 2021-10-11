@@ -33,8 +33,9 @@ citation("Cepo")
 ## Package installation
 The development version of *Cepo* can be installed with the following command:
 ```
-install.packages("remotes")
-remotes::install_github("PYangLab/Cepo")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("Cepo")
 ```
 
 # Differential stability analysis using Cepo
@@ -255,8 +256,7 @@ library(escape)
 library(fgsea)
 hallmark <- getGeneSets(species = "Homo sapiens", 
                            library = "H")
-hallmarkList <- lapply(hallmark@.Data, function(x) x@geneIds)
-names(hallmarkList) <- lapply(hallmark@.Data, function(x) x@setName)
+hallmarkList <- geneIds(hallmark)
 
 fgseaRes <- fgsea(pathways = hallmarkList, 
                   stats    = sort(ds_res_batches$average$stats[,"beta"]),
