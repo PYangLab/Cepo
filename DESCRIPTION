@@ -1,6 +1,6 @@
 Package: Cepo
 Title: Cepo for the identification of differentially stable genes
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: 
     c(
     person(given = "Hani Jieun",

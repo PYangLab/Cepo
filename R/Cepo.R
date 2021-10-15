@@ -86,7 +86,7 @@ Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct =
         
         ## Select only batches with more than `minCelltype` number of
         ## cell types
-        batches = names(which(rowSums(table(block, cellTypes) > minCells) >=
+        batches <- names(which(rowSums(table(block, cellTypes) > minCells) >=
                                   minCelltype))
         
         ## Run Cepo by batch
@@ -103,22 +103,22 @@ Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct =
             return(singleBatch)
             
         })
-        names(batch_result) = batches
+        names(batch_result) <- batches
         
-        types = unique(unlist(lapply(batch_result, function(x) {
-            names(x$stats@listData)
+        types <- unique(unlist(lapply(batch_result, function(x) {
+            colnames(x$stats)
         })))
-        idx = Reduce(intersect, lapply(batch_result, function(x) {
-            x$stats@rownames
+        idx <- Reduce(intersect, lapply(batch_result, function(x) {
+            rownames(x$stats)
         }))
         
         averageCepo <- lapply(types, function(celltype) {
             mat <- do.call(cbind, lapply(batch_result, function(x) {
-                x$stats@listData[[celltype]][idx]
+                x$stats[idx ,celltype]
             }))
             return(rowMeans(mat))
         })
-        names(averageCepo) = types
+        names(averageCepo) <- types
         averageStatsResult <- S4Vectors::DataFrame(sortList(averageCepo))
         
         
@@ -130,11 +130,11 @@ Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct =
             
             averageCepoPvals <- lapply(types, function(celltype) {
                 mat <- do.call(cbind, lapply(batch_result, function(x) {
-                    x$pvalues@listData[[celltype]][idx]
+                    x$pvalues[idx, celltype]
                 }))
                 return(mat)
             })
-            names(averageCepoPvals) = types
+            names(averageCepoPvals) <- types
             averagePvalResult <- S4Vectors::DataFrame(sortList(averageCepoPvals))
             averageResult <- list(stats = averageStatsResult, pvalues = averagePvalResult)
         }
@@ -417,7 +417,7 @@ geneStats <- function(Tstat, method = "OSP") {
 #' # BPPARAM = setCepoBPPARAM(workers = 1)))
 #' # system.time(BiocParallel::bplapply(1:3, FUN = function(i){Sys.sleep(i)}, 
 #' # BPPARAM = setCepoBPPARAM(workers = 3)))
-setCepoBPPARAM = function(workers = 1L, ...) {
+setCepoBPPARAM <- function(workers = 1L, ...) {
     if (workers == 1) {
         return(BiocParallel::SerialParam())
     } else if (.Platform$OS.type == "windows") {
