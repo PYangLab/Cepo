@@ -81,7 +81,7 @@
       The University of Sydney<br><a class="author_email" href="mailto:#"></a><a href="mailto:hani.kim127@gmail.com" class="email">hani.kim127@gmail.com</a>
       </address>
                   
-            <h4 class="date">10/15/2021</h4>
+            <h4 class="date">11/08/2021</h4>
       
       
       <div class="hidden name"><code>cepo.Rmd</code></div>
@@ -96,10 +96,10 @@
 <p>We introduce <em>Cepo</em>, a method to determine genes governing cell identity from scRNA-seq data. We propose a biologically motivated metric—differential stability (DS)—to define cell identity. Our motivation is driven by the hypothesis that stable gene expression is a key component of cell identity. This hypothesis implies that genes marking a cell type should be (i) expressed and (ii) stable in its expression relative to other cell types. We translate these criteria into a computational framework where, using predefined cell-type labels, we compute a cell-type-specific score to prioritise genes that are differential stably expressed against other cell types between all cell-type pair comparisons.</p>
 <p><em>Cepo</em> is therefore distinct from most methods for differential analysis (e.g., differential expression) that prioritise differences in the mean abundance between cell types. <em>Cepo</em> is able to capture subtle variations in distribution that does not necessarily involve changes in mean. <em>Cepo</em> is particularly suitable for large atlas data as it is computationally efficient and fast. Moreover, <em>Cepo</em> can perform differential stability analysis for multi-group comparisons in single-cell data.</p>
 <p>To access the R code used in the vignettes, type:</p>
-<pre><code><a href="https://rdrr.io/r/utils/browseVignettes.html">browseVignettes("Cepo")</a></code></pre>
+<pre><code>browseVignettes("Cepo")</code></pre>
 <p>Questions relating to <em>Cepo</em> should be reported as a new issue at <em><a href="https://github.com/PYangLab/Cepo/issues">BugReports</a></em>.</p>
 <p>To cite <em>Cepo</em>, type:</p>
-<pre><code><a href="https://rdrr.io/r/utils/citation.html">citation("Cepo")</a></code></pre>
+<pre><code>citation("Cepo")</code></pre>
 <div id="package-installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#package-installation" class="anchor"></a>Package installation</h2>
@@ -137,7 +137,7 @@ BiocManager::install("Cepo")</code></pre>
 <code class="sourceCode R"><span class="va">cellbench</span> <span class="op">=</span> <span class="va">cellbench</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span><span class="op">)</span>,<span class="op">]</span></code></pre></div>
 <p>Columns of the <code>colData</code> indicate the individual id and various metadata for each cell. <code>colData</code> contains <code>celltype</code> labels, which will be required to run <em>Cepo</em>. Differential stability analysis performed on the entire cell type repertoire.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">colData</span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></code></pre></div>
 <pre><code>## DataFrame with 5 rows and 17 columns
 ##             unaligned aligned_unmapped mapped_to_exon mapped_to_intron
 ##             &lt;integer&gt;        &lt;integer&gt;      &lt;integer&gt;        &lt;integer&gt;
@@ -215,7 +215,7 @@ BiocManager::install("Cepo")</code></pre>
 <code class="sourceCode R"><span class="va">ds_res_zprop</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
                           cellTypes <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>,
                           exprsPct <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
-<p>The parameter <code>logfc</code> specifies minimum log fold-change in gene expression. A value of <code>0.2</code> will keep any genes that show at least <code><a href="https://rdrr.io/r/base/MathFun.html">abs(0.2)</a></code> log fold change in gene expression in at least one cell type. By default, this value is <code>NULL</code>.</p>
+<p>The parameter <code>logfc</code> specifies minimum log fold-change in gene expression. A value of <code>0.2</code> will keep any genes that show at least <code>abs(0.2)</code> log fold change in gene expression in at least one cell type. By default, this value is <code>NULL</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ds_res_logfc</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
                     cellTypes <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>,
@@ -374,7 +374,7 @@ BiocManager::install("Cepo")</code></pre>
   shape_by <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></code></pre></div>
 <p><img src="cepo_files/figure-html/unnamed-chunk-6-1.png" width="480"></p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">corrected</span>, <span class="st">"scMerge"</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="va">ds_res</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">corrected</span>, <span class="st">"scMerge"</span><span class="op">)</span>,
               cellType <span class="op">=</span> <span class="va">corrected</span><span class="op">$</span><span class="va">cellTypes</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="running-cepo-by-batch" class="section level2">
@@ -445,7 +445,7 @@ BiocManager::install("Cepo")</code></pre>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ctlab/fgsea/">fgsea</a></span><span class="op">)</span>
 <span class="va">hallmark</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/escape/man/getGeneSets.html">getGeneSets</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"Homo sapiens"</span>, 
                            library <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span>
-<span class="va">hallmarkList</span> <span class="op">&lt;-</span> <span class="fu">geneIds</span><span class="op">(</span><span class="va">hallmark</span><span class="op">)</span>
+<span class="va">hallmarkList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSet-class.html">geneIds</a></span><span class="op">(</span><span class="va">hallmark</span><span class="op">)</span>
 
 <span class="va">fgseaRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html">fgsea</a></span><span class="op">(</span>pathways <span class="op">=</span> <span class="va">hallmarkList</span>, 
                   stats    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>,<span class="st">"beta"</span><span class="op">]</span><span class="op">)</span>,
@@ -462,15 +462,15 @@ BiocManager::install("Cepo")</code></pre>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">enriched_beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>##       HALLMARK_PANCREAS_BETA_CELLS   HALLMARK_TNFA_SIGNALING_VIA_NFKB 
-##                           8.420216                           7.194387 
+##                           8.420216                           6.697489 
 ## HALLMARK_INTERFERON_GAMMA_RESPONSE           HALLMARK_APICAL_JUNCTION 
-##                           5.719056                           2.422906 
+##                           5.973794                           2.548635 
 ##           HALLMARK_MITOTIC_SPINDLE 
-##                           2.110690</code></pre>
+##                           2.385636</code></pre>
 <p>Finally, we can visualise the enrichment using the <code>plotEnrichment</code> function from the <code>fgsea</code> package.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/plotEnrichment.html">plotEnrichment</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">[[</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">]</span><span class="op">]</span>,
-               <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>, <span class="st">"beta"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">labs</span><span class="op">(</span>title<span class="op">=</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">)</span></code></pre></div>
+               <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>, <span class="st">"beta"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">)</span></code></pre></div>
 <p><img src="cepo_files/figure-html/unnamed-chunk-12-1.png" width="480"></p>
 </div>
 </div>
@@ -535,7 +535,7 @@ BiocManager::install("Cepo")</code></pre>
 <a href="#session-info" class="anchor"></a>Session info</h1>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.1.1 (2021-08-10)
+<pre><code>## R version 4.1.2 (2021-11-01)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
 ## Running under: macOS Catalina 10.15.7
 ## 
@@ -568,9 +568,9 @@ BiocManager::install("Cepo")</code></pre>
 ## [29] BiocStyle_2.20.2           
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] backports_1.2.1           fastmatch_1.1-3          
+##   [1] backports_1.3.0           fastmatch_1.1-3          
 ##   [3] Hmisc_4.6-0               systemfonts_1.0.2        
-##   [5] plyr_1.8.6                splines_4.1.1            
+##   [5] plyr_1.8.6                splines_4.1.2            
 ##   [7] digest_0.6.28             htmltools_0.5.2          
 ##   [9] viridis_0.6.2             fansi_0.5.0              
 ##  [11] checkmate_2.0.0           magrittr_2.0.1           
@@ -579,10 +579,10 @@ BiocManager::install("Cepo")</code></pre>
 ##  [17] limma_3.48.3              Biostrings_2.60.2        
 ##  [19] bdsmatrix_1.3-4           pkgdown_1.6.1            
 ##  [21] jpeg_0.1-9                colorspace_2.0-2         
-##  [23] blob_1.2.2                textshaping_0.3.5        
-##  [25] xfun_0.26                 dplyr_1.0.7              
-##  [27] crayon_1.4.1              RCurl_1.98-1.5           
-##  [29] survival_3.2-11           glue_1.4.2               
+##  [23] blob_1.2.2                textshaping_0.3.6        
+##  [25] xfun_0.28                 dplyr_1.0.7              
+##  [27] crayon_1.4.2              RCurl_1.98-1.5           
+##  [29] survival_3.2-13           glue_1.5.0               
 ##  [31] distr_2.8.0               ruv_0.9.7.1              
 ##  [33] gtable_0.3.0              zlibbioc_1.38.0          
 ##  [35] XVector_0.32.0            BiocSingular_1.8.1       
@@ -600,9 +600,9 @@ BiocManager::install("Cepo")</code></pre>
 ##  [59] pkgconfig_2.0.3           farver_2.1.0             
 ##  [61] nnet_7.3-16               utf8_1.2.2               
 ##  [63] tidyselect_1.1.1          labeling_0.4.2           
-##  [65] rlang_0.4.11              reshape2_1.4.4           
-##  [67] munsell_0.5.0             tools_4.1.1              
-##  [69] cachem_1.0.6              generics_0.1.0           
+##  [65] rlang_0.4.12              reshape2_1.4.4           
+##  [67] munsell_0.5.0             tools_4.1.2              
+##  [69] cachem_1.0.6              generics_0.1.1           
 ##  [71] RSQLite_2.2.8             ggridges_0.5.3           
 ##  [73] evaluate_0.14             stringr_1.4.0            
 ##  [75] fastmap_1.1.0             yaml_2.2.1               
@@ -610,14 +610,14 @@ BiocManager::install("Cepo")</code></pre>
 ##  [79] knitr_1.36                bit64_4.0.5              
 ##  [81] fs_1.5.0                  caTools_1.18.2           
 ##  [83] purrr_0.3.4               KEGGREST_1.32.0          
-##  [85] nlme_3.1-152              sparseMatrixStats_1.4.2  
-##  [87] rstudioapi_0.13           compiler_4.1.1           
+##  [85] nlme_3.1-153              sparseMatrixStats_1.4.2  
+##  [87] rstudioapi_0.13           compiler_4.1.2           
 ##  [89] beeswarm_0.4.0            png_0.1-7                
-##  [91] tibble_3.1.5              statmod_1.4.36           
+##  [91] tibble_3.1.6              statmod_1.4.36           
 ##  [93] stringi_1.7.5             highr_0.9                
 ##  [95] startupmsg_0.9.6          desc_1.4.0               
-##  [97] lattice_0.20-44           M3Drop_1.18.0            
-##  [99] vctrs_0.3.8               pillar_1.6.3             
+##  [97] lattice_0.20-45           M3Drop_1.18.0            
+##  [99] vctrs_0.3.8               pillar_1.6.4             
 ## [101] lifecycle_1.0.1           rhdf5filters_1.4.0       
 ## [103] BiocManager_1.30.16       jquerylib_0.1.4          
 ## [105] BiocNeighbors_1.10.0      data.table_1.14.2        
@@ -628,7 +628,7 @@ BiocManager::install("Cepo")</code></pre>
 ## [115] vipor_0.4.5               MASS_7.3-54              
 ## [117] gtools_3.9.2              rprojroot_2.0.2          
 ## [119] withr_2.4.2               GenomeInfoDbData_1.2.6   
-## [121] mgcv_1.8-36               grid_4.1.1               
+## [121] mgcv_1.8-38               grid_4.1.2               
 ## [123] rpart_4.1-15              beachmat_2.8.1           
 ## [125] rmarkdown_2.11            DelayedMatrixStats_1.14.3
 ## [127] bbmle_1.0.24              numDeriv_2016.8-1.1      
