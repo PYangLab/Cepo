@@ -81,7 +81,7 @@
       The University of Sydney<br><a class="author_email" href="mailto:#"></a><a href="mailto:hani.kim127@gmail.com" class="email">hani.kim127@gmail.com</a>
       </address>
                   
-            <h4 class="date">11/08/2021</h4>
+            <h4 class="date">11/10/2021</h4>
       
       
       <div class="hidden name"><code>cepo.Rmd</code></div>
@@ -261,17 +261,17 @@ BiocManager::install("Cepo")</code></pre>
 ## DataFrame with 889 rows and 3 columns
 ##                H1975     H2228    HCC827
 ##            &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;
-## AC092447.7         1         0         0
-## CT45A3             1         0         0
-## AL049870.3         1         0         0
-## TDRD9              1         0         0
-## TNNI3              1         0         0
+## AC092447.7         0         1         1
+## CT45A3             0         1         1
+## AL049870.3         0         1         1
+## TDRD9              0         1         1
+## TNNI3              0         1         1
 ## ...              ...       ...       ...
-## STK24              0         1         1
-## CPVL               0         1         1
-## BBOX1-AS1          0         1         1
-## COL4A2             0         1         1
-## KCNK1              0         1         1
+## STK24              1         0         0
+## CPVL               1         0         0
+## BBOX1-AS1          1         0         0
+## COL4A2             1         0         0
+## KCNK1              1         0         0
 ## 
 ## attr(,"class")
 ## [1] "Cepo" "list"</code></pre>
@@ -462,11 +462,11 @@ BiocManager::install("Cepo")</code></pre>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">enriched_beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>##       HALLMARK_PANCREAS_BETA_CELLS   HALLMARK_TNFA_SIGNALING_VIA_NFKB 
-##                           8.420216                           6.697489 
+##                           8.420216                           6.899438 
 ## HALLMARK_INTERFERON_GAMMA_RESPONSE           HALLMARK_APICAL_JUNCTION 
-##                           5.973794                           2.548635 
+##                           6.201517                           2.467820 
 ##           HALLMARK_MITOTIC_SPINDLE 
-##                           2.385636</code></pre>
+##                           2.119638</code></pre>
 <p>Finally, we can visualise the enrichment using the <code>plotEnrichment</code> function from the <code>fgsea</code> package.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/plotEnrichment.html">plotEnrichment</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">[[</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">]</span><span class="op">]</span>,
