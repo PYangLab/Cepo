@@ -184,7 +184,7 @@ bootCepo <- function(exprsMat, cellTypes, minCells, exprsPct, logfc, variability
         ## of times that the gene exceeds the statistics value under
         ## bootstrap runs.
         listBinary <- lapply(listCepoOutputs, function(this_run) {
-            singleResult[[i]] >= this_run[[i]][names(singleResult[[i]])]
+            singleResult[[i]] <= this_run[[i]][names(singleResult[[i]])]
         })
         listPvals[[i]] <- DelayedMatrixStats::colMeans2(do.call(rbind,
                                                                 listBinary))
