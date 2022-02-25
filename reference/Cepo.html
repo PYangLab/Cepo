@@ -73,8 +73,11 @@ out-of-memory computations. See vignette.</p>
   minCells <span class="op">=</span> <span class="fl">20</span>,
   minCelltype <span class="op">=</span> <span class="fl">3</span>,
   exprsPct <span class="op">=</span> <span class="cn">NULL</span>,
+  prefilter_sd <span class="op">=</span> <span class="cn">NULL</span>,
+  prefilter_pzero <span class="op">=</span> <span class="cn">NULL</span>,
   logfc <span class="op">=</span> <span class="cn">NULL</span>,
   computePvalue <span class="op">=</span> <span class="cn">NULL</span>,
+  computeFastPvalue <span class="op">=</span> <span class="cn">TRUE</span>,
   variability <span class="op">=</span> <span class="st">"CV"</span>,
   method <span class="op">=</span> <span class="st">"weightedMean"</span>,
   weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>,
@@ -100,6 +103,9 @@ required in each batch</p></dd>
 <dt>exprsPct</dt>
 <dd><p>Percentage of lowly expressed genes to remove.
 Default to NULL to not remove any genes.</p></dd>
+<dt>prefilter_sd</dt>
+<dd><p>Numeric value indicating threshold relating to standard
+deviation of genes. Used with prefilter_zeros.</p></dd>
 <dt>logfc</dt>
 <dd><p>Numeric value indicating the threshold of log fold-change
 to use to filter genes.</p></dd>
@@ -108,6 +114,9 @@ to use to filter genes.</p></dd>
 Default to NULL to not make computations.
 Set this to an integer to set the number of bootstraps needed
 (recommend to be at least 100).</p></dd>
+<dt>computeFastPvalue</dt>
+<dd><p>Logical vector indicating whether to perform a
+faster version of p-value calculation. Set to TRUE by default.</p></dd>
 <dt>variability</dt>
 <dd><p>A character indicating the stability measure
 (CV, IQR, MAD, SD). Default is set to CV.</p></dd>
@@ -128,6 +137,9 @@ For workers greater than 1, see the <code>workers</code> argument in
 <dt>...</dt>
 <dd><p>Additional arguments passed to <code><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html" class="external-link">BiocParallel::MulticoreParam</a></code>
 and <code><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">BiocParallel::SnowParam</a></code>.</p></dd>
+<dt>prefilter_pzeros</dt>
+<dd><p>Numeric value indicating threshold relating to the
+percentage of zero expression of genes. Used with prefilter_sd.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
