@@ -104,13 +104,42 @@ nrow(ds_res_logfc$stats)
 ```
 
 ### Computing p-values
-The second element of the `Cepo` function is a `DataFrame` of p-values associated with the DS statistics. In this `DataFrame`, each column corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. By default, the `Cepo` function do not compute these p-values and requires the users to set the `computePvalue` argument to a number of bootstrap runs required (we recommend this to be at least 1000). 
+There are two methods to compute p-values in `Cepo`. The fast approach uses normal approximation of the Cepo statistics to estimate the null distribution. As this only required 100-200 sample runs of Cepo, it is much quicker, and the default approach, than the second permutation approach. 
+
+The output of running the p-value computation is a `DataFrame` of p-values associated with the DS statistics. In this `DataFrame`, each column corresponds to the p-values associated with the DS statistics. 
 
 ```{r return-p-values}
 ds_res_pvalues = Cepo(exprsMat = logcounts(cellbench),
                       cellType = cellbench$celltype, 
-                      computePvalue = 100) # we use a value of 100 for demonstration purposes
+                      computePvalue = 200,
+                      prefilter_pzero = 0.4)
+```
 
+We can visualise the correlation between the Cepo statistics and -log10 p-values.
+```{r}
+idx = rownames(ds_res_pvalues$stats)
+
+par(mfrow=c(1,3))
+for (i in unique(cellbench$celltype)) {
+  
+  plot(rank(ds_res_pvalues$stats[[i]]),
+       rank(-log10(ds_res_pvalues$pvalues[idx, i])),
+       main = i,
+       xlab = "rank Cepo statistics",
+       ylab = "rank -log10 p-values")
+
+}
+par(mfrow=c(1,1))
+```
+
+The permutation approach requires the users to set the `computePvalue` argument to a number of bootstrap runs required (we recommend this to be at least 10000). Each column of the `DataFrame` corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. 
+
+```{r return-p-values}
+ds_res_pvalues = Cepo(exprsMat = logcounts(cellbench),
+                      cellType = cellbench$celltype, 
+                      # we use a low value for demonstration purposes
+                      computePvalue = 100,
+                      computeFastPvalue = FALSE)
 ds_res_pvalues
 ```
 
