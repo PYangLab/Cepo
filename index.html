@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">Cepo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -74,55 +76,52 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="cepo" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#cepo" class="anchor"></a>Cepo</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="cepo">Cepo<a class="anchor" aria-label="anchor" href="#cepo"></a>
+</h1></div>
 <p><img src="reference/figures/Cepo_logo.png" align="right" width="225" height="250"></p>
-<p><img src="https://github.com/PYangLab/Cepo/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"><a href="https://codecov.io/gh/PYangLab/Cepo"><img src="https://codecov.io/gh/PYangLab/Cepo/branch/main/graph/badge.svg?token=sJROwPzwey" alt="Codecov test coverage"></a></p>
+<p><img src="https://github.com/PYangLab/Cepo/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"><a href="https://codecov.io/gh/PYangLab/Cepo" class="external-link"><img src="https://codecov.io/gh/PYangLab/Cepo/branch/main/graph/badge.svg?token=sJROwPzwey" alt="Codecov test coverage"></a></p>
 <p>Defining the identity of a cell is fundamental to understand the heterogeneity of cells to various environmental signals and perturbations. We present Cepo, a new method to explore cell identities from single-cell RNA-sequencing data using differential stability as a new metric to define cell identity genes. Cepo computes cell-type specific gene statistics pertaining to differential stable gene expression.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>You can install the development version of <em>Cepo</em> that can be installed from GitHub using the <code>remotes</code> package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"PYangLab/Cepo"</span><span class="op">)</span></code></pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"PYangLab/Cepo"</span><span class="op">)</span></code></pre></div>
 <p>To also build the vignettes use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"PYangLab/Cepo"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span>,
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"PYangLab/Cepo"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span>,
                          build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><strong>NOTE:</strong> Building the vignettes requires the installation of additional packages.</p>
 </div>
-<div id="documentation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h2>
-<p>The documentation for <em>Cepo</em> is available from <a href="http://github.com/PYangLab/Cepo" class="uri">http://github.com/PYangLab/Cepo</a></p>
-<p>To view the vignette and all the package documentation for the development version visit <a href="http://github.com/PYangLab/Cepo" class="uri">http://github.com/PYangLab/Cepo</a>.</p>
-</div>
-<div id="citing-cepo" class="section level2">
-<h2 class="hasAnchor">
-<a href="#citing-cepo" class="anchor"></a>Citing <em>Cepo</em>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<p>If you use <em>Cepo</em> in your work please cite our preprint <a href="https://www.biorxiv.org/content/10.1101/2021.01.10.426138v1">"Kim H.J., Wang K., Yang P. Cepo uncovers cell identity through differential stability. bioRxiv DOI:</a>.</p>
-<p>To find all source code related to the anlayses of our preprint please refer to <a href="http://github.com/PYangLab/CepoManuscript" class="uri">http://github.com/PYangLab/CepoManuscript</a>.</p>
+<p>The documentation for <em>Cepo</em> is available from <a href="http://github.com/PYangLab/Cepo" class="external-link uri">http://github.com/PYangLab/Cepo</a></p>
+<p>To view the vignette and all the package documentation for the development version visit <a href="http://github.com/PYangLab/Cepo" class="external-link uri">http://github.com/PYangLab/Cepo</a>.</p>
 </div>
-<div id="developers" class="section level2">
-<h2 class="hasAnchor">
-<a href="#developers" class="anchor"></a>Developers</h2>
+<div class="section level2">
+<h2 id="citing-cepo">Citing <em>Cepo</em>
+<a class="anchor" aria-label="anchor" href="#citing-cepo"></a>
+</h2>
+<p>If you use <em>Cepo</em> in your work please cite our preprint <a href="https://www.biorxiv.org/content/10.1101/2021.01.10.426138v1" class="external-link">"Kim H.J., Wang K., Yang P. Cepo uncovers cell identity through differential stability. bioRxiv DOI:</a>.</p>
+<p>To find all source code related to the anlayses of our preprint please refer to <a href="http://github.com/PYangLab/CepoManuscript" class="external-link uri">http://github.com/PYangLab/CepoManuscript</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="developers">Developers<a class="anchor" aria-label="anchor" href="#developers"></a>
+</h2>
 <p>The following individuals were involved in developing the Cepo package:</p>
 <ul>
-<li>
-<br><span class="math display">@<em>H</em><em>a</em><em>n</em><em>i</em><em>J</em><em>i</em><em>e</em><em>u</em><em>n</em><em>K</em><em>i</em><em>m</em></span><br>(<a href="https://github.com/HaniJieunKim" class="uri">https://github.com/HaniJieunKim</a>)</li>
-<li>
-<br><span class="math display">@<em>k</em><em>e</em><em>v</em><em>i</em><em>n</em><em>w</em><em>a</em><em>n</em><em>g</em>09</span><br>(<a href="https://github.com/kevinwang09" class="uri">https://github.com/kevinwang09</a>)</li>
-<li>
-<br><span class="math display">@<em>P</em><em>Y</em><em>a</em><em>n</em><em>g</em><em>L</em><em>a</em><em>b</em></span><br>(<a href="https://github.com/PYangLab" class="uri">https://github.com/PYangLab</a>)</li>
+<li>[@HaniJieunKim](<a href="https://github.com/HaniJieunKim" class="external-link uri">https://github.com/HaniJieunKim</a>)</li>
+<li>[@kevinwang09](<a href="https://github.com/kevinwang09" class="external-link uri">https://github.com/kevinwang09</a>)</li>
+<li>[@PYangLab](<a href="https://github.com/PYangLab" class="external-link uri">https://github.com/PYangLab</a>)</li>
 </ul>
 </div>
-<div id="contact-us" class="section level2">
-<h2 class="hasAnchor">
-<a href="#contact-us" class="anchor"></a>Contact us</h2>
+<div class="section level2">
+<h2 id="contact-us">Contact us<a class="anchor" aria-label="anchor" href="#contact-us"></a>
+</h2>
 <p>If you have any enquiries, especially about using Cepo to analyse your data, please contact <a href="mailto:hani.kim@sydney.edu.au" class="email">hani.kim@sydney.edu.au</a>. We actively welcome any feedback and suggestions!</p>
 </div>
 </div>
@@ -130,38 +129,51 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from BIOC at <br><a href="https://www.bioconductor.org/packages/Cepo">https://​www.bioconductor.org/​packages/​Cepo</a>
-</li>
+<li><a href="https://www.bioconductor.org/packages/Cepo" class="external-link">View on Bioconductor</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Hani Jieun Kim <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-1844-3275" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Kevin Wang <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-2615-6102" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html#citation">Citing Cepo</a></li>
 </ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Hani Jieun Kim <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-1844-3275" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Kevin Wang <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-2615-6102" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+</ul>
+</div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Hani Jieun Kim, Kevin Wang.</p>
+  <p></p>
+<p>Developed by Hani Jieun Kim, Kevin Wang.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -169,6 +181,8 @@
 
   
 
+
+  
 
   </body>
 </html>
