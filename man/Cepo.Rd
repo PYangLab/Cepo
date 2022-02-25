@@ -10,8 +10,11 @@ Cepo(
   minCells = 20,
   minCelltype = 3,
   exprsPct = NULL,
+  prefilter_sd = NULL,
+  prefilter_pzero = NULL,
   logfc = NULL,
   computePvalue = NULL,
+  computeFastPvalue = TRUE,
   variability = "CV",
   method = "weightedMean",
   weight = c(0.5, 0.5),
@@ -35,6 +38,9 @@ required in each batch}
 \item{exprsPct}{Percentage of lowly expressed genes to remove.
 Default to NULL to not remove any genes.}
 
+\item{prefilter_sd}{Numeric value indicating threshold relating to standard
+deviation of genes. Used with prefilter_zeros.}
+
 \item{logfc}{Numeric value indicating the threshold of log fold-change
 to use to filter genes.}
 
@@ -42,6 +48,9 @@ to use to filter genes.}
 Default to NULL to not make computations.
 Set this to an integer to set the number of bootstraps needed
 (recommend to be at least 100).}
+
+\item{computeFastPvalue}{Logical vector indicating whether to perform a
+faster version of p-value calculation. Set to TRUE by default.}
 
 \item{variability}{A character indicating the stability measure
 (CV, IQR, MAD, SD). Default is set to CV.}
@@ -62,6 +71,9 @@ For workers greater than 1, see the \code{workers} argument in
 
 \item{...}{Additional arguments passed to \code{BiocParallel::MulticoreParam}
 and \code{BiocParallel::SnowParam}.}
+
+\item{prefilter_pzeros}{Numeric value indicating threshold relating to the
+percentage of zero expression of genes. Used with prefilter_sd.}
 }
 \value{
 Returns a list of key genes.

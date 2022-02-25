@@ -4,12 +4,18 @@
 #' @param cellTypes Vector of cell type labels
 #' @param exprsPct Percentage of lowly expressed genes to remove. 
 #' Default to NULL to not remove any genes.
+#' @param prefilter_sd Numeric value indicating threshold relating to standard 
+#' deviation of genes. Used with prefilter_zeros. 
+#' @param prefilter_pzeros Numeric value indicating threshold relating to the 
+#' percentage of zero expression of genes. Used with prefilter_sd. 
 #' @param logfc Numeric value indicating the threshold of log fold-change 
 #' to use to filter genes.
 #' @param computePvalue Whether to compute p-values using bootstrap test. 
 #' Default to NULL to not make computations.
 #' Set this to an integer to set the number of bootstraps needed 
 #' (recommend to be at least 100).
+#' @param computeFastPvalue Logical vector indicating whether to perform a 
+#' faster version of p-value calculation. Set to TRUE by default.
 #' @param variability A character indicating the stability measure 
 #' (CV, IQR, MAD, SD). Default is set to CV.
 #' @param workers Number of cores to use. Default to 1, which invokes 
@@ -33,6 +39,7 @@
 #' @importFrom HDF5Array HDF5Array
 #' @importFrom BiocParallel SerialParam MulticoreParam SnowParam bplapply
 #' @importFrom stats pnorm pchisq
+#' @import dplyr
 #' @return Returns a list of key genes.
 #' @description ExprsMat accepts various matrix objects, 
 #' including DelayedArray and HDF5Array for
@@ -45,8 +52,10 @@
 #' cepoOutput <- Cepo(logcounts(cellbench), cellbench$celltype)
 #' cepoOutput
 #' 
-Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct = NULL,
-                 logfc = NULL, computePvalue = NULL, variability = "CV", method = "weightedMean",
+Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct = NULL, 
+                 prefilter_sd = NULL, prefilter_pzero = NULL,
+                 logfc = NULL, computePvalue = NULL, computeFastPvalue = TRUE,
+                 variability = "CV", method = "weightedMean",
                  weight = c(0.5, 0.5), workers = 1L, block = NULL, ...) {
     
     stopifnot(ncol(exprsMat) == length(cellTypes))
@@ -80,6 +89,30 @@ Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct =
     }
     cellTypes <- as.character(cellTypes)
     
+    if (!(is.null(prefilter_sd) && is.null(prefilter_pzero))) {
+        
+        pzeros = rowSums_withnames(exprsMat == 0)/ncol(exprsMat)
+        
+        rowSdsRes <- lapply(names(table(cellTypes)), function(i) {
+            rowSds_withnames(exprsMat[, cellTypes == i] )
+        })
+        rowSdsRes <- do.call(cbind, rowSdsRes)
+        rowSdsResNorm <- t(apply(rowSdsRes, 1, function(i) {
+            mean((i - mean(i))*10^16)
+        }))[1,]
+        
+        if (is.null(prefilter_sd)) { prefilter_sd <- max(rowSdsResNorm)}
+        if (is.null(prefilter_pzero)) { prefilter_pzero <- max(pzeros)}
+        
+        ## Remove genes where there is HIGH expression and LOW difference in sd
+        genesFilter = names(pzeros[which(abs(rowSdsResNorm) < prefilter_sd 
+                                         & pzeros < prefilter_pzero)])
+        
+        exprsMat = exprsMat[!rownames(exprsMat) %in% genesFilter,]
+        message(paste0("Prefiltering ", length(genesFilter), " genes...."))
+        
+    }
+    
     if (!is.null(block)) {
         
         block <- as.character(block)
@@ -87,7 +120,7 @@ Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct =
         ## Select only batches with more than `minCelltype` number of
         ## cell types
         batches <- names(which(rowSums(table(block, cellTypes) > minCells) >=
-                                  minCelltype))
+                                   minCelltype))
         
         ## Run Cepo by batch
         batch_result <- lapply(batches, function(batch) {
@@ -98,7 +131,9 @@ Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct =
             singleBatch <- singleBatchCepo(exprsMat = exprsMat_batch, cellTypes = cellTypes_batch,
                                            minCells = minCells, exprsPct = exprsPct, logfc = logfc,
                                            method = method, weight = weight, variability = variability,
-                                           computePvalue = computePvalue, workers = workers, ...)
+                                           computePvalue = computePvalue, 
+                                           computeFastPvalue = computeFastPvalue,
+                                           workers = workers, ...)
             
             return(singleBatch)
             
@@ -147,7 +182,9 @@ Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct =
         
         singleBatch <- singleBatchCepo(exprsMat = exprsMat, cellTypes = cellTypes,
                                        minCells = minCells, exprsPct = exprsPct, logfc = logfc, method = method,
-                                       weight = weight, variability = variability, computePvalue = computePvalue,
+                                       weight = weight, variability = variability, 
+                                       computePvalue = computePvalue,
+                                       computeFastPvalue = computeFastPvalue,
                                        workers = workers, ...)
         
         return(singleBatch)
@@ -191,6 +228,56 @@ bootCepo <- function(exprsMat, cellTypes, minCells, exprsPct, logfc, variability
         names(listPvals[[i]]) <- names(singleResult[[i]])
     }
     return(listPvals)
+}
+
+bootFastCepo <- function(exprsMat, cellTypes, minCells, exprsPct, logfc, variability,
+                         method, weight, singleResult, times, workers = 1L, ...) {
+    
+    ## 
+    cts <- names(table(cellTypes))
+    
+    geneNames <- sort(names(singleResult[[1]]))
+    singleResult <- lapply(singleResult, function(x) x[geneNames])
+    
+    ## Running multiple runs of Cepo based on bootstrap
+    sampled_cepo_stats <- BiocParallel::bplapply(X = seq_len(times), FUN = function(i) {
+        sampleResult <- oneCepo(exprsMat = exprsMat, minCells = minCells, variability = variability,
+                                logfc = logfc, method = method, weight = weight, cellTypes = sample(cellTypes,
+                                                                                                    replace = TRUE), exprsPct = exprsPct, workers = 1L)
+        
+        sampleResult <- S4Vectors::DataFrame(sortList(sampleResult))
+        return(sampleResult)
+    }, BPPARAM = setCepoBPPARAM(workers = workers, ...))
+    
+    sampled_cepo_stats = sampled_cepo_stats %>% 
+        purrr::map(.f = ~ .x[geneNames,])
+    
+    celltype_norm_stats = purrr::map(
+        .x = cts, 
+        .f = function(this_celltype){
+            this_celltype_stats_matrix = purrr::map(.x = sampled_cepo_stats, .f = function(this_sampled_stats){
+                this_sampled_stats[,this_celltype]
+            }) %>% do.call(cbind, .)
+            this_celltype_stats_mean = Cepo:::rowMeans_withnames(this_celltype_stats_matrix)
+            this_celltype_stats_sd = Cepo:::rowSds_withnames(this_celltype_stats_matrix)
+            return(data.frame(mean = this_celltype_stats_mean, sd = this_celltype_stats_sd))
+        })
+    names(celltype_norm_stats) = cts
+    
+    celltype_norm_pvalues = purrr::map2(
+        .x = celltype_norm_stats, 
+        .y = cts,
+        .f = function(this_celltype_stats, this_celltype_name){
+            pnorm(q = singleResult[[this_celltype_name]], 
+                  mean = this_celltype_stats$mean,
+                  sd = this_celltype_stats$sd, lower.tail = FALSE)
+        }) %>% 
+        do.call(cbind, .)
+    colnames(celltype_norm_pvalues) = cts
+    rownames(celltype_norm_pvalues) = geneNames
+    
+    return(list(approx_pvalues = celltype_norm_pvalues, 
+                mean_sd_stats = celltype_norm_stats))
 }
 
 oneCepo <- function(exprsMat, cellTypes, minCells = minCells, variability = variability,
@@ -249,7 +336,8 @@ oneCepo <- function(exprsMat, cellTypes, minCells = minCells, variability = vari
 }
 
 singleBatchCepo <- function(exprsMat, cellTypes, minCells = minCells, variability = variability,
-                            exprsPct = NULL, logfc = NULL, method = method, weight = weight, computePvalue = NULL,
+                            exprsPct = NULL, logfc = NULL, method = method, weight = weight, 
+                            computePvalue = NULL, computeFastPvalue = computeFastPvalue,
                             workers = 1L, ...) {
     
     singleResult <- oneCepo(exprsMat = exprsMat, cellTypes = cellTypes,
@@ -262,6 +350,23 @@ singleBatchCepo <- function(exprsMat, cellTypes, minCells = minCells, variabilit
     if (is.null(computePvalue)) {
         ## If no need to compute p-values, then that is it.
         result <- list(stats = singleStatsResult, pvalues = NULL)
+    } else if (computeFastPvalue == TRUE) {
+        ## Coerce the input to an integer
+        times <- as.integer(computePvalue)
+        ## Pass onto a boot function for computation
+        listPvals <- bootFastCepo(exprsMat = exprsMat, cellTypes = cellTypes,
+                                  minCells = minCells, exprsPct = exprsPct, weight = weight,
+                                  method = method, logfc = logfc, variability = variability,
+                                  singleResult = singleResult, times = times, workers = workers,
+                                  ...)
+        listPvals$mean_sd_stats <- lapply(listPvals$mean_sd_stats, function(x) {
+            S4Vectors::DataFrame(x[rownames(singleStatsResult), ])
+        })
+        ## The output has two components, one DataFrame of stats and
+        ## another for p-values
+        result <- list(stats = singleStatsResult, 
+                       pvalues = S4Vectors::DataFrame(listPvals$approx_pvalues[rownames(singleStatsResult),]),
+                       geneStatistics = listPvals$mean_sd_stats)
     } else {
         ## Coerce the input to an integer
         times <- as.integer(computePvalue)
@@ -274,7 +379,7 @@ singleBatchCepo <- function(exprsMat, cellTypes, minCells = minCells, variabilit
         ## The output has two components, one DataFrame of stats and
         ## another for p-values
         result <- list(stats = singleStatsResult, pvalues = S4Vectors::DataFrame(sortList(listPvals)))
-    }  ## End else
+    } ## End else
     class(result) <- c("Cepo", class(result))
     return(result)
     

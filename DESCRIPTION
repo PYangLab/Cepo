@@ -34,7 +34,8 @@ Imports:
     patchwork,
     reshape2,
     BiocParallel,
-    stats
+    stats,
+    dplyr
 biocViews: Classification, GeneExpression, SingleCell, Software, Sequencing, DifferentialExpression
 Suggests: 
     knitr,
