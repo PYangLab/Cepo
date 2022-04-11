@@ -108,7 +108,7 @@ There are two methods to compute p-values in `Cepo`. The fast approach uses norm
 
 The output of running the p-value computation is a `DataFrame` of p-values associated with the DS statistics. In this `DataFrame`, each column corresponds to the p-values associated with the DS statistics. 
 
-```{r return-p-values}
+```{r return-p-values1}
 ds_res_pvalues = Cepo(exprsMat = logcounts(cellbench),
                       cellType = cellbench$celltype, 
                       computePvalue = 200,
@@ -134,7 +134,7 @@ par(mfrow=c(1,1))
 
 The permutation approach requires the users to set the `computePvalue` argument to a number of bootstrap runs required (we recommend this to be at least 10000). Each column of the `DataFrame` corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells. 
 
-```{r return-p-values}
+```{r return-p-values2}
 ds_res_pvalues = Cepo(exprsMat = logcounts(cellbench),
                       cellType = cellbench$celltype, 
                       # we use a low value for demonstration purposes
