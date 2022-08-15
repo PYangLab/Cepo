@@ -53,7 +53,7 @@
 #' cepoOutput <- Cepo(logcounts(cellbench), cellbench$celltype)
 #' cepoOutput
 #' 
-Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct = NULL, 
+Cepo <- function(exprsMat, cellTypes, minCells = 20, minCelltype = 3, exprsPct = 0.05, 
                  prefilter_sd = NULL, prefilter_pzero = NULL,
                  logfc = NULL, computePvalue = NULL, computeFastPvalue = TRUE,
                  variability = "CV", method = "weightedMean",
