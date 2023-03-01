@@ -67,24 +67,24 @@ out-of-memory computations. See vignette.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">Cepo</span><span class="op">(</span>
-  <span class="va">exprsMat</span>,
-  <span class="va">cellTypes</span>,
-  minCells <span class="op">=</span> <span class="fl">20</span>,
-  minCelltype <span class="op">=</span> <span class="fl">3</span>,
-  exprsPct <span class="op">=</span> <span class="cn">NULL</span>,
-  prefilter_sd <span class="op">=</span> <span class="cn">NULL</span>,
-  prefilter_pzero <span class="op">=</span> <span class="cn">NULL</span>,
-  logfc <span class="op">=</span> <span class="cn">NULL</span>,
-  computePvalue <span class="op">=</span> <span class="cn">NULL</span>,
-  computeFastPvalue <span class="op">=</span> <span class="cn">TRUE</span>,
-  variability <span class="op">=</span> <span class="st">"CV"</span>,
-  method <span class="op">=</span> <span class="st">"weightedMean"</span>,
-  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>,
-  workers <span class="op">=</span> <span class="fl">1L</span>,
-  block <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Cepo</span><span class="op">(</span></span>
+<span>  <span class="va">exprsMat</span>,</span>
+<span>  <span class="va">cellTypes</span>,</span>
+<span>  minCells <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  minCelltype <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  exprsPct <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prefilter_sd <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prefilter_pzero <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  logfc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  computePvalue <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  computeFastPvalue <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  variability <span class="op">=</span> <span class="st">"CV"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"weightedMean"</span>,</span>
+<span>  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  workers <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -92,63 +92,96 @@ out-of-memory computations. See vignette.</p>
     <dl><dt>exprsMat</dt>
 <dd><p>Expression matrix where columns denote cells and rows
 denote genes</p></dd>
+
+
 <dt>cellTypes</dt>
 <dd><p>Vector of cell type labels</p></dd>
+
+
 <dt>minCells</dt>
 <dd><p>Integer indicating the minimum number of cells required
 within a cell type</p></dd>
+
+
 <dt>minCelltype</dt>
 <dd><p>Integer indicating the minimum number of cell types
 required in each batch</p></dd>
+
+
 <dt>exprsPct</dt>
 <dd><p>Percentage of lowly expressed genes to remove.
 Default to NULL to not remove any genes.</p></dd>
+
+
 <dt>prefilter_sd</dt>
 <dd><p>Numeric value indicating threshold relating to standard
 deviation of genes. Used with prefilter_zeros.</p></dd>
+
+
 <dt>logfc</dt>
 <dd><p>Numeric value indicating the threshold of log fold-change
 to use to filter genes.</p></dd>
+
+
 <dt>computePvalue</dt>
 <dd><p>Whether to compute p-values using bootstrap test.
 Default to NULL to not make computations.
 Set this to an integer to set the number of bootstraps needed
 (recommend to be at least 100).</p></dd>
+
+
 <dt>computeFastPvalue</dt>
 <dd><p>Logical vector indicating whether to perform a
 faster version of p-value calculation. Set to TRUE by default.</p></dd>
+
+
 <dt>variability</dt>
 <dd><p>A character indicating the stability measure
 (CV, IQR, MAD, SD). Default is set to CV.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>Character indicating the method for integration
 the two stability measures. By default this is set to
 'weightedMean' with equal weights.</p></dd>
+
+
 <dt>weight</dt>
 <dd><p>Vector of two values indicating the weights for each stability
 measure. By default this value is c(0.5, 0.5).</p></dd>
+
+
 <dt>workers</dt>
 <dd><p>Number of cores to use. Default to 1, which invokes
 <code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">BiocParallel::SerialParam</a></code>.
 For workers greater than 1, see the <code>workers</code> argument in
 <code><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html" class="external-link">BiocParallel::MulticoreParam</a></code> and <code><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">BiocParallel::SnowParam</a></code>.</p></dd>
+
+
 <dt>block</dt>
 <dd><p>Vector of batch labels</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional arguments passed to <code><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html" class="external-link">BiocParallel::MulticoreParam</a></code>
 and <code><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">BiocParallel::SnowParam</a></code>.</p></dd>
+
+
 <dt>prefilter_pzeros</dt>
 <dd><p>Numeric value indicating threshold relating to the
 percentage of zero expression of genes. Used with prefilter_sd.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a list of key genes.</p>
+    
+
+<p>Returns a list of key genes.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: SummarizedExperiment</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: MatrixGenerics</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: matrixStats</span>
@@ -181,8 +214,8 @@ percentage of zero expression of genes. Used with prefilter_sd.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     rowMedians</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomicRanges</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomeInfoDb</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'cellbench'</span>, package <span class="op">=</span> <span class="st">'Cepo'</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">cellbench</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'cellbench'</span>, package <span class="op">=</span> <span class="st">'Cepo'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cellbench</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class: SingleCellExperiment </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dim: 894 895 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> metadata(3): scPipe Biomart log.exprs.offset</span>
@@ -194,8 +227,8 @@ percentage of zero expression of genes. Used with prefilter_sd.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> reducedDimNames(0):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mainExpName: NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> altExpNames(0):</span>
-<span class="r-in"><span class="va">cepoOutput</span> <span class="op">&lt;-</span> <span class="fu">Cepo</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>, <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">cepoOutput</span></span>
+<span class="r-in"><span><span class="va">cepoOutput</span> <span class="op">&lt;-</span> <span class="fu">Cepo</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>, <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cepoOutput</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $stats</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 889 rows and 3 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                H1975     H2228    HCC827</span>
@@ -217,7 +250,7 @@ percentage of zero expression of genes. Used with prefilter_sd.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Cepo" "list"</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -232,7 +265,7 @@ percentage of zero expression of genes. Used with prefilter_sd.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

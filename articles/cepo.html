@@ -83,7 +83,7 @@
       The University of Sydney<br><a class="author_email" href="mailto:#"></a><a href="mailto:hani.kim127@gmail.com" class="email">hani.kim127@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">04/11/2022</h4>
+            <h4 data-toc-skip class="date">03/01/2023</h4>
       
       
       <div class="hidden name"><code>cepo.Rmd</code></div>
@@ -98,17 +98,17 @@
 <p>We introduce <em>Cepo</em>, a method to determine genes governing cell identity from scRNA-seq data. We propose a biologically motivated metric—differential stability (DS)—to define cell identity. Our motivation is driven by the hypothesis that stable gene expression is a key component of cell identity. This hypothesis implies that genes marking a cell type should be (i) expressed and (ii) stable in its expression relative to other cell types. We translate these criteria into a computational framework where, using predefined cell-type labels, we compute a cell-type-specific score to prioritise genes that are differential stably expressed against other cell types between all cell-type pair comparisons.</p>
 <p><em>Cepo</em> is therefore distinct from most methods for differential analysis (e.g., differential expression) that prioritise differences in the mean abundance between cell types. <em>Cepo</em> is able to capture subtle variations in distribution that does not necessarily involve changes in mean. <em>Cepo</em> is particularly suitable for large atlas data as it is computationally efficient and fast. Moreover, <em>Cepo</em> can perform differential stability analysis for multi-group comparisons in single-cell data.</p>
 <p>To access the R code used in the vignettes, type:</p>
-<pre><code><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"Cepo"</span><span class="op">)</span></code></pre>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"Cepo"</span><span class="op">)</span></span></code></pre>
 <p>Questions relating to <em>Cepo</em> should be reported as a new issue at <em><a href="https://github.com/PYangLab/Cepo/issues" class="external-link">BugReports</a></em>.</p>
 <p>To cite <em>Cepo</em>, type:</p>
-<pre><code><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"Cepo"</span><span class="op">)</span></code></pre>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"Cepo"</span><span class="op">)</span></span></code></pre>
 <div class="section level3">
 <h3 id="package-installation">Package installation<a class="anchor" aria-label="anchor" href="#package-installation"></a>
 </h3>
 <p>The development version of <em>Cepo</em> can be installed with the following command:</p>
-<pre><code><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"Cepo"</span><span class="op">)</span></code></pre>
+<pre><code><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"Cepo"</span><span class="op">)</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -120,59 +120,59 @@
 </h3>
 <p>Load the example dataset, a small and randomly sampled subset of the <a href="https://github.com/LuyiTian/sc_mixology" class="external-link">Cellbench</a> dataset consisting of 3 cell types 895 cells and 894 genes.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">Cepo</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"cellbench"</span>, package <span class="op">=</span> <span class="st">"Cepo"</span><span class="op">)</span>
-<span class="va">cellbench</span></code></pre></div>
-<pre><code><span class="co">## class: SingleCellExperiment </span>
-<span class="co">## dim: 894 895 </span>
-<span class="co">## metadata(3): scPipe Biomart log.exprs.offset</span>
-<span class="co">## assays(2): counts logcounts</span>
-<span class="co">## rownames(894): AP000902.1 TNNI3 ... SCMH1 IGF2BP2</span>
-<span class="co">## rowData names(0):</span>
-<span class="co">## colnames(895): CELL_000001 CELL_000003 ... CELL_000955 CELL_000965</span>
-<span class="co">## colData names(17): unaligned aligned_unmapped ... sizeFactor celltype</span>
-<span class="co">## reducedDimNames(0):</span>
-<span class="co">## mainExpName: NULL</span>
-<span class="co">## altExpNames(0):</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">Cepo</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"cellbench"</span>, package <span class="op">=</span> <span class="st">"Cepo"</span><span class="op">)</span></span>
+<span><span class="va">cellbench</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: SingleCellExperiment </span></span>
+<span><span class="co">## dim: 894 895 </span></span>
+<span><span class="co">## metadata(3): scPipe Biomart log.exprs.offset</span></span>
+<span><span class="co">## assays(2): counts logcounts</span></span>
+<span><span class="co">## rownames(894): AP000902.1 TNNI3 ... SCMH1 IGF2BP2</span></span>
+<span><span class="co">## rowData names(0):</span></span>
+<span><span class="co">## colnames(895): CELL_000001 CELL_000003 ... CELL_000955 CELL_000965</span></span>
+<span><span class="co">## colData names(17): unaligned aligned_unmapped ... sizeFactor celltype</span></span>
+<span><span class="co">## reducedDimNames(0):</span></span>
+<span><span class="co">## mainExpName: NULL</span></span>
+<span><span class="co">## altExpNames(0):</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cellbench</span> <span class="op">=</span> <span class="va">cellbench</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span><span class="op">)</span>,<span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">cellbench</span> <span class="op">=</span> <span class="va">cellbench</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span><span class="op">)</span>,<span class="op">]</span></span></code></pre></div>
 <p>Columns of the <code>colData</code> indicate the individual id and various metadata for each cell. <code>colData</code> contains <code>celltype</code> labels, which will be required to run <em>Cepo</em>. Differential stability analysis performed on the entire cell type repertoire.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></code></pre></div>
-<pre><code><span class="co">## DataFrame with 5 rows and 17 columns</span>
-<span class="co">##             unaligned aligned_unmapped mapped_to_exon mapped_to_intron</span>
-<span class="co">##             &lt;integer&gt;        &lt;integer&gt;      &lt;integer&gt;        &lt;integer&gt;</span>
-<span class="co">## CELL_000001    167234             8341         526950            40991</span>
-<span class="co">## CELL_000003    174510             8608         513021            42270</span>
-<span class="co">## CELL_000004    158346             7796         504676            39684</span>
-<span class="co">## CELL_000005    159070             6968         486645            38252</span>
-<span class="co">## CELL_000006    144914             8610         465126            33435</span>
-<span class="co">##             ambiguous_mapping mapped_to_ERCC mapped_to_MT number_of_genes</span>
-<span class="co">##                     &lt;integer&gt;      &lt;integer&gt;    &lt;integer&gt;       &lt;numeric&gt;</span>
-<span class="co">## CELL_000001             21392              0        22342           11237</span>
-<span class="co">## CELL_000003             20170              0        20943           11203</span>
-<span class="co">## CELL_000004             18628              0        14021           11237</span>
-<span class="co">## CELL_000005             20029              0        14100           10920</span>
-<span class="co">## CELL_000006             21732              0        11855           11157</span>
-<span class="co">##             total_count_per_cell non_mt_percent non_ribo_percent outliers</span>
-<span class="co">##                        &lt;numeric&gt;      &lt;numeric&gt;        &lt;numeric&gt; &lt;factor&gt;</span>
-<span class="co">## CELL_000001               266880       0.823985         0.797096    FALSE</span>
-<span class="co">## CELL_000003               251204       0.828956         0.801715    FALSE</span>
-<span class="co">## CELL_000004               250040       0.839618         0.816149    FALSE</span>
-<span class="co">## CELL_000005               244441       0.838746         0.798577    FALSE</span>
-<span class="co">## CELL_000006               235288       0.817904         0.788378    FALSE</span>
-<span class="co">##               cell_line cell_line_demuxlet demuxlet_cls sizeFactor    celltype</span>
-<span class="co">##             &lt;character&gt;        &lt;character&gt;  &lt;character&gt;  &lt;numeric&gt; &lt;character&gt;</span>
-<span class="co">## CELL_000001      HCC827             HCC827          SNG    2.15032      HCC827</span>
-<span class="co">## CELL_000003      HCC827             HCC827          SNG    2.00889      HCC827</span>
-<span class="co">## CELL_000004      HCC827             HCC827          SNG    2.06447      HCC827</span>
-<span class="co">## CELL_000005      HCC827             HCC827          SNG    1.92110      HCC827</span>
-<span class="co">## CELL_000006       H1975              H1975          SNG    1.92716       H1975</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 5 rows and 17 columns</span></span>
+<span><span class="co">##             unaligned aligned_unmapped mapped_to_exon mapped_to_intron</span></span>
+<span><span class="co">##             &lt;integer&gt;        &lt;integer&gt;      &lt;integer&gt;        &lt;integer&gt;</span></span>
+<span><span class="co">## CELL_000001    167234             8341         526950            40991</span></span>
+<span><span class="co">## CELL_000003    174510             8608         513021            42270</span></span>
+<span><span class="co">## CELL_000004    158346             7796         504676            39684</span></span>
+<span><span class="co">## CELL_000005    159070             6968         486645            38252</span></span>
+<span><span class="co">## CELL_000006    144914             8610         465126            33435</span></span>
+<span><span class="co">##             ambiguous_mapping mapped_to_ERCC mapped_to_MT number_of_genes</span></span>
+<span><span class="co">##                     &lt;integer&gt;      &lt;integer&gt;    &lt;integer&gt;       &lt;numeric&gt;</span></span>
+<span><span class="co">## CELL_000001             21392              0        22342           11237</span></span>
+<span><span class="co">## CELL_000003             20170              0        20943           11203</span></span>
+<span><span class="co">## CELL_000004             18628              0        14021           11237</span></span>
+<span><span class="co">## CELL_000005             20029              0        14100           10920</span></span>
+<span><span class="co">## CELL_000006             21732              0        11855           11157</span></span>
+<span><span class="co">##             total_count_per_cell non_mt_percent non_ribo_percent outliers</span></span>
+<span><span class="co">##                        &lt;numeric&gt;      &lt;numeric&gt;        &lt;numeric&gt; &lt;factor&gt;</span></span>
+<span><span class="co">## CELL_000001               266880       0.823985         0.797096    FALSE</span></span>
+<span><span class="co">## CELL_000003               251204       0.828956         0.801715    FALSE</span></span>
+<span><span class="co">## CELL_000004               250040       0.839618         0.816149    FALSE</span></span>
+<span><span class="co">## CELL_000005               244441       0.838746         0.798577    FALSE</span></span>
+<span><span class="co">## CELL_000006               235288       0.817904         0.788378    FALSE</span></span>
+<span><span class="co">##               cell_line cell_line_demuxlet demuxlet_cls sizeFactor    celltype</span></span>
+<span><span class="co">##             &lt;character&gt;        &lt;character&gt;  &lt;character&gt;  &lt;numeric&gt; &lt;character&gt;</span></span>
+<span><span class="co">## CELL_000001      HCC827             HCC827          SNG    2.15032      HCC827</span></span>
+<span><span class="co">## CELL_000003      HCC827             HCC827          SNG    2.00889      HCC827</span></span>
+<span><span class="co">## CELL_000004      HCC827             HCC827          SNG    2.06447      HCC827</span></span>
+<span><span class="co">## CELL_000005      HCC827             HCC827          SNG    1.92110      HCC827</span></span>
+<span><span class="co">## CELL_000006       H1975              H1975          SNG    1.92716       H1975</span></span></code></pre>
 <p>Note that, if cell-type labels are unknown, we would need to cluster cells into groups via some clustering algorithm. In the example dataset, we have 3 cell types, H1975, H2228 and HCC827, all of which are commonly used cell lines of lung adenocarcinomas.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "HCC827" "H1975"  "H2228"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "HCC827" "H1975"  "H2228"</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="run-cepo-to-generate-list-of-cell-identity-genes">Run Cepo to generate list of cell identity genes<a class="anchor" aria-label="anchor" href="#run-cepo-to-generate-list-of-cell-identity-genes"></a>
@@ -182,56 +182,56 @@
 </h4>
 <p>There are two main arguments to <em>Cepo</em>: 1) <code>exprsMat</code> is the input data, which should be normalized data, such as counts per million (CPM) or log2-CPM (e.g., <code>logcounts</code> as created via <code><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">scater::logNormCounts</a></code>). 2) <code>cellTypes</code> receives as input a vector of cell-type labels. Note that the cell-type labels should be equal in length and ordered the same as the column names in <code>exprsMat</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
-              cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ds_res</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,</span>
+<span>              cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>Cepo</code> function returns a list of two elements by default. The first element is a <code>DataFrame</code> of DS statistics. In this <code>DataFrame</code>, each column corresponds to the DS statistics for that celltype across all genes. A higher DS statistic value denotes a gene that is more prioritized as a differentially stable gene in that given cell type. In the output DataFrame, the columns correspond to each cell type and each row correspond to a gene.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res</span></code></pre></div>
-<pre><code><span class="co">## $stats</span>
-<span class="co">## DataFrame with 889 rows and 3 columns</span>
-<span class="co">##                H1975     H2228    HCC827</span>
-<span class="co">##            &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span>
-<span class="co">## AC092447.7  0.852809 -0.450000 -0.402809</span>
-<span class="co">## CT45A3      0.834972 -0.408006 -0.426966</span>
-<span class="co">## AL049870.3  0.815309 -0.465169 -0.350140</span>
-<span class="co">## TDRD9       0.753652 -0.440871 -0.312781</span>
-<span class="co">## TNNI3       0.748876 -0.358848 -0.390028</span>
-<span class="co">## ...              ...       ...       ...</span>
-<span class="co">## STK24      -0.655478  0.369663  0.285815</span>
-<span class="co">## CPVL       -0.669382  0.136236  0.533146</span>
-<span class="co">## BBOX1-AS1  -0.674860  0.436657  0.238202</span>
-<span class="co">## COL4A2     -0.689747  0.397331  0.292416</span>
-<span class="co">## KCNK1      -0.700702  0.329916  0.370787</span>
-<span class="co">## </span>
-<span class="co">## $pvalues</span>
-<span class="co">## NULL</span>
-<span class="co">## </span>
-<span class="co">## attr(,"class")</span>
-<span class="co">## [1] "Cepo" "list"</span></code></pre>
+<code class="sourceCode R"><span><span class="va">ds_res</span></span></code></pre></div>
+<pre><code><span><span class="co">## $stats</span></span>
+<span><span class="co">## DataFrame with 889 rows and 3 columns</span></span>
+<span><span class="co">##                H1975     H2228    HCC827</span></span>
+<span><span class="co">##            &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## AC092447.7  0.852809 -0.450000 -0.402809</span></span>
+<span><span class="co">## CT45A3      0.834972 -0.408006 -0.426966</span></span>
+<span><span class="co">## AL049870.3  0.815309 -0.465169 -0.350140</span></span>
+<span><span class="co">## TDRD9       0.753652 -0.440871 -0.312781</span></span>
+<span><span class="co">## TNNI3       0.748876 -0.358848 -0.390028</span></span>
+<span><span class="co">## ...              ...       ...       ...</span></span>
+<span><span class="co">## STK24      -0.655478  0.369663  0.285815</span></span>
+<span><span class="co">## CPVL       -0.669382  0.136236  0.533146</span></span>
+<span><span class="co">## BBOX1-AS1  -0.674860  0.436657  0.238202</span></span>
+<span><span class="co">## COL4A2     -0.689747  0.397331  0.292416</span></span>
+<span><span class="co">## KCNK1      -0.700702  0.329916  0.370787</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $pvalues</span></span>
+<span><span class="co">## NULL</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"class")</span></span>
+<span><span class="co">## [1] "Cepo" "list"</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="filtering">Filtering<a class="anchor" aria-label="anchor" href="#filtering"></a>
 </h4>
 <p>In many cases, it is beneficial to perform filtering of lowly expressed genes prior to differential analysis. The parameter <code>exprsPct</code> specifies the threshold for filtering of lowly expressed genes should be performed. By default, this is set of <code>NULL</code>. A value between 0 and 1 should be provided. Whilst there is no set rule to the threshold, we recommend a value between <code>0.05</code> and <code>0.07</code>, which will keep any genes that are expressed in 5-7% in at least one cell type, for microfluidic-based data.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res_zprop</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
-                          cellTypes <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>,
-                          exprsPct <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ds_res_zprop</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,</span>
+<span>                          cellTypes <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>,</span>
+<span>                          exprsPct <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p>The parameter <code>logfc</code> specifies minimum log fold-change in gene expression. A value of <code>0.2</code> will keep any genes that show at least <code>abs(0.2)</code> log fold change in gene expression in at least one cell type. By default, this value is <code>NULL</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res_logfc</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
-                    cellTypes <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>,
-                    logfc <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ds_res_logfc</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,</span>
+<span>                    cellTypes <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>,</span>
+<span>                    logfc <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p><code>Cepo</code> outputs some useful stats, including the number of genes <code>nrow</code> and gene names <code>rownames</code>. By checking <code>nrow</code>, we can see that as expected with filtering the number of genes included in the <code>Cepo</code> run becomes fewer.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds_res</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] 889</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds_res</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 889</span></span></code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds_res_zprop</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] 841</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds_res_zprop</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 841</span></span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds_res_logfc</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] 853</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds_res_logfc</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 853</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="computing-p-values">Computing p-values<a class="anchor" aria-label="anchor" href="#computing-p-values"></a>
@@ -239,70 +239,70 @@
 <p>There are two methods to compute p-values in <code>Cepo</code>. The fast approach uses normal approximation of the Cepo statistics to estimate the null distribution. As this only required 100-200 sample runs of Cepo, it is much quicker, and the default approach, than the second permutation approach.</p>
 <p>The output of running the p-value computation is a <code>DataFrame</code> of p-values associated with the DS statistics. In this <code>DataFrame</code>, each column corresponds to the p-values associated with the DS statistics.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res_pvalues</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
-                      cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>, 
-                      computePvalue <span class="op">=</span> <span class="fl">200</span>,
-                      prefilter_pzero <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Prefiltering 233 genes....</span></code></pre>
+<code class="sourceCode R"><span><span class="va">ds_res_pvalues</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,</span>
+<span>                      cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>, </span>
+<span>                      computePvalue <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>                      prefilter_pzero <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Prefiltering 233 genes....</span></span></code></pre>
 <p>We can visualise the correlation between the Cepo statistics and -log10 p-values.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">idx</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">ds_res_pvalues</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  
-  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rank.html" class="external-link">rank</a></span><span class="op">(</span><span class="va">ds_res_pvalues</span><span class="op">$</span><span class="va">stats</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,
-       <span class="fu"><a href="https://rdrr.io/r/base/rank.html" class="external-link">rank</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">ds_res_pvalues</span><span class="op">$</span><span class="va">pvalues</span><span class="op">[</span><span class="va">idx</span>, <span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,
-       main <span class="op">=</span> <span class="va">i</span>,
-       xlab <span class="op">=</span> <span class="st">"rank Cepo statistics"</span>,
-       ylab <span class="op">=</span> <span class="st">"rank -log10 p-values"</span><span class="op">)</span>
-
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">idx</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">ds_res_pvalues</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rank.html" class="external-link">rank</a></span><span class="op">(</span><span class="va">ds_res_pvalues</span><span class="op">$</span><span class="va">stats</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>       <span class="fu"><a href="https://rdrr.io/r/base/rank.html" class="external-link">rank</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">ds_res_pvalues</span><span class="op">$</span><span class="va">pvalues</span><span class="op">[</span><span class="va">idx</span>, <span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       main <span class="op">=</span> <span class="va">i</span>,</span>
+<span>       xlab <span class="op">=</span> <span class="st">"rank Cepo statistics"</span>,</span>
+<span>       ylab <span class="op">=</span> <span class="st">"rank -log10 p-values"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p><img src="cepo_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The permutation approach requires the users to set the <code>computePvalue</code> argument to a number of bootstrap runs required (we recommend this to be at least 10000). Each column of the <code>DataFrame</code> corresponds to the p-values associated with the DS statistics obtained through bootstrap on the cells.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res_pvalues</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,
-                      cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>, 
-                      <span class="co"># we use a low value for demonstration purposes</span>
-                      computePvalue <span class="op">=</span> <span class="fl">100</span>,
-                      computeFastPvalue <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">ds_res_pvalues</span></code></pre></div>
-<pre><code><span class="co">## $stats</span>
-<span class="co">## DataFrame with 889 rows and 3 columns</span>
-<span class="co">##                H1975     H2228    HCC827</span>
-<span class="co">##            &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span>
-<span class="co">## AC092447.7  0.852809 -0.450000 -0.402809</span>
-<span class="co">## CT45A3      0.834972 -0.408006 -0.426966</span>
-<span class="co">## AL049870.3  0.815309 -0.465169 -0.350140</span>
-<span class="co">## TDRD9       0.753652 -0.440871 -0.312781</span>
-<span class="co">## TNNI3       0.748876 -0.358848 -0.390028</span>
-<span class="co">## ...              ...       ...       ...</span>
-<span class="co">## STK24      -0.655478  0.369663  0.285815</span>
-<span class="co">## CPVL       -0.669382  0.136236  0.533146</span>
-<span class="co">## BBOX1-AS1  -0.674860  0.436657  0.238202</span>
-<span class="co">## COL4A2     -0.689747  0.397331  0.292416</span>
-<span class="co">## KCNK1      -0.700702  0.329916  0.370787</span>
-<span class="co">## </span>
-<span class="co">## $pvalues</span>
-<span class="co">## DataFrame with 889 rows and 3 columns</span>
-<span class="co">##                H1975     H2228    HCC827</span>
-<span class="co">##            &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span>
-<span class="co">## AC092447.7         0         1         1</span>
-<span class="co">## CT45A3             0         1         1</span>
-<span class="co">## AL049870.3         0         1         1</span>
-<span class="co">## TDRD9              0         1         1</span>
-<span class="co">## TNNI3              0         1         1</span>
-<span class="co">## ...              ...       ...       ...</span>
-<span class="co">## STK24              1      0.00         0</span>
-<span class="co">## CPVL               1      0.01         0</span>
-<span class="co">## BBOX1-AS1          1      0.00         0</span>
-<span class="co">## COL4A2             1      0.00         0</span>
-<span class="co">## KCNK1              1      0.00         0</span>
-<span class="co">## </span>
-<span class="co">## attr(,"class")</span>
-<span class="co">## [1] "Cepo" "list"</span></code></pre>
+<code class="sourceCode R"><span><span class="va">ds_res_pvalues</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>,</span>
+<span>                      cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span>, </span>
+<span>                      <span class="co"># we use a low value for demonstration purposes</span></span>
+<span>                      computePvalue <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>                      computeFastPvalue <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">ds_res_pvalues</span></span></code></pre></div>
+<pre><code><span><span class="co">## $stats</span></span>
+<span><span class="co">## DataFrame with 889 rows and 3 columns</span></span>
+<span><span class="co">##                H1975     H2228    HCC827</span></span>
+<span><span class="co">##            &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## AC092447.7  0.852809 -0.450000 -0.402809</span></span>
+<span><span class="co">## CT45A3      0.834972 -0.408006 -0.426966</span></span>
+<span><span class="co">## AL049870.3  0.815309 -0.465169 -0.350140</span></span>
+<span><span class="co">## TDRD9       0.753652 -0.440871 -0.312781</span></span>
+<span><span class="co">## TNNI3       0.748876 -0.358848 -0.390028</span></span>
+<span><span class="co">## ...              ...       ...       ...</span></span>
+<span><span class="co">## STK24      -0.655478  0.369663  0.285815</span></span>
+<span><span class="co">## CPVL       -0.669382  0.136236  0.533146</span></span>
+<span><span class="co">## BBOX1-AS1  -0.674860  0.436657  0.238202</span></span>
+<span><span class="co">## COL4A2     -0.689747  0.397331  0.292416</span></span>
+<span><span class="co">## KCNK1      -0.700702  0.329916  0.370787</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $pvalues</span></span>
+<span><span class="co">## DataFrame with 889 rows and 3 columns</span></span>
+<span><span class="co">##                H1975     H2228    HCC827</span></span>
+<span><span class="co">##            &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## AC092447.7         0         1         1</span></span>
+<span><span class="co">## CT45A3             0         1         1</span></span>
+<span><span class="co">## AL049870.3         0         1         1</span></span>
+<span><span class="co">## TDRD9              0         1         1</span></span>
+<span><span class="co">## TNNI3              0         1         1</span></span>
+<span><span class="co">## ...              ...       ...       ...</span></span>
+<span><span class="co">## STK24              1      0.00         0</span></span>
+<span><span class="co">## CPVL               1      0.01         0</span></span>
+<span><span class="co">## BBOX1-AS1          1      0.00         0</span></span>
+<span><span class="co">## COL4A2             1      0.00         0</span></span>
+<span><span class="co">## KCNK1              1      0.00         0</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"class")</span></span>
+<span><span class="co">## [1] "Cepo" "list"</span></span></code></pre>
 </div>
 </div>
 <div class="section level3">
@@ -310,26 +310,30 @@
 </h3>
 <p>We can visualize the overlap of differential stability genes between cell types.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/hms-dbmi/UpSetR" class="external-link">UpSetR</a></span><span class="op">)</span>
-<span class="va">res_name</span> <span class="op">=</span> <span class="fu"><a href="../reference/topGenes.html">topGenes</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">ds_res</span>, n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/UpSetR/man/upset.html" class="external-link">upset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/UpSetR/man/fromList.html" class="external-link">fromList</a></span><span class="op">(</span><span class="va">res_name</span><span class="op">)</span>, nsets <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/hms-dbmi/UpSetR" class="external-link">UpSetR</a></span><span class="op">)</span></span>
+<span><span class="va">res_name</span> <span class="op">=</span> <span class="fu"><a href="../reference/topGenes.html">topGenes</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">ds_res</span>, n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/UpSetR/man/upset.html" class="external-link">upset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/UpSetR/man/fromList.html" class="external-link">fromList</a></span><span class="op">(</span><span class="va">res_name</span><span class="op">)</span>, nsets <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cepo_files/figure-html/upset-plot-1.png" width="700"></p>
 <p>Density plot of two genes from each cell type.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotDensities.html">plotDensities</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cellbench</span>,
-              cepoOutput <span class="op">=</span> <span class="va">ds_res</span>,
-              nGenes <span class="op">=</span> <span class="fl">2</span>,
-              assay <span class="op">=</span> <span class="st">"logcounts"</span>,
-              celltypeColumn <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## AC092447.7, CT45A3, HLA-DRB6, AR, CASC9, AC011632.1 will be plotted</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDensities.html">plotDensities</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cellbench</span>,</span>
+<span>              cepoOutput <span class="op">=</span> <span class="va">ds_res</span>,</span>
+<span>              nGenes <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>              assay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>              celltypeColumn <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## AC092447.7, CT45A3, HLA-DRB6, AR, CASC9, AC011632.1 will be plotted</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: The dot-dot notation (`..density..`) was deprecated in ggplot2 3.4.0.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please use `after_stat(density)` instead.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">Cepo</span> package.</span></span>
+<span><span class="co">##   Please report the issue to the authors.</span></span></code></pre>
 <p><img src="cepo_files/figure-html/plot-densities-1.png" width="700"></p>
 <p>We can also specify the genes to be plotted.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotDensities.html">plotDensities</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cellbench</span>,
-              cepoOutput <span class="op">=</span> <span class="va">ds_res</span>,
-              genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PLTP"</span>, <span class="st">"CPT1C"</span>, <span class="st">"MEG3"</span>, <span class="st">"SYCE1"</span>, <span class="st">"MICOS10P3"</span>, <span class="st">"HOXB7"</span><span class="op">)</span>,
-              assay <span class="op">=</span> <span class="st">"logcounts"</span>,
-              celltypeColumn <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDensities.html">plotDensities</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cellbench</span>,</span>
+<span>              cepoOutput <span class="op">=</span> <span class="va">ds_res</span>,</span>
+<span>              genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PLTP"</span>, <span class="st">"CPT1C"</span>, <span class="st">"MEG3"</span>, <span class="st">"SYCE1"</span>, <span class="st">"MICOS10P3"</span>, <span class="st">"HOXB7"</span><span class="op">)</span>,</span>
+<span>              assay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>              celltypeColumn <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cepo_files/figure-html/plot-densities-genes-1.png" width="700"></p>
 </div>
 </div>
@@ -340,104 +344,104 @@
 <h3 id="example-data-1">Example data<a class="anchor" aria-label="anchor" href="#example-data-1"></a>
 </h3>
 <p>We will load an example dataset, a small, randomly subsampled subset of the human pancreas datasets from the <a href="https://www.pnas.org/content/116/20/9775" class="external-link">scMerge paper</a> consisting of 3 batches, 2 cell types, 528 cells, and 1358 genes.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sce_pancreas"</span>, package <span class="op">=</span> <span class="st">"Cepo"</span><span class="op">)</span>
-<span class="va">sce_pancreas</span></code></pre></div>
-<pre><code><span class="co">## class: SingleCellExperiment </span>
-<span class="co">## dim: 1403 528 </span>
-<span class="co">## metadata(0):</span>
-<span class="co">## assays(1): counts</span>
-<span class="co">## rownames(1403): SCGN SCG5 ... IFITM3 ZFP36L1</span>
-<span class="co">## rowData names(0):</span>
-<span class="co">## colnames(528): human2_lib2.final_cell_0117 human1_lib3.final_cell_0318</span>
-<span class="co">##   ... 9th_C61_S25 9th_C84_S60</span>
-<span class="co">## colData names(2): batch cellTypes</span>
-<span class="co">## reducedDimNames(0):</span>
-<span class="co">## mainExpName: NULL</span>
-<span class="co">## altExpNames(0):</span></code></pre>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sce_pancreas"</span>, package <span class="op">=</span> <span class="st">"Cepo"</span><span class="op">)</span></span>
+<span><span class="va">sce_pancreas</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: SingleCellExperiment </span></span>
+<span><span class="co">## dim: 1403 528 </span></span>
+<span><span class="co">## metadata(0):</span></span>
+<span><span class="co">## assays(1): counts</span></span>
+<span><span class="co">## rownames(1403): SCGN SCG5 ... IFITM3 ZFP36L1</span></span>
+<span><span class="co">## rowData names(0):</span></span>
+<span><span class="co">## colnames(528): human2_lib2.final_cell_0117 human1_lib3.final_cell_0318</span></span>
+<span><span class="co">##   ... 9th_C61_S25 9th_C84_S60</span></span>
+<span><span class="co">## colData names(2): batch cellTypes</span></span>
+<span><span class="co">## reducedDimNames(0):</span></span>
+<span><span class="co">## mainExpName: NULL</span></span>
+<span><span class="co">## altExpNames(0):</span></span></code></pre>
 <p>Given the presences of batches, we will visualize the data for any batch effect. Clearly these is separation of the data points by batch.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Loading required package: scuttle</span></code></pre>
-<pre><code><span class="co">## Loading required package: ggplot2</span></code></pre>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">=</span> <span class="va">sce_pancreas</span>
-<span class="va">sce</span> <span class="op">=</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">=</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
-
-<span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotPCA</a></span><span class="op">(</span>
-  <span class="va">sce</span>, 
-  colour_by <span class="op">=</span> <span class="st">"cellTypes"</span>, 
-  shape_by <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Loading required package: scuttle</span></span></code></pre>
+<pre><code><span><span class="co">## Loading required package: ggplot2</span></span></code></pre>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">=</span> <span class="va">sce_pancreas</span></span>
+<span><span class="va">sce</span> <span class="op">=</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">=</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span></span>
+<span>  <span class="va">sce</span>, </span>
+<span>  colour_by <span class="op">=</span> <span class="st">"cellTypes"</span>, </span>
+<span>  shape_by <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cepo_files/figure-html/unnamed-chunk-5-1.png" width="480"></p>
 </div>
 <div class="section level3">
 <h3 id="scmerge-to-remove-batch-effect">scMerge to remove batch effect<a class="anchor" aria-label="anchor" href="#scmerge-to-remove-batch-effect"></a>
 </h3>
 <p>We can run the analysis on batch corrected data. For this, we can implement batch correction methods on the data suing batch correction methods such as scMerge.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/SydneyBioX/scMerge" class="external-link">scMerge</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"segList"</span>, package <span class="op">=</span> <span class="st">"scMerge"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">segList</span><span class="op">$</span><span class="va">human</span><span class="op">$</span><span class="va">human_scSEG</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "AAR2"  "AATF"  "ABCF3" "ABHD2" "ABT1"  "ACAP2"</span></code></pre>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">corrected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scMerge/man/scMerge.html" class="external-link">scMerge</a></span><span class="op">(</span>
-  sce_combine <span class="op">=</span> <span class="va">sce</span>,
-  ctl <span class="op">=</span> <span class="va">segList</span><span class="op">$</span><span class="va">human</span><span class="op">$</span><span class="va">human_scSEG</span>,
-  kmeansK <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,
-  assay_name <span class="op">=</span> <span class="st">"scMerge"</span>,
-  cell_type <span class="op">=</span> <span class="va">sce</span><span class="op">$</span><span class="va">cellTypes</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Dimension of the replicates mapping matrix: </span>
-<span class="co">## [1] 528   2</span></code></pre>
-<pre><code><span class="co">## Step 2: Performing RUV normalisation. This will take minutes to hours.</span></code></pre>
-<pre><code><span class="co">## scMerge complete!</span></code></pre>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/SydneyBioX/scMerge" class="external-link">scMerge</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"segList"</span>, package <span class="op">=</span> <span class="st">"scMerge"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">segList</span><span class="op">$</span><span class="va">human</span><span class="op">$</span><span class="va">human_scSEG</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "AAR2"  "AATF"  "ABCF3" "ABHD2" "ABT1"  "ACAP2"</span></span></code></pre>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">corrected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scMerge/man/scMerge.html" class="external-link">scMerge</a></span><span class="op">(</span></span>
+<span>  sce_combine <span class="op">=</span> <span class="va">sce</span>,</span>
+<span>  ctl <span class="op">=</span> <span class="va">segList</span><span class="op">$</span><span class="va">human</span><span class="op">$</span><span class="va">human_scSEG</span>,</span>
+<span>  kmeansK <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  assay_name <span class="op">=</span> <span class="st">"scMerge"</span>,</span>
+<span>  cell_type <span class="op">=</span> <span class="va">sce</span><span class="op">$</span><span class="va">cellTypes</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Dimension of the replicates mapping matrix: </span></span>
+<span><span class="co">## [1] 528   2</span></span></code></pre>
+<pre><code><span><span class="co">## Step 2: Performing RUV normalisation. This will take minutes to hours.</span></span></code></pre>
+<pre><code><span><span class="co">## scMerge complete!</span></span></code></pre>
 <p>Let us visualise the corrected data.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">corrected</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">corrected</span>,
-                            exprs_values <span class="op">=</span> <span class="st">"scMerge"</span><span class="op">)</span>
-
-<span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotPCA</a></span><span class="op">(</span>
-  <span class="va">corrected</span>,
-  colour_by <span class="op">=</span> <span class="st">"cellTypes"</span>,
-  shape_by <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></code></pre></div>
-<p><img src="cepo_files/figure-html/unnamed-chunk-7-1.png" width="480"></p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">corrected</span>, <span class="st">"scMerge"</span><span class="op">)</span>,
-              cellType <span class="op">=</span> <span class="va">corrected</span><span class="op">$</span><span class="va">cellTypes</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">corrected</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">corrected</span>,</span>
+<span>                            exprs_values <span class="op">=</span> <span class="st">"scMerge"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span></span>
+<span>  <span class="va">corrected</span>,</span>
+<span>  colour_by <span class="op">=</span> <span class="st">"cellTypes"</span>,</span>
+<span>  shape_by <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="cepo_files/figure-html/unnamed-chunk-7-1.png" width="480"></p>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ds_res</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">corrected</span>, <span class="st">"scMerge"</span><span class="op">)</span>,</span>
+<span>              cellType <span class="op">=</span> <span class="va">corrected</span><span class="op">$</span><span class="va">cellTypes</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="running-cepo-by-batch">Running Cepo by batch<a class="anchor" aria-label="anchor" href="#running-cepo-by-batch"></a>
 </h3>
 <p>Rather than running <em>Cepo</em> on the corrected values, we can run the differential analysis independently on individual batches using the <code>block</code> argument. By default, the <code>block</code> argument is set to <code>NULL</code>, ignoring batch information. If batches are present and the data is not corrected for batch effect, ensure you run the analyses by block.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds_res_batches</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,
-                            cellTypes <span class="op">=</span> <span class="va">sce</span><span class="op">$</span><span class="va">cellTypes</span>,
-                            block <span class="op">=</span> <span class="va">sce</span><span class="op">$</span><span class="va">batch</span>,
-                            minCelltype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<p>Note that the resulting output in a list of <code>Cepo</code> class objects where each slot denotes the individual results for the three batches, as well as the averaged results saved as <code>average</code>.</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "batch 1" "batch 4" "batch 5" "average"</span></code></pre>
+<code class="sourceCode R"><span><span class="va">ds_res_batches</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,</span>
+<span>                            cellTypes <span class="op">=</span> <span class="va">sce</span><span class="op">$</span><span class="va">cellTypes</span>,</span>
+<span>                            block <span class="op">=</span> <span class="va">sce</span><span class="op">$</span><span class="va">batch</span>,</span>
+<span>                            minCelltype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p>Note that the resulting output in a list of <code>Cepo</code> class objects where each slot denotes the individual results for the three batches, as well as the averaged results saved as <code>average</code>.</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "batch 1" "batch 4" "batch 5" "average"</span></span></code></pre>
 <p>We can confirm that the <code>Cepo</code> statistics from across batches demonstrate a strong correlation. The clustered correlation heatmap below shows that there is high correlation between the scores of the same cell type across batches.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">idx</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Reduce</a></span><span class="op">(</span><span class="va">intersect</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">combinedRes</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">cbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> 
-  <span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span><span class="va">idx</span>,<span class="op">]</span>
-<span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">batches</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">cty</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span>, use.name <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"[.]"</span>, <span class="st">"_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span><span class="op">)</span>
-  
-<span class="va">annot</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
-  batch <span class="op">=</span> <span class="va">batches</span>,
-  celltype <span class="op">=</span> <span class="va">cty</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">annot</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span>
-
-<span class="fu">pheatmap</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pheatmap/man/pheatmap.html" class="external-link">pheatmap</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span>,
-                   annotation <span class="op">=</span> <span class="va">annot</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">idx</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Reduce</a></span><span class="op">(</span><span class="va">intersect</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">combinedRes</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">cbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> </span>
+<span>  <span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span><span class="va">idx</span>,<span class="op">]</span></span>
+<span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">batches</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cty</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ds_res_batches</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span>, use.name <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"[.]"</span>, <span class="st">"_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="va">annot</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  batch <span class="op">=</span> <span class="va">batches</span>,</span>
+<span>  celltype <span class="op">=</span> <span class="va">cty</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">annot</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pheatmap</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pheatmap/man/pheatmap.html" class="external-link">pheatmap</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">combinedRes</span><span class="op">)</span>,</span>
+<span>                   annotation <span class="op">=</span> <span class="va">annot</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cepo_files/figure-html/unnamed-chunk-11-1.png" width="960"></p>
 </div>
 <div class="section level3">
@@ -447,56 +451,56 @@
 <h4 id="marker-gene-identification-and-visualisation">Marker gene identification and visualisation<a class="anchor" aria-label="anchor" href="#marker-gene-identification-and-visualisation"></a>
 </h4>
 <p>One of the useful applications of <code>Cepo</code> is to find marker genes or cell identity genes on clustered data. We can visualise the top three marker genes for beta and ductal cells on the PCA.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cepo_genes</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/topGenes.html">topGenes</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-
-<span class="va">markersPlot</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">cepo_genes</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">pp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">x</span>, <span class="kw">function</span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">p</span> <span class="op">=</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotPCA</a></span><span class="op">(</span>
-  <span class="va">corrected</span>,
-  colour_by <span class="op">=</span> <span class="va">gene</span>,
-  shape_by <span class="op">=</span> <span class="st">"cellTypes"</span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-  <span class="va">pp</span> <span class="op">=</span> <span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></span><span class="op">(</span><span class="va">pp</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">pp</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-<span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></span><span class="op">(</span><span class="va">markersPlot</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cepo_genes</span> <span class="op">=</span> <span class="fu">Cepo</span><span class="fu">::</span><span class="fu"><a href="../reference/topGenes.html">topGenes</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">markersPlot</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">cepo_genes</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">pp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">x</span>, <span class="kw">function</span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">p</span> <span class="op">=</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span></span>
+<span>  <span class="va">corrected</span>,</span>
+<span>  colour_by <span class="op">=</span> <span class="va">gene</span>,</span>
+<span>  shape_by <span class="op">=</span> <span class="st">"cellTypes"</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="va">pp</span> <span class="op">=</span> <span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></span><span class="op">(</span><span class="va">pp</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">pp</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></span><span class="op">(</span><span class="va">markersPlot</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cepo_files/figure-html/marker-genes-1.png" width="1440"></p>
 </div>
 <div class="section level4">
 <h4 id="gene-set-enrichment-analysis">Gene set enrichment analysis<a class="anchor" aria-label="anchor" href="#gene-set-enrichment-analysis"></a>
 </h4>
 <p>We can also perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the cell identity gene scores generated from the <code>Cepo</code> package. As an example, we will perform gene set enrichment analysis using the <code>fgsea</code> and <code>escape</code> package.</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">escape</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ctlab/fgsea/" class="external-link">fgsea</a></span><span class="op">)</span>
-<span class="va">hallmark</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/escape/man/getGeneSets.html" class="external-link">getGeneSets</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"Homo sapiens"</span>, 
-                           library <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span>
-<span class="va">hallmarkList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSet-class.html" class="external-link">geneIds</a></span><span class="op">(</span><span class="va">hallmark</span><span class="op">)</span>
-
-<span class="va">fgseaRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html" class="external-link">fgsea</a></span><span class="op">(</span>pathways <span class="op">=</span> <span class="va">hallmarkList</span>, 
-                  stats    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>,<span class="st">"beta"</span><span class="op">]</span><span class="op">)</span>,
-                  minSize <span class="op">=</span> <span class="fl">15</span>,
-                  maxSize <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Warning in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam, : There are ties in the preranked stats (1% of the list).</span>
-<span class="co">## The order of those tied genes will be arbitrary, which may produce unexpected results.</span></code></pre>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">enriched_beta</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">fgseaRes</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span>, <span class="st">"padj"</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">enriched_beta</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">fgseaRes</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span>, <span class="st">"pathway"</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<p>Note the top 5 enriched pathways for <code>beta cells</code>.</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">escape</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ctlab/fgsea/" class="external-link">fgsea</a></span><span class="op">)</span></span>
+<span><span class="va">hallmark</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/escape/man/getGeneSets.html" class="external-link">getGeneSets</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"Homo sapiens"</span>, </span>
+<span>                           library <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span></span>
+<span><span class="va">hallmarkList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSet-class.html" class="external-link">geneIds</a></span><span class="op">(</span><span class="va">hallmark</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fgseaRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/fgsea.html" class="external-link">fgsea</a></span><span class="op">(</span>pathways <span class="op">=</span> <span class="va">hallmarkList</span>, </span>
+<span>                  stats    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>,<span class="st">"beta"</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>                  minSize <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>                  maxSize <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam, : There are ties in the preranked stats (1% of the list).</span></span>
+<span><span class="co">## The order of those tied genes will be arbitrary, which may produce unexpected results.</span></span></code></pre>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">enriched_beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
-<pre><code><span class="co">##       HALLMARK_PANCREAS_BETA_CELLS   HALLMARK_TNFA_SIGNALING_VIA_NFKB </span>
-<span class="co">##                           9.282897                           7.076463 </span>
-<span class="co">## HALLMARK_INTERFERON_GAMMA_RESPONSE           HALLMARK_APICAL_JUNCTION </span>
-<span class="co">##                           5.881479                           2.306975 </span>
-<span class="co">##           HALLMARK_MITOTIC_SPINDLE </span>
-<span class="co">##                           2.165549</span></code></pre>
+<code class="sourceCode R"><span><span class="va">enriched_beta</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">fgseaRes</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span>, <span class="st">"padj"</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">enriched_beta</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">fgseaRes</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span>, <span class="st">"pathway"</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p>Note the top 5 enriched pathways for <code>beta cells</code>.</p>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">enriched_beta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##       HALLMARK_PANCREAS_BETA_CELLS   HALLMARK_TNFA_SIGNALING_VIA_NFKB </span></span>
+<span><span class="co">##                           9.290855                           6.880600 </span></span>
+<span><span class="co">## HALLMARK_INTERFERON_GAMMA_RESPONSE           HALLMARK_APICAL_JUNCTION </span></span>
+<span><span class="co">##                           6.135920                           2.631022 </span></span>
+<span><span class="co">##               HALLMARK_P53_PATHWAY </span></span>
+<span><span class="co">##                           2.151769</span></span></code></pre>
 <p>Finally, we can visualise the enrichment using the <code>plotEnrichment</code> function from the <code>fgsea</code> package.</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/plotEnrichment.html" class="external-link">plotEnrichment</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">[[</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">]</span><span class="op">]</span>,
-               <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>, <span class="st">"beta"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/fgsea/man/plotEnrichment.html" class="external-link">plotEnrichment</a></span><span class="op">(</span><span class="va">hallmarkList</span><span class="op">[[</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>               <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">ds_res_batches</span><span class="op">$</span><span class="va">average</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span>, <span class="st">"beta"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"HALLMARK_PANCREAS_BETA_CELLS"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cepo_files/figure-html/unnamed-chunk-13-1.png" width="480"></p>
 </div>
 </div>
@@ -506,168 +510,170 @@
 </h2>
 <p>To facilitate analysis of high-throughput atlas data consisting of millions of cells, <code>Cepo</code> also enables out-of-memory and parallel computation.</p>
 <p>The <code>Cepo</code> function naturally handles matrices under the <code>DelayedArray</code> wrapper. Briefly, <code>DelayedArray</code> is a wrapper around many matrix classes in <code>R</code>, including <code>matrix</code>, <code>sparseMatrix</code> and <code>HDF5Array</code>. The last of which allows for out-of-memory computation, which means the computation is done outside of RAM. This will inevitably slow down the computational speed, but the major gain in doing this is that we can perform computations on data much larger than what our RAM can store at once.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/DelayedArray" class="external-link">DelayedArray</a></span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Loading required package: Matrix</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## Attaching package: 'Matrix'</span></code></pre>
-<pre><code><span class="co">## The following object is masked from 'package:S4Vectors':</span>
-<span class="co">## </span>
-<span class="co">##     expand</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## Attaching package: 'DelayedArray'</span></code></pre>
-<pre><code><span class="co">## The following objects are masked from 'package:base':</span>
-<span class="co">## </span>
-<span class="co">##     aperm, apply, rowsum, scale, sweep</span></code></pre>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/HDF5Array" class="external-link">HDF5Array</a></span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Loading required package: rhdf5</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## Attaching package: 'HDF5Array'</span></code></pre>
-<pre><code><span class="co">## The following object is masked from 'package:rhdf5':</span>
-<span class="co">## </span>
-<span class="co">##     h5ls</span></code></pre>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">da_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html" class="external-link">DelayedArray</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/realize.html" class="external-link">realize</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>, <span class="st">"HDF5Array"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">da_matrix</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "HDF5Matrix"</span>
-<span class="co">## attr(,"package")</span>
-<span class="co">## [1] "HDF5Array"</span></code></pre>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/showtree.html" class="external-link">seed</a></span><span class="op">(</span><span class="va">da_matrix</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "HDF5ArraySeed"</span>
-<span class="co">## attr(,"package")</span>
-<span class="co">## [1] "HDF5Array"</span></code></pre>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">da_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="va">da_matrix</span>, cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></code></pre></div>
-<p>Even though out-of-memory computation is slow, one way that we can speed up the computation is through parallel processing. This requires some configurations of the <code>DelayedArray</code> package via the <code>setAutoBPPARAM</code> function. <code>BiocParallel</code> package uses the <code>MulticoreParam</code> parameter for Linux/Mac and <code>SnowParam</code> for Windows.</p>
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/DelayedArray" class="external-link">DelayedArray</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Loading required package: Matrix</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'Matrix'</span></span></code></pre>
+<pre><code><span><span class="co">## The following object is masked from 'package:S4Vectors':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     expand</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'DelayedArray'</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:base':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     apply, rowsum, scale, sweep</span></span></code></pre>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/HDF5Array" class="external-link">HDF5Array</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Loading required package: rhdf5</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'HDF5Array'</span></span></code></pre>
+<pre><code><span><span class="co">## The following object is masked from 'package:rhdf5':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     h5ls</span></span></code></pre>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">da_matrix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html" class="external-link">DelayedArray</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/realize.html" class="external-link">realize</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">cellbench</span><span class="op">)</span>, <span class="st">"HDF5Array"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">da_matrix</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "HDF5Matrix"</span></span>
+<span><span class="co">## attr(,"package")</span></span>
+<span><span class="co">## [1] "HDF5Array"</span></span></code></pre>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/showtree.html" class="external-link">seed</a></span><span class="op">(</span><span class="va">da_matrix</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "HDF5ArraySeed"</span></span>
+<span><span class="co">## attr(,"package")</span></span>
+<span><span class="co">## [1] "HDF5Array"</span></span></code></pre>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Bioconductor/BiocParallel" class="external-link">BiocParallel</a></span><span class="op">)</span>
-
-<span class="va">BPPARAM</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">.Platform</span><span class="op">$</span><span class="va">OS.type</span> <span class="op">==</span> <span class="st">"windows"</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">SnowParam</a></span><span class="op">(</span>workers <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-  <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html" class="external-link">MulticoreParam</a></span><span class="op">(</span>workers <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="fu">DelayedArray</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/blockApply.html" class="external-link">setAutoBPPARAM</a></span><span class="op">(</span>BPPARAM <span class="op">=</span> <span class="va">BPPARAM</span><span class="op">)</span> <span class="co">## Setting two cores for computation</span>
-
-<span class="va">da_output_parallel</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="va">da_matrix</span>, cellTypes <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span>
-
-<span class="fu">DelayedArray</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/blockApply.html" class="external-link">setAutoBPPARAM</a></span><span class="op">(</span>BPPARAM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co">## Revert back to only one core</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">da_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="va">da_matrix</span>, cellType <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></span></code></pre></div>
+<p>Even though out-of-memory computation is slow, one way that we can speed up the computation is through parallel processing. This requires some configurations of the <code>DelayedArray</code> package via the <code>setAutoBPPARAM</code> function. <code>BiocParallel</code> package uses the <code>MulticoreParam</code> parameter for Linux/Mac and <code>SnowParam</code> for Windows.</p>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Bioconductor/BiocParallel" class="external-link">BiocParallel</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">BPPARAM</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">.Platform</span><span class="op">$</span><span class="va">OS.type</span> <span class="op">==</span> <span class="st">"windows"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">SnowParam</a></span><span class="op">(</span>workers <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html" class="external-link">MulticoreParam</a></span><span class="op">(</span>workers <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">DelayedArray</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/blockApply.html" class="external-link">setAutoBPPARAM</a></span><span class="op">(</span>BPPARAM <span class="op">=</span> <span class="va">BPPARAM</span><span class="op">)</span> <span class="co">## Setting two cores for computation</span></span>
+<span></span>
+<span><span class="va">da_output_parallel</span> <span class="op">=</span> <span class="fu"><a href="../reference/Cepo.html">Cepo</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="va">da_matrix</span>, cellTypes <span class="op">=</span> <span class="va">cellbench</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">DelayedArray</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DelayedArray/man/blockApply.html" class="external-link">setAutoBPPARAM</a></span><span class="op">(</span>BPPARAM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co">## Revert back to only one core</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## R version 4.1.3 (2022-03-10)</span>
-<span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span>
-<span class="co">## Running under: macOS Big Sur/Monterey 10.16</span>
-<span class="co">## </span>
-<span class="co">## Matrix products: default</span>
-<span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib</span>
-<span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib</span>
-<span class="co">## </span>
-<span class="co">## locale:</span>
-<span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
-<span class="co">## </span>
-<span class="co">## attached base packages:</span>
-<span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span>
-<span class="co">## [8] base     </span>
-<span class="co">## </span>
-<span class="co">## other attached packages:</span>
-<span class="co">##  [1] BiocParallel_1.28.3         HDF5Array_1.22.1           </span>
-<span class="co">##  [3] rhdf5_2.38.1                DelayedArray_0.20.0        </span>
-<span class="co">##  [5] Matrix_1.4-0                fgsea_1.20.0               </span>
-<span class="co">##  [7] escape_1.4.0                scMerge_1.10.0             </span>
-<span class="co">##  [9] scater_1.22.0               ggplot2_3.3.5              </span>
-<span class="co">## [11] scuttle_1.4.0               UpSetR_1.4.0               </span>
-<span class="co">## [13] SingleCellExperiment_1.16.0 SummarizedExperiment_1.24.0</span>
-<span class="co">## [15] GenomicRanges_1.46.1        GenomeInfoDb_1.30.1        </span>
-<span class="co">## [17] MatrixGenerics_1.6.0        matrixStats_0.61.0         </span>
-<span class="co">## [19] Cepo_1.1.1                  GSEABase_1.56.0            </span>
-<span class="co">## [21] graph_1.72.0                annotate_1.72.0            </span>
-<span class="co">## [23] XML_3.99-0.9                AnnotationDbi_1.56.2       </span>
-<span class="co">## [25] IRanges_2.28.0              S4Vectors_0.32.4           </span>
-<span class="co">## [27] Biobase_2.54.0              BiocGenerics_0.40.0        </span>
-<span class="co">## [29] BiocStyle_2.22.0           </span>
-<span class="co">## </span>
-<span class="co">## loaded via a namespace (and not attached):</span>
-<span class="co">##   [1] utf8_1.2.2                tidyselect_1.1.2         </span>
-<span class="co">##   [3] RSQLite_2.2.12            htmlwidgets_1.5.4        </span>
-<span class="co">##   [5] grid_4.1.3                munsell_0.5.0            </span>
-<span class="co">##   [7] ScaledMatrix_1.2.0        codetools_0.2-18         </span>
-<span class="co">##   [9] ragg_1.2.2                statmod_1.4.36           </span>
-<span class="co">##  [11] withr_2.5.0               colorspace_2.0-3         </span>
-<span class="co">##  [13] highr_0.9                 knitr_1.38               </span>
-<span class="co">##  [15] rstudioapi_0.13           labeling_0.4.2           </span>
-<span class="co">##  [17] rstan_2.21.5              bbmle_1.0.24             </span>
-<span class="co">##  [19] GenomeInfoDbData_1.2.7    pheatmap_1.0.12          </span>
-<span class="co">##  [21] bit64_4.0.5               farver_2.1.0             </span>
-<span class="co">##  [23] rprojroot_2.0.3           vctrs_0.4.0              </span>
-<span class="co">##  [25] generics_0.1.2            xfun_0.30                </span>
-<span class="co">##  [27] R6_2.5.1                  ggbeeswarm_0.6.0         </span>
-<span class="co">##  [29] rsvd_1.0.5                msigdbr_7.5.1            </span>
-<span class="co">##  [31] bitops_1.0-7              rhdf5filters_1.6.0       </span>
-<span class="co">##  [33] cachem_1.0.6              M3Drop_1.20.0            </span>
-<span class="co">##  [35] scales_1.1.1              nnet_7.3-17              </span>
-<span class="co">##  [37] startupmsg_0.9.6          beeswarm_0.4.0           </span>
-<span class="co">##  [39] gtable_0.3.0              beachmat_2.10.0          </span>
-<span class="co">##  [41] processx_3.5.3            rlang_1.0.2              </span>
-<span class="co">##  [43] systemfonts_1.0.4         splines_4.1.3            </span>
-<span class="co">##  [45] checkmate_2.0.0           inline_0.3.19            </span>
-<span class="co">##  [47] BiocManager_1.30.16       yaml_2.3.5               </span>
-<span class="co">##  [49] reshape2_1.4.4            backports_1.4.1          </span>
-<span class="co">##  [51] Hmisc_4.6-0               tools_4.1.3              </span>
-<span class="co">##  [53] bookdown_0.25             ellipsis_0.3.2           </span>
-<span class="co">##  [55] gplots_3.1.1              jquerylib_0.1.4          </span>
-<span class="co">##  [57] RColorBrewer_1.1-3        proxy_0.4-26             </span>
-<span class="co">##  [59] ggridges_0.5.3            Rcpp_1.0.8.3             </span>
-<span class="co">##  [61] plyr_1.8.7                base64enc_0.1-3          </span>
-<span class="co">##  [63] sparseMatrixStats_1.6.0   zlibbioc_1.40.0          </span>
-<span class="co">##  [65] purrr_0.3.4               RCurl_1.98-1.6           </span>
-<span class="co">##  [67] ps_1.6.0                  prettyunits_1.1.1        </span>
-<span class="co">##  [69] rpart_4.1.16              reldist_1.7-0            </span>
-<span class="co">##  [71] viridis_0.6.2             sfsmisc_1.1-13           </span>
-<span class="co">##  [73] ggrepel_0.9.1             cluster_2.1.2            </span>
-<span class="co">##  [75] fs_1.5.2                  magrittr_2.0.3           </span>
-<span class="co">##  [77] data.table_1.14.2         densEstBayes_1.0-2.1     </span>
-<span class="co">##  [79] mvtnorm_1.1-3             distr_2.8.0              </span>
-<span class="co">##  [81] GSVA_1.42.0               patchwork_1.1.1          </span>
-<span class="co">##  [83] evaluate_0.15             xtable_1.8-4             </span>
-<span class="co">##  [85] jpeg_0.1-9                gridExtra_2.3            </span>
-<span class="co">##  [87] compiler_4.1.3            bdsmatrix_1.3-4          </span>
-<span class="co">##  [89] tibble_3.1.6              KernSmooth_2.23-20       </span>
-<span class="co">##  [91] crayon_1.5.1              StanHeaders_2.21.0-7     </span>
-<span class="co">##  [93] htmltools_0.5.2           mgcv_1.8-39              </span>
-<span class="co">##  [95] Formula_1.2-4             RcppParallel_5.1.5       </span>
-<span class="co">##  [97] DBI_1.1.2                 MASS_7.3-55              </span>
-<span class="co">##  [99] babelgene_22.3            cli_3.2.0                </span>
-<span class="co">## [101] parallel_4.1.3            pkgconfig_2.0.3          </span>
-<span class="co">## [103] pkgdown_2.0.2             numDeriv_2016.8-1.1      </span>
-<span class="co">## [105] foreign_0.8-82            vipor_0.4.5              </span>
-<span class="co">## [107] bslib_0.3.1               XVector_0.34.0           </span>
-<span class="co">## [109] ruv_0.9.7.1               stringr_1.4.0            </span>
-<span class="co">## [111] callr_3.7.0               digest_0.6.29            </span>
-<span class="co">## [113] Biostrings_2.62.0         fastmatch_1.1-3          </span>
-<span class="co">## [115] rmarkdown_2.13            htmlTable_2.4.0          </span>
-<span class="co">## [117] DelayedMatrixStats_1.16.0 gtools_3.9.2             </span>
-<span class="co">## [119] lifecycle_1.0.1           nlme_3.1-155             </span>
-<span class="co">## [121] jsonlite_1.8.0            Rhdf5lib_1.16.0          </span>
-<span class="co">## [123] BiocNeighbors_1.12.0      limma_3.50.3             </span>
-<span class="co">## [125] desc_1.4.1                viridisLite_0.4.0        </span>
-<span class="co">## [127] fansi_1.0.3               pillar_1.7.0             </span>
-<span class="co">## [129] lattice_0.20-45           loo_2.5.1                </span>
-<span class="co">## [131] KEGGREST_1.34.0           fastmap_1.1.0            </span>
-<span class="co">## [133] httr_1.4.2                pkgbuild_1.3.1           </span>
-<span class="co">## [135] survival_3.2-13           glue_1.6.2               </span>
-<span class="co">## [137] png_0.1-7                 bit_4.0.4                </span>
-<span class="co">## [139] stringi_1.7.6             sass_0.4.1               </span>
-<span class="co">## [141] blob_1.2.3                textshaping_0.3.6        </span>
-<span class="co">## [143] BiocSingular_1.10.0       latticeExtra_0.6-29      </span>
-<span class="co">## [145] caTools_1.18.2            memoise_2.0.1            </span>
-<span class="co">## [147] dplyr_1.0.8               irlba_2.3.5</span></code></pre>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## R version 4.2.2 (2022-10-31)</span></span>
+<span><span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>
+<span><span class="co">## Running under: macOS Big Sur ... 10.16</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Matrix products: default</span></span>
+<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib</span></span>
+<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## locale:</span></span>
+<span><span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attached base packages:</span></span>
+<span><span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span><span class="co">## [8] base     </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## other attached packages:</span></span>
+<span><span class="co">##  [1] BiocParallel_1.32.5         HDF5Array_1.26.0           </span></span>
+<span><span class="co">##  [3] rhdf5_2.42.0                DelayedArray_0.24.0        </span></span>
+<span><span class="co">##  [5] Matrix_1.5-1                fgsea_1.24.0               </span></span>
+<span><span class="co">##  [7] escape_1.8.0                scMerge_1.14.0             </span></span>
+<span><span class="co">##  [9] scater_1.26.1               ggplot2_3.4.1              </span></span>
+<span><span class="co">## [11] scuttle_1.8.4               UpSetR_1.4.0               </span></span>
+<span><span class="co">## [13] SingleCellExperiment_1.20.0 SummarizedExperiment_1.28.0</span></span>
+<span><span class="co">## [15] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        </span></span>
+<span><span class="co">## [17] MatrixGenerics_1.10.0       matrixStats_0.63.0         </span></span>
+<span><span class="co">## [19] Cepo_1.1.1                  GSEABase_1.60.0            </span></span>
+<span><span class="co">## [21] graph_1.76.0                annotate_1.76.0            </span></span>
+<span><span class="co">## [23] XML_3.99-0.13               AnnotationDbi_1.60.0       </span></span>
+<span><span class="co">## [25] IRanges_2.32.0              S4Vectors_0.36.2           </span></span>
+<span><span class="co">## [27] Biobase_2.58.0              BiocGenerics_0.44.0        </span></span>
+<span><span class="co">## [29] BiocStyle_2.26.0           </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## loaded via a namespace (and not attached):</span></span>
+<span><span class="co">##   [1] utf8_1.2.3                tidyselect_1.2.0         </span></span>
+<span><span class="co">##   [3] RSQLite_2.3.0             htmlwidgets_1.6.1        </span></span>
+<span><span class="co">##   [5] grid_4.2.2                munsell_0.5.0            </span></span>
+<span><span class="co">##   [7] ScaledMatrix_1.6.0        codetools_0.2-18         </span></span>
+<span><span class="co">##   [9] ragg_1.2.5                interp_1.1-3             </span></span>
+<span><span class="co">##  [11] statmod_1.5.0             withr_2.5.0              </span></span>
+<span><span class="co">##  [13] colorspace_2.1-0          highr_0.10               </span></span>
+<span><span class="co">##  [15] knitr_1.42                rstudioapi_0.14          </span></span>
+<span><span class="co">##  [17] labeling_0.4.2            rstan_2.21.8             </span></span>
+<span><span class="co">##  [19] bbmle_1.0.25              GenomeInfoDbData_1.2.9   </span></span>
+<span><span class="co">##  [21] pheatmap_1.0.12           bit64_4.0.5              </span></span>
+<span><span class="co">##  [23] farver_2.1.1              rprojroot_2.0.3          </span></span>
+<span><span class="co">##  [25] vctrs_0.5.2               generics_0.1.3           </span></span>
+<span><span class="co">##  [27] xfun_0.37                 R6_2.5.1                 </span></span>
+<span><span class="co">##  [29] ggbeeswarm_0.7.1          rsvd_1.0.5               </span></span>
+<span><span class="co">##  [31] msigdbr_7.5.1             bitops_1.0-7             </span></span>
+<span><span class="co">##  [33] rhdf5filters_1.10.0       cachem_1.0.7             </span></span>
+<span><span class="co">##  [35] M3Drop_1.24.0             scales_1.2.1             </span></span>
+<span><span class="co">##  [37] nnet_7.3-18               startupmsg_0.9.6         </span></span>
+<span><span class="co">##  [39] beeswarm_0.4.0            gtable_0.3.1             </span></span>
+<span><span class="co">##  [41] beachmat_2.14.0           processx_3.8.0           </span></span>
+<span><span class="co">##  [43] rlang_1.0.6               systemfonts_1.0.4        </span></span>
+<span><span class="co">##  [45] splines_4.2.2             broom_1.0.3              </span></span>
+<span><span class="co">##  [47] checkmate_2.1.0           inline_0.3.19            </span></span>
+<span><span class="co">##  [49] BiocManager_1.30.20       yaml_2.3.7               </span></span>
+<span><span class="co">##  [51] reshape2_1.4.4            backports_1.4.1          </span></span>
+<span><span class="co">##  [53] Hmisc_4.8-0               tools_4.2.2              </span></span>
+<span><span class="co">##  [55] bookdown_0.32             gplots_3.1.3             </span></span>
+<span><span class="co">##  [57] jquerylib_0.1.4           RColorBrewer_1.1-3       </span></span>
+<span><span class="co">##  [59] proxy_0.4-27              ggridges_0.5.4           </span></span>
+<span><span class="co">##  [61] Rcpp_1.0.10               plyr_1.8.8               </span></span>
+<span><span class="co">##  [63] base64enc_0.1-3           sparseMatrixStats_1.10.0 </span></span>
+<span><span class="co">##  [65] zlibbioc_1.44.0           purrr_1.0.1              </span></span>
+<span><span class="co">##  [67] RCurl_1.98-1.10           ps_1.7.2                 </span></span>
+<span><span class="co">##  [69] prettyunits_1.1.1         rpart_4.1.19             </span></span>
+<span><span class="co">##  [71] deldir_1.0-6              reldist_1.7-2            </span></span>
+<span><span class="co">##  [73] viridis_0.6.2             cowplot_1.1.1            </span></span>
+<span><span class="co">##  [75] sfsmisc_1.1-14            ggrepel_0.9.3            </span></span>
+<span><span class="co">##  [77] cluster_2.1.4             fs_1.6.1                 </span></span>
+<span><span class="co">##  [79] magrittr_2.0.3            data.table_1.14.8        </span></span>
+<span><span class="co">##  [81] densEstBayes_1.0-2.1      mvtnorm_1.1-3            </span></span>
+<span><span class="co">##  [83] distr_2.9.1               GSVA_1.46.0              </span></span>
+<span><span class="co">##  [85] patchwork_1.1.2           evaluate_0.20            </span></span>
+<span><span class="co">##  [87] xtable_1.8-4              jpeg_0.1-10              </span></span>
+<span><span class="co">##  [89] gridExtra_2.3             UCell_2.2.0              </span></span>
+<span><span class="co">##  [91] compiler_4.2.2            bdsmatrix_1.3-6          </span></span>
+<span><span class="co">##  [93] tibble_3.1.8              KernSmooth_2.23-20       </span></span>
+<span><span class="co">##  [95] crayon_1.5.2              StanHeaders_2.21.0-7     </span></span>
+<span><span class="co">##  [97] htmltools_0.5.4           mgcv_1.8-41              </span></span>
+<span><span class="co">##  [99] Formula_1.2-5             tidyr_1.3.0              </span></span>
+<span><span class="co">## [101] RcppParallel_5.1.7        DBI_1.1.3                </span></span>
+<span><span class="co">## [103] MASS_7.3-58.1             babelgene_22.9           </span></span>
+<span><span class="co">## [105] cli_3.6.0                 parallel_4.2.2           </span></span>
+<span><span class="co">## [107] pkgconfig_2.0.3           pkgdown_2.0.7            </span></span>
+<span><span class="co">## [109] numDeriv_2016.8-1.1       foreign_0.8-83           </span></span>
+<span><span class="co">## [111] vipor_0.4.5               bslib_0.4.2              </span></span>
+<span><span class="co">## [113] XVector_0.38.0            ruv_0.9.7.1              </span></span>
+<span><span class="co">## [115] stringr_1.5.0             callr_3.7.3              </span></span>
+<span><span class="co">## [117] digest_0.6.31             Biostrings_2.66.0        </span></span>
+<span><span class="co">## [119] fastmatch_1.1-3           rmarkdown_2.20           </span></span>
+<span><span class="co">## [121] htmlTable_2.4.1           DelayedMatrixStats_1.20.0</span></span>
+<span><span class="co">## [123] gtools_3.9.4              lifecycle_1.0.3          </span></span>
+<span><span class="co">## [125] nlme_3.1-160              jsonlite_1.8.4           </span></span>
+<span><span class="co">## [127] Rhdf5lib_1.20.0           BiocNeighbors_1.16.0     </span></span>
+<span><span class="co">## [129] desc_1.4.2                viridisLite_0.4.1        </span></span>
+<span><span class="co">## [131] fansi_1.0.4               pillar_1.8.1             </span></span>
+<span><span class="co">## [133] lattice_0.20-45           loo_2.5.1                </span></span>
+<span><span class="co">## [135] KEGGREST_1.38.0           fastmap_1.1.1            </span></span>
+<span><span class="co">## [137] httr_1.4.5                pkgbuild_1.4.0           </span></span>
+<span><span class="co">## [139] survival_3.4-0            glue_1.6.2               </span></span>
+<span><span class="co">## [141] png_0.1-8                 bit_4.0.5                </span></span>
+<span><span class="co">## [143] stringi_1.7.12            sass_0.4.5               </span></span>
+<span><span class="co">## [145] blob_1.2.3                textshaping_0.3.6        </span></span>
+<span><span class="co">## [147] BiocSingular_1.14.0       latticeExtra_0.6-30      </span></span>
+<span><span class="co">## [149] caTools_1.18.2            memoise_2.0.1            </span></span>
+<span><span class="co">## [151] dplyr_1.1.0               irlba_2.3.5.1</span></span></code></pre>
 </div>
   </div>
 
@@ -688,7 +694,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
