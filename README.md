@@ -1,12 +1,6 @@
 Cepo
 ================
 
-<img src="man/figures/Cepo_logo.png" align="right" width="225" height="250"/>
-
-![R-CMD-check](https://github.com/PYangLab/Cepo/workflows/R-CMD-check/badge.svg)
-[![Codecov test
-coverage](https://codecov.io/gh/PYangLab/Cepo/branch/main/graph/badge.svg?token=sJROwPzwey)](https://codecov.io/gh/PYangLab/Cepo)
-
 Defining the identity of a cell is fundamental to understand the
 heterogeneity of cells to various environmental signals and
 perturbations. We present Cepo, a new method to explore cell identities
@@ -14,6 +8,13 @@ from single-cell RNA-sequencing data using differential stability as a
 new metric to define cell identity genes. Cepo computes cell-type
 specific gene statistics pertaining to differential stable gene
 expression.
+
+
+<img src="man/figures/Cepo_logo.png" align="right" width="225" height="250"/>
+
+![R-CMD-check](https://github.com/PYangLab/Cepo/workflows/R-CMD-check/badge.svg)
+[![Codecov test
+coverage](https://codecov.io/gh/PYangLab/Cepo/branch/main/graph/badge.svg?token=sJROwPzwey)](https://codecov.io/gh/PYangLab/Cepo)
 
 ## Installation
 
