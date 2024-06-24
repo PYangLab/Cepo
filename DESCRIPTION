@@ -35,7 +35,8 @@ Imports:
     reshape2,
     BiocParallel,
     stats,
-    dplyr
+    dplyr,
+    purrr
 biocViews: Classification, GeneExpression, SingleCell, Software, Sequencing, DifferentialExpression
 Suggests: 
     knitr,
