@@ -9,7 +9,7 @@ Cepo(
   cellTypes,
   minCells = 20,
   minCelltype = 3,
-  exprsPct = NULL,
+  exprsPct = 0.05,
   prefilter_sd = NULL,
   prefilter_pzero = NULL,
   logfc = NULL,
