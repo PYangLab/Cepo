@@ -290,8 +290,10 @@ library(fgsea)
 hallmarkList <- getGeneSets(species = "Homo sapiens", 
                            library = "H")
 
+stats = as.data.frame(ds_res_batches$average$stats)$beta
+names(stats) = rownames(ds_res_batches$average$stats)
 fgseaRes <- fgsea(pathways = hallmarkList, 
-                  stats    = sort(as.data.frame(ds_res_batches$average$stats)$beta),
+                  stats    = sort(stats),
                   minSize = 15,
                   maxSize = 500)
 
