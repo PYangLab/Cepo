@@ -41,6 +41,9 @@ Default to NULL to not remove any genes.}
 \item{prefilter_sd}{Numeric value indicating threshold relating to standard
 deviation of genes. Used with prefilter_zeros.}
 
+\item{prefilter_pzero}{Numeric value indicating threshold relating to the
+percentage of zero expression of genes. Used with prefilter_sd.}
+
 \item{logfc}{Numeric value indicating the threshold of log fold-change
 to use to filter genes.}
 
@@ -71,9 +74,6 @@ For workers greater than 1, see the \code{workers} argument in
 
 \item{...}{Additional arguments passed to \code{BiocParallel::MulticoreParam}
 and \code{BiocParallel::SnowParam}.}
-
-\item{prefilter_pzeros}{Numeric value indicating threshold relating to the
-percentage of zero expression of genes. Used with prefilter_sd.}
 }
 \value{
 Returns a list of key genes.
