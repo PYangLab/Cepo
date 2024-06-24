@@ -18,6 +18,10 @@ We introduce *Cepo*, a method to determine genes governing cell identity from sc
 
 *Cepo* is therefore distinct from most methods for differential analysis (e.g., differential expression) that prioritise differences in the mean abundance between cell types. *Cepo* is able to capture subtle variations in distribution that does not necessarily involve changes in mean. *Cepo* is particularly suitable for large atlas data as it is computationally efficient and fast. Moreover, *Cepo* can perform differential stability analysis for multi-group comparisons in single-cell data.
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(crop = NULL)
+```
+
 To access the R code used in the vignettes, type:
 ```
 browseVignettes("Cepo")
