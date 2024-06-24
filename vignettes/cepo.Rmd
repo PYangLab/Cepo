@@ -283,9 +283,8 @@ We can also perform a plethora of downstream analyses, from gene set enrichment 
 ```{r gsea, message = FALSE}
 library(escape)
 library(fgsea)
-hallmark <- getGeneSets(species = "Homo sapiens", 
+hallmarkList <- getGeneSets(species = "Homo sapiens", 
                            library = "H")
-hallmarkList <- geneIds(hallmark)
 
 fgseaRes <- fgsea(pathways = hallmarkList, 
                   stats    = sort(ds_res_batches$average$stats[,"beta"]),
@@ -303,8 +302,8 @@ enriched_beta[1:5]
 
 Finally, we can visualise the enrichment using the `plotEnrichment` function from the `fgsea` package.
 ```{r fig.height=5, fig.width=5}
-plotEnrichment(hallmarkList[["HALLMARK_PANCREAS_BETA_CELLS"]],
-               sort(ds_res_batches$average$stats[, "beta"])) + labs(title="HALLMARK_PANCREAS_BETA_CELLS")
+plotEnrichment(hallmarkList[["HALLMARK-PANCREAS-BETA-CELLS"]],
+               sort(ds_res_batches$average$stats[, "beta"])) + labs(title="HALLMARK-PANCREAS-BETA-CELLS")
 ```
 
 
