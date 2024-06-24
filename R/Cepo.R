@@ -6,7 +6,7 @@
 #' Default to NULL to not remove any genes.
 #' @param prefilter_sd Numeric value indicating threshold relating to standard 
 #' deviation of genes. Used with prefilter_zeros. 
-#' @param prefilter_pzeros Numeric value indicating threshold relating to the 
+#' @param prefilter_pzero Numeric value indicating threshold relating to the 
 #' percentage of zero expression of genes. Used with prefilter_sd. 
 #' @param logfc Numeric value indicating the threshold of log fold-change 
 #' to use to filter genes.
@@ -39,6 +39,7 @@
 #' @importFrom HDF5Array HDF5Array
 #' @importFrom BiocParallel SerialParam MulticoreParam SnowParam bplapply
 #' @importFrom stats pnorm pchisq
+#' @importFrom purrr map map2
 #' @import dplyr
 #' @return Returns a list of key genes.
 #' @description ExprsMat accepts various matrix objects, 
@@ -258,8 +259,8 @@ bootFastCepo <- function(exprsMat, cellTypes, minCells, exprsPct, logfc, variabi
             this_celltype_stats_matrix = purrr::map(.x = sampled_cepo_stats, .f = function(this_sampled_stats){
                 this_sampled_stats[,this_celltype]
             }) %>% do.call(cbind, .)
-            this_celltype_stats_mean = Cepo:::rowMeans_withnames(this_celltype_stats_matrix)
-            this_celltype_stats_sd = Cepo:::rowSds_withnames(this_celltype_stats_matrix)
+            this_celltype_stats_mean = rowMeans_withnames(this_celltype_stats_matrix)
+            this_celltype_stats_sd = rowSds_withnames(this_celltype_stats_matrix)
             return(data.frame(mean = this_celltype_stats_mean, sd = this_celltype_stats_sd))
         })
     names(celltype_norm_stats) = cts
