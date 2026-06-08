@@ -283,8 +283,8 @@ patchwork::wrap_plots(markersPlot, nrow = 2)
 ```
 
 ### Gene set enrichment analysis
-We can also perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the cell identity gene scores generated from the `Cepo` package. As an example, we will perform gene set enrichment analysis using the `fgsea` and  `escape` package.
-```{r gsea, message = FALSE}
+We can also perform a plethora of downstream analyses, from gene set enrichment analyses to deconvolution of bulk RNA-seq, with the cell identity gene scores generated from the `Cepo` package. As an example, we will perform gene set enrichment analysis using the `fgsea` and  `escape` package. This example is not evaluated during vignette builds because downloading MSigDB resources can depend on external network access.
+```{r gsea, message = FALSE, eval = FALSE}
 library(escape)
 library(fgsea)
 hallmarkList <- getGeneSets(species = "Homo sapiens", 
@@ -300,12 +300,12 @@ names(enriched_beta) <- fgseaRes[order(pval), "pathway"][[1]]
 ```
 
 Note the top 5 enriched pathways for `beta cells`.
-```{r}
+```{r eval = FALSE}
 enriched_beta[1:5]
 ```
 
 Finally, we can visualise the enrichment using the `plotEnrichment` function from the `fgsea` package.
-```{r fig.height=5, fig.width=5}
+```{r fig.height=5, fig.width=5, eval = FALSE}
 plotEnrichment(hallmarkList[["HALLMARK-PANCREAS-BETA-CELLS"]],
                sort(ds_res_batches$average$stats[, "beta"])) + labs(title="HALLMARK-PANCREAS-BETA-CELLS")
 ```
