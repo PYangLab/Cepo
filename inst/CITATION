@@ -1,0 +1,23 @@
+citHeader("If you use Cepo, please cite:")
+
+bibentry(
+  bibtype = "Article",
+  title = "Uncovering cell identity through differential stability with Cepo",
+  author = c(
+    person("Hani Jieun", "Kim"),
+    person("Kevin", "Wang"),
+    person("Carissa", "Chen"),
+    person("Yingxin", "Lin"),
+    person(c("Patrick", "P.", "L."), "Tam"),
+    person(c("David", "M."), "Lin"),
+    person(c("Jean", "Y.", "H."), "Yang"),
+    person("Pengyi", "Yang")
+  ),
+  journal = "Nature Computational Science",
+  year = "2021",
+  volume = "1",
+  number = "12",
+  pages = "784--790",
+  doi = "10.1038/s43588-021-00172-2",
+  url = "https://doi.org/10.1038/s43588-021-00172-2"
+)

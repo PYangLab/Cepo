@@ -1,0 +1,49 @@
+cff-version: 1.2.0
+message: "If you use Cepo, please cite the published article."
+title: "Cepo: Cepo for the identification of differentially stable genes"
+version: 1.11.2
+license: MIT
+repository-code: "https://github.com/PYangLab/Cepo"
+url: "https://pyanglab.github.io/Cepo/"
+authors:
+  - family-names: Kim
+    given-names: Hani Jieun
+    email: "hani.kim@garvan.org.au"
+    orcid: "https://orcid.org/0000-0003-1844-3275"
+  - family-names: Wang
+    given-names: Kevin
+    email: "kevinwangstats@gmail.com"
+    orcid: "https://orcid.org/0000-0003-2615-6102"
+  - family-names: Yang
+    given-names: Pengyi
+    email: "pengyi.yang@sydney.edu.au"
+    orcid: "https://orcid.org/0000-0003-1098-3138"
+preferred-citation:
+  type: article
+  title: "Uncovering cell identity through differential stability with Cepo"
+  authors:
+    - family-names: Kim
+      given-names: Hani Jieun
+    - family-names: Wang
+      given-names: Kevin
+    - family-names: Chen
+      given-names: Carissa
+    - family-names: Lin
+      given-names: Yingxin
+    - family-names: Tam
+      given-names: Patrick P. L.
+    - family-names: Lin
+      given-names: David M.
+    - family-names: Yang
+      given-names: Jean Y. H.
+    - family-names: Yang
+      given-names: Pengyi
+  journal: "Nature Computational Science"
+  volume: 1
+  issue: 12
+  start: 784
+  end: 790
+  year: 2021
+  month: 12
+  doi: "10.1038/s43588-021-00172-2"
+  url: "https://doi.org/10.1038/s43588-021-00172-2"

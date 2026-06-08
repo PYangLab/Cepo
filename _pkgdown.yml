@@ -1,3 +1,5 @@
+url: https://pyanglab.github.io/Cepo/
+
 navbar:
   structure:
     left:
@@ -23,3 +25,7 @@ navbar:
       menu:
       - text: 'Cepo: a method for differential stability analysis of scRNA-seq data'
         href: articles/cepo.html
+      - text: Citation
+        href: authors.html#citation
+      - text: View on Bioconductor
+        href: https://bioconductor.org/packages/Cepo/

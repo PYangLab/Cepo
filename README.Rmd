@@ -10,20 +10,20 @@ Defining the identity of a cell is fundamental to understand the heterogeneity o
 
 ## Installation
 
-You can install the development version of _Cepo_ that can be installed from GitHub
-using the `remotes` package:
-
-``` r
-# install.packages("remotes")
-remotes::install_github("PYangLab/Cepo")
-```
-
 You can install the Bioconductor version of _Cepo_ from:
 
 ``` r
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("Cepo")
+```
+
+You can install the development version of _Cepo_ from GitHub using the `remotes`
+package:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("PYangLab/Cepo")
 ```
 
 To also build the vignettes use:
@@ -39,18 +39,28 @@ packages.
 
 ## Documentation
 
-The documentation for _Cepo_ is available from http://github.io/PYangLab/Cepo
+The documentation for _Cepo_ is available from <https://pyanglab.github.io/Cepo/>.
 
-To view the vignette and all the package documentation for the development
-version visit http://github.io/PYangLab/Cepo.
+The Bioconductor package page is available from
+<https://bioconductor.org/packages/Cepo/>.
 
 ## Citing _Cepo_
 
-If you use *Cepo* in your work please cite our preprint ["Kim H.J., Wang
-K., Yang P. Cepo uncovers cell identity through
-differential stability. bioRxiv DOI:](add%20biorxiv%20link).
+If you use _Cepo_ in your work, please cite:
 
-To find all source code related to the anlayses of our preprint please refer to <http://github.io/PYangLab/CepoManuscript>.
+> Kim, H. J., Wang, K., Chen, C., Lin, Y., Tam, P. P. L., Lin, D. M.,
+> Yang, J. Y. H. & Yang, P. Uncovering cell identity through differential
+> stability with Cepo. _Nature Computational Science_ 1, 784-790 (2021).
+> <https://doi.org/10.1038/s43588-021-00172-2>
+
+From R, you can also run:
+
+``` r
+citation("Cepo")
+```
+
+To find all source code related to the analyses of the paper, please refer to
+<https://github.com/PYangLab/CepoManuscript>.
 
 ## Developers
 
@@ -63,4 +73,4 @@ The following individuals were involved in developing the Cepo package:
 
 ## Contact us
 
-If you have any enquiries, especially about using Cepo to analyse your data, please contact hani.kim@sydney.edu.au. We actively welcome any feedback and suggestions! 
+If you have any enquiries, especially about using Cepo to analyse your data, please contact hani.kim@garvan.org.au or pengyi.yang@sydney.edu.au. We actively welcome any feedback and suggestions! 

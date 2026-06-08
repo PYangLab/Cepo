@@ -1,21 +1,28 @@
 Package: Cepo
-Title: Cepo for the identification of differentially stable genes
+Title: Cepo for the Identification of Differentially Stable Genes
 Version: 1.11.2
 Authors@R: 
     c(
     person(given = "Hani Jieun",
            family = "Kim",
            role = c("aut", "cre"),
-           email = "hani.kim127@gmail.com",
+           email = "hani.kim@garvan.org.au",
            comment = c(ORCID = "0000-0003-1844-3275")),
     person(given = "Kevin",
            family = "Wang",
            role = c("aut"),
            email = "kevinwangstats@gmail.com",
-           comment = c(ORCID = "0000-0003-2615-6102"))
+           comment = c(ORCID = "0000-0003-2615-6102")),
+    person(given = "Pengyi",
+           family = "Yang",
+           role = c("aut"),
+           email = "pengyi.yang@sydney.edu.au",
+           comment = c(ORCID = "0000-0003-1098-3138"))
     )
 Description: Defining the identity of a cell is fundamental to understand the heterogeneity of cells to various environmental signals and perturbations. We present Cepo, a new method to explore cell identities from single-cell RNA-sequencing data using differential stability as a new metric to define cell identity genes. Cepo computes cell-type specific gene statistics pertaining to differential stable gene expression.
 License: MIT + file LICENSE
+URL: https://pyanglab.github.io/Cepo/, https://github.com/PYangLab/Cepo, https://bioconductor.org/packages/Cepo/
+BugReports: https://github.com/PYangLab/Cepo/issues
 Encoding: UTF-8
 LazyData: false
 Roxygen: list(markdown = TRUE)

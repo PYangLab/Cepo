@@ -2,8 +2,8 @@
 title: "Cepo for differential stability analysis of scRNA-seq data"
 author:
 - name: Hani Jieun Kim
-  affiliation: The University of Sydney
-  email: hani.kim127@gmail.com
+  affiliation: Garvan Institute of Medical Research
+  email: hani.kim@garvan.org.au
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 vignette: >
   %\VignetteIndexEntry{Cepo method for differential stability analysis of scRNA-seq data}

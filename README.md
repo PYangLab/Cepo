@@ -19,8 +19,16 @@ expression.
 
 ## Installation
 
-You can install the development version of *Cepo* that can be installed
-from GitHub using the `remotes` package:
+You can install the Bioconductor version of *Cepo* from:
+
+``` r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("Cepo")
+```
+
+You can install the development version of *Cepo* from GitHub using the
+`remotes` package:
 
 ``` r
 # install.packages("remotes")
@@ -41,20 +49,28 @@ packages.
 ## Documentation
 
 The documentation for *Cepo* is available from
-<http://github.com/PYangLab/Cepo>
+<https://pyanglab.github.io/Cepo/>.
 
-To view the vignette and all the package documentation for the
-development version visit <http://github.com/PYangLab/Cepo>.
+The Bioconductor package page is available from
+<https://bioconductor.org/packages/Cepo/>.
 
 ## Citing *Cepo*
 
-If you use *Cepo* in your work please cite our preprint ["Kim H.J., Wang
-K., Yang P. Cepo uncovers cell identity through
-differential stability. bioRxiv DOI:](https://www.biorxiv.org/content/10.1101/2021.01.10.426138v1).
+If you use *Cepo* in your work, please cite:
 
-To find all source code related to the anlayses of our preprint please refer to <http://github.com/PYangLab/CepoManuscript>.
+> Kim, H. J., Wang, K., Chen, C., Lin, Y., Tam, P. P. L., Lin, D. M.,
+> Yang, J. Y. H. & Yang, P. Uncovering cell identity through differential
+> stability with Cepo. *Nature Computational Science* 1, 784-790 (2021).
+> <https://doi.org/10.1038/s43588-021-00172-2>
 
+From R, you can also run:
 
+``` r
+citation("Cepo")
+```
+
+To find all source code related to the analyses of the paper, please
+refer to <https://github.com/PYangLab/CepoManuscript>.
 
 
 
@@ -69,5 +85,6 @@ The following individuals were involved in developing the Cepo package:
 ## Contact us
 
 If you have any enquiries, especially about using Cepo to analyse your
-data, please contact <hani.kim@sydney.edu.au>. We actively welcome any
-feedback and suggestions\!
+data, please contact <hani.kim@garvan.org.au> or
+<pengyi.yang@sydney.edu.au>. We actively welcome any feedback and
+suggestions\!
