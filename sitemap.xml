@@ -1,48 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/articles/cepo.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/Cepo.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cellbench.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotDensities.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sce_pancreas.html</loc>
-  </url>
-  <url>
-    <loc>/reference/setCepoBPPARAM.html</loc>
-  </url>
-  <url>
-    <loc>/reference/topGenes.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://pyanglab.github.io/Cepo/404.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/LICENSE-text.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/LICENSE.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/articles/cepo.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/articles/index.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/authors.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/index.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/news/index.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/reference/Cepo.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/reference/cellbench.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/reference/index.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/reference/plotDensities.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/reference/sce_pancreas.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/reference/setCepoBPPARAM.html</loc></url>
+<url><loc>https://pyanglab.github.io/Cepo/reference/topGenes.html</loc></url>
 </urlset>
+
