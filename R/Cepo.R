@@ -10,9 +10,10 @@
 #' percentage of zero expression of genes. Used with prefilter_sd. 
 #' @param logfc Numeric value indicating the threshold of log fold-change 
 #' to use to filter genes.
-#' @param computePvalue Whether to compute p-values using bootstrap test. 
+#' @param computePvalue Whether to compute p-values using resampled label
+#' permutations.
 #' Default to NULL to not make computations.
-#' Set this to an integer to set the number of bootstraps needed 
+#' Set this to an integer to set the number of permutations needed
 #' (recommend to be at least 100).
 #' @param computeFastPvalue Logical vector indicating whether to perform a 
 #' faster version of p-value calculation. Set to TRUE by default.
@@ -207,11 +208,13 @@ print.Cepo <- function(x) {
 
 bootCepo <- function(exprsMat, cellTypes, minCells, exprsPct, logfc, variability,
                      method, weight, singleResult, times, workers = 1L, ...) {
-    ## Running multiple runs of Cepo based on bootstrap
+    ## Running multiple runs of Cepo based on label permutations. The
+    ## permutation preserves cell-type counts so resamples cannot create
+    ## artificial groups below minCells.
     listCepoOutputs <- BiocParallel::bplapply(X = seq_len(times), FUN = function(i) {
         oneCepo(exprsMat = exprsMat, minCells = minCells, variability = variability,
-                logfc = logfc, method = method, weight = weight, cellTypes = sample(cellTypes,
-                                                                                    replace = TRUE), exprsPct = exprsPct, workers = 1L)
+                logfc = logfc, method = method, weight = weight,
+                cellTypes = sample(cellTypes), exprsPct = exprsPct, workers = 1L)
     }, BPPARAM = setCepoBPPARAM(workers = workers, ...))
     
     ## Initialise p-value calculations
@@ -220,7 +223,7 @@ bootCepo <- function(exprsMat, cellTypes, minCells, exprsPct, logfc, variability
     for (i in names(singleResult)) {
         ## For each celltype and each gene, calculate the proportion
         ## of times that the gene exceeds the statistics value under
-        ## bootstrap runs.
+        ## permuted-label runs.
         listBinary <- lapply(listCepoOutputs, function(this_run) {
             singleResult[[i]] <= this_run[[i]][names(singleResult[[i]])]
         })
@@ -240,11 +243,13 @@ bootFastCepo <- function(exprsMat, cellTypes, minCells, exprsPct, logfc, variabi
     geneNames <- sort(names(singleResult[[1]]))
     singleResult <- lapply(singleResult, function(x) x[geneNames])
     
-    ## Running multiple runs of Cepo based on bootstrap
+    ## Running multiple runs of Cepo based on label permutations. The
+    ## permutation preserves cell-type counts so resamples cannot create
+    ## artificial groups below minCells.
     sampled_cepo_stats <- BiocParallel::bplapply(X = seq_len(times), FUN = function(i) {
         sampleResult <- oneCepo(exprsMat = exprsMat, minCells = minCells, variability = variability,
-                                logfc = logfc, method = method, weight = weight, cellTypes = sample(cellTypes,
-                                                                                                    replace = TRUE), exprsPct = exprsPct, workers = 1L)
+                                logfc = logfc, method = method, weight = weight,
+                                cellTypes = sample(cellTypes), exprsPct = exprsPct, workers = 1L)
         
         sampleResult <- S4Vectors::DataFrame(sortList(sampleResult))
         return(sampleResult)
@@ -532,5 +537,3 @@ setCepoBPPARAM <- function(workers = 1L, ...) {
         return(BiocParallel::MulticoreParam(workers = workers, ...))
     }
 }
-
-

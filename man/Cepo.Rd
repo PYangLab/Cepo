@@ -47,9 +47,10 @@ percentage of zero expression of genes. Used with prefilter_sd.}
 \item{logfc}{Numeric value indicating the threshold of log fold-change
 to use to filter genes.}
 
-\item{computePvalue}{Whether to compute p-values using bootstrap test.
+\item{computePvalue}{Whether to compute p-values using resampled label
+permutations.
 Default to NULL to not make computations.
-Set this to an integer to set the number of bootstraps needed
+Set this to an integer to set the number of permutations needed
 (recommend to be at least 100).}
 
 \item{computeFastPvalue}{Logical vector indicating whether to perform a

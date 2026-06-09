@@ -29,6 +29,25 @@ cepoOutput_boot <- Cepo(exprsMat = exprsMat, cellTypes = cellTypes, computePvalu
 ## Testing print method
 print(cepoOutput_boot)
 
+## P-value resampling should preserve cell-type sizes so classes just above
+## minCells do not become all-NA during null runs.
+set.seed(1234)
+imbalancedCellTypes <- c(rep("a", 21), rep("b", 30), rep("c", 44))
+imbalancedExprsMat <- matrix(rpois(n * length(imbalancedCellTypes), lambda = 5), nrow = n)
+rownames(imbalancedExprsMat) <- paste0("gene", 1:n)
+colnames(imbalancedExprsMat) <- paste0("cell", seq_along(imbalancedCellTypes))
+cepoOutput_imbalanced <- Cepo(
+  exprsMat = imbalancedExprsMat,
+  cellTypes = imbalancedCellTypes,
+  computePvalue = 10
+)
+expect_false(all(is.na(as.matrix(cepoOutput_imbalanced$pvalues))))
+expect_false(any(vapply(
+  cepoOutput_imbalanced$geneStatistics,
+  function(x) all(is.na(x$mean)) || all(is.na(x$sd)),
+  logical(1)
+)))
+
 ## Testing insufficient number of cells 
 # cellTypes_insufficient = c(rep("a", 10), rep("b", p - 10))
 # expect_message(
