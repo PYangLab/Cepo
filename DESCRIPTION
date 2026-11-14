@@ -29,7 +29,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Imports: 
     DelayedMatrixStats,
-    DelayedArray,
+    BiocGenerics,
     HDF5Array,
     S4Vectors,
     methods,
@@ -57,7 +57,8 @@ Suggests:
     fgsea,
     escape,
     msigdb,
-    pheatmap
+    pheatmap,
+    DelayedArray
 VignetteBuilder: knitr
 Depends: 
     GSEABase,

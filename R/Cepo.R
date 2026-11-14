@@ -36,7 +36,7 @@
 #' @param ... Additional arguments passed to `BiocParallel::MulticoreParam` 
 #' and `BiocParallel::SnowParam`. 
 #' @importFrom DelayedMatrixStats rowSums2 rowMeans2 rowSds
-#' @importFrom DelayedArray cbind
+#' @importFrom BiocGenerics cbind
 #' @importFrom HDF5Array HDF5Array
 #' @importFrom BiocParallel SerialParam MulticoreParam SnowParam bplapply
 #' @importFrom stats pnorm pchisq
@@ -299,7 +299,7 @@ oneCepo <- function(exprsMat, cellTypes, minCells = minCells, variability = vari
                                                         0)/sum(cellTypes == cts[i])) > exprsPct
         }
         names(meanPct.list) <- cts
-        keep <- rowSums_withnames(do.call(DelayedArray::cbind, meanPct.list)) >
+        keep <- rowSums_withnames(do.call(BiocGenerics::cbind, meanPct.list)) >
             0
         exprsMat <- exprsMat[keep, , drop = FALSE]
     }
@@ -313,7 +313,7 @@ oneCepo <- function(exprsMat, cellTypes, minCells = minCells, variability = vari
                                                                                                                                                                                  -idx, drop = FALSE])) + 1, base = 2)) > logfc
         }
         names(logfc.list) <- cts
-        keep <- rowSums_withnames(do.call(DelayedArray::cbind, logfc.list)) >
+        keep <- rowSums_withnames(do.call(BiocGenerics::cbind, logfc.list)) >
             0
         exprsMat <- exprsMat[keep, , drop = FALSE]
     }
@@ -410,19 +410,19 @@ segIndex <- function(mat, stability, method, weight) {
     x1 <- rank(nz)/(length(nz) + 1)
     x2 <- 1 - rank(s)/(length(s) + 1)
     
-    # segIdx <- rowMeans_withnames(DelayedArray::cbind(x1, x2))
+    # segIdx <- rowMeans_withnames(BiocGenerics::cbind(x1, x2))
     
     if (method == "weightedMean") {
-        segIdx <- rowMeansWeighted_withnames(DelayedArray::cbind(x1, x2),
+        segIdx <- rowMeansWeighted_withnames(BiocGenerics::cbind(x1, x2),
                                              weight)
     } else if (method == "Stouffer") {
-        segIdx <- apply(-DelayedArray::cbind(x1, x2), 1, geneStats, method = "Stouffer")
+        segIdx <- apply(-BiocGenerics::cbind(x1, x2), 1, geneStats, method = "Stouffer")
     } else if (method == "OSP") {
-        segIdx <- apply(-DelayedArray::cbind(x1, x2), 1, geneStats, method = "OSP")
+        segIdx <- apply(-BiocGenerics::cbind(x1, x2), 1, geneStats, method = "OSP")
     } else if (method == "Fisher") {
-        segIdx <- apply(-DelayedArray::cbind(x1, x2), 1, geneStats, method = "Fisher")
+        segIdx <- apply(-BiocGenerics::cbind(x1, x2), 1, geneStats, method = "Fisher")
     } else if (method == "maxP") {
-        segIdx <- apply(-DelayedArray::cbind(x1, x2), 1, geneStats, method = "maxP")
+        segIdx <- apply(-BiocGenerics::cbind(x1, x2), 1, geneStats, method = "maxP")
     }
     
     return(segIdx)
